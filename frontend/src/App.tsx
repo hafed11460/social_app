@@ -1,5 +1,5 @@
 import { BrowserRouter } from "react-router-dom"
-import SocialRouter from 'routres'
+import SocialRouter from 'routes'
 
 function App() {
 

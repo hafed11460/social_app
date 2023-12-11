@@ -5,6 +5,7 @@ import AuthLayout from 'layouts/AuthLayout'
 import { PrivateRoute } from 'layouts/PrivateRoute'
 import MainLayout from 'layouts/MainLayout'
 import Dashboard from 'components/dashbord/Dashboard'
+import EmployeesList from 'components/employees/EmployeesList'
 
 
 const SocialRouter = () => {
@@ -22,6 +23,7 @@ const SocialRouter = () => {
                 <Route element={<MainLayout />}>
                   
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/employees" element={<EmployeesList />} />
                     
                 </Route>
             </Route>
