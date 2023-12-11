@@ -52,8 +52,10 @@ class EmployeeAdmin(ImportExportModelAdmin,admin.ModelAdmin):
 
     resource_class = EmployeeResource
 
+
 class PrimetypeAdmin(admin.ModelAdmin):
     list_display=['name']
+    
 
 class PrimeAdmin(admin.ModelAdmin):
     list_display = ['employee','prime_type','date_f','date_r','montant','observation']

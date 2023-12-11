@@ -137,23 +137,7 @@ class LoginSerializer(serializers.ModelSerializer):
         fields = [
             'email','password','tokens','user',        
             ]
-        
-
-        
-    def get_agency(self,obj):
-        user = User.objects.get(email=obj['email'])
-    
-        request = self.context.get('request')
-        logo_url = user.agency.logo.url        
-        cover_url = user.agency.cover.url        
-        logo_url = request.build_absolute_uri(logo_url)
-        cover_url = request.build_absolute_uri(cover_url)
-        return {                        
-            'logo':logo_url,
-            'cover':cover_url,
-            'name':user.agency.name,
-            'phone':user.agency.phone
-        }
+                    
     def get_user(self, obj):
         user = User.objects.get(email=obj['email']) 
         request = self.context.get('request')
@@ -165,16 +149,7 @@ class LoginSerializer(serializers.ModelSerializer):
                 'email': user.email,
                 'role': user.role,
                 'avatar':image_url
-            }   
-        print(user.role)
-        if user.role == 'VENDOR':
-            logo_url = user.agency.logo.url
-            logo_url = request.build_absolute_uri(logo_url)
-
-            data['agency_id'] = user.agency.id
-            data['agency_logo'] = logo_url
-            data['agency_name'] = user.agency.name
-
+            }          
         return data
     
     def validate(self, attrs):
