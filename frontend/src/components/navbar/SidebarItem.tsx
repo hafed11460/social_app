@@ -10,7 +10,7 @@ const SidebarItem = ({ route }: { route: DashRoute }) => {
         setActive(!active)
     }
     return (
-        <Nav.Item  className={`sidebar-item  active ${route.labelDisable ? '' : 'has-sub'}`} >
+        <Nav.Item  className={`sidebar-item   ${route.labelDisable ? '' : 'has-sub'}`} >
             {
                 route.labelDisable ?
                     <Link to={route.to} className='sidebar-link'>

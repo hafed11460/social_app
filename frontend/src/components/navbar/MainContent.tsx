@@ -2,7 +2,7 @@ const MainContent = () => {
     return (
         <div id="main-content">
             <div className="page-heading">
-                <div className="page-title">
+                {/* <div className="page-title">
                     <div className="row">
                         <div className="col-12 col-md-6 order-md-1 order-last">
                             <h3>Vertical Layout with Navbar</h3>
@@ -17,7 +17,7 @@ const MainContent = () => {
                             </nav>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <section className="section">
                     <div className="card">
                         <div className="card-header">

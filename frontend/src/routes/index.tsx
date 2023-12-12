@@ -6,6 +6,8 @@ import { PrivateRoute } from 'layouts/PrivateRoute'
 import MainLayout from 'layouts/MainLayout'
 import Dashboard from 'components/dashbord/Dashboard'
 import EmployeesList from 'components/employees/EmployeesList'
+import EmployeeDetail from 'components/employees/EmployeeDetail'
+import { PrimesList } from 'components/primes/PrimesList'
 
 
 const SocialRouter = () => {
@@ -13,10 +15,6 @@ const SocialRouter = () => {
         <Routes>
             <Route element={<AuthLayout />}>
                 <Route path="/login/" element={<Login />} />
-                {/* <Route path="/register/" element={<Register />} />
-                <Route path="/email-verify/" element={<EmailVerify />} />
-                <Route path="/forgot-password/" element={<ForgotPassword />} />
-                <Route path="/auth/password-reset-confirm/:uid/:token/" element={<PasswordResetConfirm />} /> */}
             </Route>
 
             <Route element={<PrivateRoute />}>
@@ -24,7 +22,9 @@ const SocialRouter = () => {
                   
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/employees" element={<EmployeesList />} />
+                        <Route path="/employees/:eid/" element={<EmployeeDetail />} />
                     
+                        <Route path="/employees/primes/" element={<PrimesList />} />
                 </Route>
             </Route>
         </Routes>

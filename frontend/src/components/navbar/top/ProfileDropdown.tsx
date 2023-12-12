@@ -65,7 +65,7 @@ const ProfileDropdwon = () => {
                     <Dropdown.Item as={Link} to="/account/">
                         Account
                     </Dropdown.Item>
-                    {isVendor && <AgencyItem />}
+                    {/* {isVendor && <AgencyItem />} */}
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={onLogout} as={Link} to="#!">
                         Logout

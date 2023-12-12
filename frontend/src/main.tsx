@@ -29,7 +29,7 @@ interface AppSettings {
 export const settings: AppSettings = {
   isOverflow:false,
   isDark: true,
-  isSidebar: true,
+  isSidebar: false,
   isHide: false,
   suFix: false
 }

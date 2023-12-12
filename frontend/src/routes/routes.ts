@@ -38,9 +38,9 @@ const dashRoutes:DashRoute[] = [
         ]
     },
     {
-        label: 'Devices',
-        to: '/devices',
-        labelDisable: false,
+        label: 'Primes',
+        to: '/employees/primes',
+        labelDisable: true,
         icon: 'bi bi-stack',
         children: [
             {

@@ -16,7 +16,7 @@ class Direction(WithTimestamp, models.Model):
 
 
 class Employee(WithTimestamp, models.Model):
-    matricule = models.IntegerField(_("Matricule"),unique=True)
+    matricule = models.IntegerField(_("Matricule"), unique=True)
     nom = models.CharField(_("Nom"), max_length=50)
     prenom = models.CharField(_("Prenom"), max_length=50)
     date_n = models.DateField(
@@ -47,9 +47,7 @@ class Employee(WithTimestamp, models.Model):
         verbose_name_plural = _("Employees")
 
     def __str__(self):
-        return f'{self.nom} {self.prenom}'
-
-
+        return f"{self.nom} {self.prenom}"
 
 
 class Primetype(models.Model):
@@ -61,7 +59,10 @@ class Primetype(models.Model):
 
 class Prime(WithTimestamp, models.Model):
     employee = models.ForeignKey(
-        Employee, verbose_name=_("Employee"), on_delete=models.DO_NOTHING
+        Employee,
+        related_name="primes",
+        verbose_name=_("Employee"),
+        on_delete=models.DO_NOTHING,
     )
     prime_type = models.ForeignKey(
         Primetype, verbose_name=_("Prime Type"), on_delete=models.DO_NOTHING

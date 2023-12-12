@@ -1,5 +1,5 @@
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from 'features/AxiosBaseQuery'
 
 const employees_root = '/employees'
@@ -9,10 +9,9 @@ export const employeeAPI = createApi({
   baseQuery: axiosBaseQuery(),
   tagTypes: ['Employees'],
   endpoints: (builder) => ({
-    
 
     getEmployees: builder.query({
-      query: (params = null) => {       
+      query: (params = null) => {
         return {
           url: `${employees_root}/`,
           // url: `${employees_root}/${params != null ? params : ''}`,
@@ -38,17 +37,16 @@ export const employeeAPI = createApi({
     // }),
 
 
-    // getPropertyId: builder.query({
-    //   query: (id) => {
-    //     console.log(id)
-    //     return {
-    //       url: `properties/${id}/`,
-    //       method: 'GET',
-    //       data: {}
-    //     }
-    //   },
-    //   providesTags: (result, error, id) => [{ type: 'Properties', id }],
-    // }),
+    getEmployeeById: builder.query({
+      query: (eid:any) => {
+        return {
+          url: `${employees_root}/${eid}/`,
+          method: 'GET',
+          data: {}
+        }
+      },
+      // providesTags: (result, error, id) => [{ type: 'Employees', id }],
+    }),
 
 
     // getProperty: builder.mutation({
@@ -62,20 +60,6 @@ export const employeeAPI = createApi({
     //   // providesTags: (result, error, id) => [{ type: 'Properties', id }],
     // }),
 
-
-    // addProperty: builder.mutation({
-    //   query: (body) => {
-    //     for (const pair of body.entries()) {
-    //       console.log(`${pair[0]}, ${pair[1]}`);
-    //     }
-    //     return {
-    //       url: `properties/create/`,
-    //       method: 'POST',
-    //       data: body
-    //     }
-    //   },
-    //   invalidatesTags: ['Properties']
-    // }),
 
 
     // updateProperty: builder.mutation({
@@ -130,6 +114,7 @@ export const employeeAPI = createApi({
 })
 
 export const {
-  useGetEmployeesQuery,  
+  useGetEmployeesQuery,
+  useGetEmployeeByIdQuery
 } = employeeAPI
 
