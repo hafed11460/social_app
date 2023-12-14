@@ -36,7 +36,7 @@ interface EditPrimeProps {
 
 
 const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
-
+    console.log('render edit Prime')
 
     const [getPrimeById, { data: prime,isSuccess:success }] = useGetPrimeByIdMutation()
     const [getPrimetypes, { data: primetypes, isLoading }] = useGetPrimetypesMutation()
@@ -50,8 +50,9 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
     useEffect(() => {
         if (prime) {
             reset({
+                employee:prime.employee.nom,
                 id:prime.id,
-                prime_type:prime.prime_type.id,
+                prime_type:prime.prime_type,
                 date_f: prime.date_f,
                 date_r: prime.date_r,
                 montant: prime.montant,
@@ -59,6 +60,7 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
             })
         }
     }, [success,prime])
+    
     const {
         register,
         handleSubmit,
@@ -82,9 +84,8 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
 
     useEffect(() => {
         if (isSuccess) {
-            // setInitialValues(initState)
             setShow(false)
-            toast.success('Property add Successfully')
+            toast.success('Prime updated Successfully')
         }
     }, [isSuccess])
 
@@ -120,7 +121,7 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
                                     <Form.Control
                                         disabled
                                         type="text"
-                                    // value={employee.nom}                                     
+                                        value={prime ? prime.employee.nom + ' ' +prime.employee.prenom:''}                                     
                                     >
                                     </Form.Control>
                                     {/* <Form.Control
@@ -138,8 +139,7 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
                                     <Form.Select
 
                                         {...register("prime_type", { required: "This Feild Is required" })}
-                                    >
-                                        <option>city</option>
+                                    >                                        
                                         {primetypes && primetypes.map((pt: IPrimetypes) => (
                                             <option selected={getValues('prime_type') == `${pt.id}`} key={pt.id} value={pt.id}>{pt.name}</option>
                                         ))}

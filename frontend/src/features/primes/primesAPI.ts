@@ -20,18 +20,18 @@ export const primesAPI = createApi({
       },
     }),
 
-    getPrimes: builder.query({
+    getPrimes: builder.mutation({
       query: (params = null) => {
         return {
-          url: `${primes_root}/`,
-          // url: `${Primes_root}/${params != null ? params : ''}`,
+          // url: `${primes_root}/`,
+          url: `${primes_root}/?date=${params != null ? params : ''}`,
           method: 'GET',
           data: {},
         }
       },
 
-      providesTags: (data) =>
-        data ? data.map(({ id }: { id: number }) => ({ type: 'Primes', id })) : ['Primes'],
+      // providesTags: (data) =>
+      //   data ? data.map(({ id }: { id: number }) => ({ type: 'Primes', id })) : ['Primes'],
     }),
     getPrimeById: builder.mutation({
       query: (pid:any) => {
@@ -56,7 +56,8 @@ export const primesAPI = createApi({
     }),
 
     updatePrime: builder.mutation({
-        query: (body) => {          
+        query: (body) => {       
+          console.log(body.id)   
           return {
             url: `${primes_root}/${body.id}/update/`,
             // url: `properties/${body.get('id')}/update/`,
@@ -72,7 +73,7 @@ export const primesAPI = createApi({
 export const {
   useGetPrimetypesMutation,
   useAddPrimeMutation,
-  useGetPrimesQuery,
+  useGetPrimesMutation,
   useGetPrimeByIdMutation,
   useUpdatePrimeMutation,
 

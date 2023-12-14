@@ -1,11 +1,11 @@
 
-export interface IDirection{
-    id:number,
-    name:string
+export interface IDirection {
+    id: number,
+    name: string
 }
 
 export interface IEmployee {
-    id:number,
+    id: number,
     matricule: number,
     nom: string,
     prenom: string,
@@ -15,19 +15,34 @@ export interface IEmployee {
     direction: IDirection,
     type_contrat: string,
     fin_contrat: string,
-    created_at: string,    
+    created_at: string,
 }
 
-export interface IPrime{
-    id:number,
-    employee:number,
-    prime_type:IPrimetypes,
-    date_f:string,
-    date_r:string,
-    montant:number,
-    observation:string
+export interface IPrime {
+    id: number,
+    employee: number,
+    prime_type: IPrimetypes,
+    date_f: string,
+    date_r: string,
+    montant: number,
+    observation: string
 }
-export interface IPrimetypes{
-    id:number,
-    name:string
+export interface IPrimetypes {
+    id: number,
+    name: string
+}
+
+export const months = {
+    1:'janvier',
+    2:'février',
+    3:'mars',
+    4:'avril',
+    5:'mai',
+    6:'juin',
+    7:'juillet',
+    8:'août',
+    9:'septembre',
+    10:'octobre',
+    11:'novembre',
+    12:'décembre',
 }

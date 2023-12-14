@@ -7,6 +7,14 @@ from rest_framework import generics
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from .models import Employee,Prime,Primetype
+from employees.prime_to_excel import PrimeToExcel
+from io import BytesIO
+from django.http import HttpResponse
+import pandas as pd
+from datetime import datetime,timedelta
+from rest_framework.response import Response
+
+
 from .serializers import (
     EmployeeSerializer,
     PrimetypeSerialiser,
@@ -16,10 +24,26 @@ from .serializers import (
     UpdatePrimeSerializer
 )
 
+class PrimeExportExcelAPIView(APIView):
+
+    def get(self, request, format=None):
+        try:   
+            date = request.GET.get('date', '')
+            if not date:
+                date = datetime.today().strftime('%Y-%m-%d')
+            date = datetime.strptime(date, '%Y-%m-%d')            
+           
+            response = HttpResponse(content_type='application/octet-stream')
+            response['Content-Disposition'] = 'attachment; filename=your_template_name.xlsx'
+            excelgen = PrimeToExcel(date=date)
+            response.write(excelgen.start())
+            return response
+        except Exception as e:
+            return  Response({'error'},status=status.HTTP_200_OK   )
 
 class PrimeDetailAPIView(generics.RetrieveAPIView):
     # permission_classes = [IsAuthenticated]
-    serializer_class = PrimeSerialiser
+    serializer_class = UpdatePrimeSerializer
     queryset = Prime.objects.all()
 
 class UpdatePrimeAPIView(generics.UpdateAPIView):
@@ -32,6 +56,8 @@ class PrimetypesListAPI(generics.ListAPIView):
     serializer_class = PrimetypeSerialiser
     queryset = Primetype.objects.all()
 
+
+
 class PrimeListAPIView(generics.ListAPIView):
     serializer_class = PrimeSerialiser
     # pagination_class = PropertiesPaginations
@@ -41,8 +67,23 @@ class PrimeListAPIView(generics.ListAPIView):
     #     'prenom':['icontains'],        
     # }
     def get_queryset(self):
-        return Prime.objects.all()
-    
+        date = self.request.GET.get('date', '')
+        if not date:
+            date =datetime.today().strftime('%Y-%m-%d')
+        date = datetime.strptime(date, '%Y-%m-%d')
+
+        results = Prime.objects.filter( 
+                            # date_f=date                           
+                            date_f__year__gte=date.year,
+                            date_f__month__gte=date.month,
+                            date_f__year__lte=date.year,
+                            date_f__month__lte=date.month
+                            )        
+        return results
+
+
+
+
 class CreatePrimeAPIView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CreatePrimeSerializer

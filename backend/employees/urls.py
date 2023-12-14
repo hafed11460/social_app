@@ -8,6 +8,7 @@ from .views import (
     PrimeListAPIView,
     PrimeDetailAPIView,
     UpdatePrimeAPIView,
+    PrimeExportExcelAPIView
    
 )
 
@@ -24,6 +25,7 @@ urlpatterns = [
     path('primes/types/', PrimetypesListAPI.as_view(),name='prime-types'),
     path('primes/create/', CreatePrimeAPIView.as_view(), name='prime-create'),
     path('primes/<int:pk>/update/', UpdatePrimeAPIView.as_view(), name='prime-update'),
+    path('primes/excel/',PrimeExportExcelAPIView.as_view(), name='primes-excel') ,
     # path('amenities/', AmenityListAPIView.as_view(), name='property-list'),
     ## for guest users 
     # path('<int:pk>/delete/', DeletePropertyAPIView.as_view(), name='property-delete'),

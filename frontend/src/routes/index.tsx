@@ -8,10 +8,12 @@ import Dashboard from 'components/dashbord/Dashboard'
 import EmployeesList from 'components/employees/EmployeesList'
 import EmployeeDetail from 'components/employees/EmployeeDetail'
 import { PrimesList } from 'components/primes/PrimesList'
+import { ToastContainer } from 'react-toastify'
 
 
 const SocialRouter = () => {
     return (
+        <>
         <Routes>
             <Route element={<AuthLayout />}>
                 <Route path="/login/" element={<Login />} />
@@ -22,12 +24,23 @@ const SocialRouter = () => {
                   
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/employees" element={<EmployeesList />} />
-                        <Route path="/employees/:eid/" element={<EmployeeDetail />} />
-                    
+                        <Route path="/employees/:eid/" element={<EmployeeDetail />} />                    
                         <Route path="/employees/primes/" element={<PrimesList />} />
                 </Route>
             </Route>
         </Routes>
+        {/* <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                // pauseOnFocusLoss
+                // draggable
+                // pauseOnHover
+            /> */}
+        </>
     )
 }
 

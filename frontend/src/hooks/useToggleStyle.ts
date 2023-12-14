@@ -29,7 +29,7 @@ const useToggleStylesheet = (isDark:boolean,isOverflow:boolean, configDispatch: 
   useEffect(() => {
    
     // 👇️ set style on body element
-    document.body.style.overflowY = 'hidden';
+    // document.body.style.overflowY = 'hidden';
 
   
   }, [isOverflow]);

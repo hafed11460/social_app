@@ -9,16 +9,13 @@ class PrimetypeSerialiser(serializers.ModelSerializer):
 
 
 class PrimeSerialiser(serializers.ModelSerializer):
-    prime_type = PrimetypeSerialiser()
+    prime_type = PrimetypeSerialiser(many=False, read_only=True)    
     class Meta:
         model = Prime
-        fields= '__all__'
+        # fields= '__all__'
+        fields= ['id','employee','prime_type','date_f','date_r','montant','observation']
+    
 
-class UpdatePrimeSerializer(serializers.ModelSerializer):
-    prime_type = serializers.PrimaryKeyRelatedField(queryset=Primetype.objects.all(),many=False)
-    class Meta:
-        model = Prime                          
-        fields = ['prime_type','date_f','date_r','montant','observation']
 
 class DirectionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,3 +66,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
             "type_contrat",
             "created_at",
         ]
+
+
+class UpdatePrimeSerializer(serializers.ModelSerializer):
+    prime_type = serializers.PrimaryKeyRelatedField(queryset=Primetype.objects.all(),many=False)
+    employee = EmployeeSerializer(read_only=True,many=False)
+    class Meta:
+        model = Prime                          
+        fields = ['id','employee','prime_type','date_f','date_r','montant','observation']
