@@ -24,7 +24,7 @@ class Facilite(WithTimestamp, models.Model):
 
 
 def MONTH_TYPES():
-    return [(r,r) for r in range(1,13)]
+    return [(f'{r}',f'{r}') for r in range(1,13)]
 
 class Timeline(WithTimestamp, models.Model):
     facilite = models.ForeignKey(

@@ -1,11 +1,37 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Facilite
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Facilite,Timeline
 
 from .serializers import (
-    FaciliteSerializer
+    FaciliteSerializer,
+    CreateTimelineSerializer,
+    UpdateTimelineSerializer
 )
 
+
+class CreateTimelineAPIView(generics.CreateAPIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class = CreateTimelineSerializer,
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = Timeline.objects.all()
+
+    def post(self,request):               
+        serializer = CreateTimelineSerializer(data=request.data,context={'request':request})
+        serializer.is_valid(raise_exception=True)  
+        serializer.save()                                  
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    
+class UpdateTimelineAPIView(generics.UpdateAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = UpdateTimelineSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = Timeline.objects.all()
+    
 
 class FaciliteListAPIView(generics.ListAPIView):
     serializer_class = FaciliteSerializer

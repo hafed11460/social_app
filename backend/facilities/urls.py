@@ -1,17 +1,20 @@
 
 from django.urls import path
 from .views import (
-    FaciliteListAPIView
+    FaciliteListAPIView,
+    CreateTimelineAPIView,
+    UpdateTimelineAPIView
    
    
 )
 
 urlpatterns = [
     path('', FaciliteListAPIView.as_view(), name='facilite-list'),
+    path('timelines/create/', CreateTimelineAPIView.as_view(), name='timeline-create'),
+    path('timelines/<int:pk>/update/', UpdateTimelineAPIView.as_view(), name='timeline-update'),
     # path('<int:pk>/', EmployeeDetailAPIView.as_view(), name='employee-detail'),
     # path('agency/', AgencyPropertyListAPIView.as_view(), name='agency-property-list'),
     # path('<int:pk>/', DetailPropertyAPIView.as_view(), name='property-deatil'),
-    # path('<int:pk>/update/', UpdatePropertyAPIView.as_view(), name='property-update'),
     # path('<int:pk>/delete/', DeletePropertyAPIView.as_view(), name='property-delete'),
 
     # path('primes/', PrimeListAPIView.as_view(),name='prime-types'),

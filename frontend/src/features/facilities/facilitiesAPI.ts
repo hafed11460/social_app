@@ -2,7 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from 'features/AxiosBaseQuery'
 
-const primes_root = '/facilities'
+const facilities_root = '/facilities'
 
 export const facilitiesAPI = createApi({
   reducerPath: 'facilitiesAPI',
@@ -24,7 +24,7 @@ export const facilitiesAPI = createApi({
       query: (params = null) => {
         return {
           // url: `${primes_root}/`,
-          url: `${primes_root}/?date=${params != null ? params : ''}`,
+          url: `${facilities_root}/?date=${params != null ? params : ''}`,
           method: 'GET',
           data: {},
         }
@@ -44,35 +44,37 @@ export const facilitiesAPI = createApi({
     //   // providesTags: (result, error, id) => [{ type: 'Employees', id }],
     // }),
 
-    // addPrime: builder.mutation({
-    //   query: (body) => {
-    //     console.log(body)       
-    //     return {
-    //       url: `${primes_root}/create/`,
-    //       method: 'POST',
-    //       data: body
-    //     }
-    //   },
-    //   invalidatesTags: ['Facilities']
-    // }),
+    CreateTimeline: builder.mutation({
+      query: (body) => {
+        console.log(body)       
+        return {
+          url: `${facilities_root}/timelines/create/`,
+          method: 'POST',
+          data: body
+        }
+      },
+      invalidatesTags: ['Facilities']
+    }),
 
-    // updatePrime: builder.mutation({
-    //     query: (body) => {       
-    //       console.log(body.id)   
-    //       return {
-    //         url: `${primes_root}/${body.id}/update/`,
-    //         // url: `properties/${body.get('id')}/update/`,
-    //         method: 'PUT',
-    //         data: body
-    //       }
-    //     },
-    //     invalidatesTags: ['Facilities']
-    //   }),
+    updateTimeline: builder.mutation({
+        query: (body) => {       
+          console.log(body.id)   
+          return {
+            url: `${facilities_root}/timelines/${body.id}/update/`,
+            // url: `properties/${body.get('id')}/update/`,
+            method: 'PUT',
+            data: body
+          }
+        },
+        invalidatesTags: ['Facilities']
+      }),
   }),
 })
 
 export const {
   useGetFacilitiesMutation,
+  useCreateTimelineMutation,
+  useUpdateTimelineMutation,
 
 } = facilitiesAPI
 

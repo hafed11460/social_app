@@ -1,22 +1,40 @@
+import { useCreateTimelineMutation, useUpdateTimelineMutation } from "features/facilities/facilitiesAPI";
 import { useRef, useState } from "react";
+import { ITimeline } from "types/types.facilities";
 
 interface EditCellProps {
-    montant: number
+    timeline: ITimeline 
 }
-const Cell = ({ montant }: EditCellProps) => {
+const Cell = ({ timeline }: EditCellProps) => {
+    console.log('render Cell Componente')
+    const [createTimeline,{data:created}] = useCreateTimelineMutation()
+    const [updateTimeline,{data:updated}] = useUpdateTimelineMutation()
     const inputRef = useRef(null);
     const [isEdit, setIsEdit] = useState(false)
-    const [value, setValue] = useState<number>(Number(montant))
+    const [value, setValue] = useState<number>(Number(timeline?timeline.somme:0))
+    const [newTLine, setNewTLine] = useState<ITimeline>(timeline)
+
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        setIsEdit(false)        
+        setIsEdit(false)  
+        if(!newTLine.id){
+            createTimeline(newTLine)           
+        }else{
+            updateTimeline(newTLine)
+        }
     }
+
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // const re = /^[0-9\b]+$/;
         const re = /([0-9]*[.])?[0-9]+/;
         if (e.target.value === '' || re.test(e.target.value)) {
             setValue(Number(e.target.value))
+            setNewTLine({
+                ...newTLine,
+                somme:Number(e.target.value)
+            })  
         }
     }
+
+
     const onDoubleClick = () => {
         setIsEdit(true)
         // inputRef.current.focus()
@@ -33,7 +51,7 @@ const Cell = ({ montant }: EditCellProps) => {
                     ref={inputRef}
                     onBlur={onBlur}
                     onChange={onChange}
-                    type='number' style={{ width: '100%' }}
+                    type='number' style={{ width: '100%',height:'100%' }}
                 />
 
             }

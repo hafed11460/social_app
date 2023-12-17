@@ -3,11 +3,34 @@ from .models import Facilite, Timeline
 from employees.serializers import EmployeeSerializer
 from datetime import datetime, timedelta
 
+class UpdateTimelineSerializer(serializers.ModelSerializer):   
+    class Meta:
+        model = Timeline                          
+        fields = ["id", "month",'facilite', "mois", "somme", "is_commited"]
+
+class CreateTimelineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Timeline
+        fields = ["id", "month",'facilite', "mois", "somme", "is_commited"]
+
+    # def create(self, validated_data):
+    #     print(validated_data)
+    #     answer, created = Timeline.objects.update_or_create(
+    #         id=validated_data.get("id",None),
+    #     )
+    #     return answer
+
+    # def create(self, validated_data):
+    # answer, created = Answer.objects.update_or_create(
+    #     question=validated_data.get('question', None),
+    #     defaults={'answer': validated_data.get('answer', None)})
+    # return answer
+
 
 class TimelineSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Timeline
-        fields = ["id", "month", "mois", "somme", "is_commited"]
+        fields = ["id",'facilite', "month", "mois", "somme", "is_commited"]
 
 
 class FaciliteSerializer(serializers.ModelSerializer):

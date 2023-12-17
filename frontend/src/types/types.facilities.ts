@@ -1,7 +1,8 @@
 import { IEmployee } from "./types.employees";
 
 export interface ITimeline{
-    id:number,
+    facilite:number,
+    id?:number,
     month:number,
     mois:string,
     somme:number ,
