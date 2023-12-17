@@ -4,17 +4,12 @@ import { DashRoute } from "types/types.routes";
 
 const dashRoutes:DashRoute[] = [
     {
-        label: 'Dashboard',
-        to: '/',
+        label: 'PRÊTS',
+        to: '/prets',
         labelDisable: true,
         icon: 'bi bi-grid-fill',
         children: [
-            {
-                name: 'All Switchs',
-                to: '/switches',
-                exact: true,
-                active: true
-            },
+            
         ]
     },
     {
@@ -60,9 +55,9 @@ const dashRoutes:DashRoute[] = [
         ]
     },
     {
-        label: 'Tools',
-        to: '/tools',
-        labelDisable: false,
+        label: 'Facilities',
+        to: '/facilities',
+        labelDisable: true,
         icon: 'bi bi-tools',
         children: [
             {

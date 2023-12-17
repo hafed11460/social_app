@@ -1,5 +1,3 @@
-import Footer from "components/navbar/Footer";
-import MainContent from "components/navbar/MainContent";
 import Sidebar from "components/navbar/Sidebar";
 import TopNavbar from "components/navbar/top/TopNavbar";
 import { Outlet } from "react-router";
@@ -18,7 +16,7 @@ const MainLayout = () => {
                         </section>
                     </div>
                 </div>
-                <Footer />
+                {/* <Footer /> */}
             </div>
         </div>
 

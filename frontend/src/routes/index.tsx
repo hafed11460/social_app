@@ -9,6 +9,7 @@ import EmployeesList from 'components/employees/EmployeesList'
 import EmployeeDetail from 'components/employees/EmployeeDetail'
 import { PrimesList } from 'components/primes/PrimesList'
 import { ToastContainer } from 'react-toastify'
+import FaciliteApp from 'components/facilities/FaciliteApp'
 
 
 const SocialRouter = () => {
@@ -22,10 +23,12 @@ const SocialRouter = () => {
             <Route element={<PrivateRoute />}>
                 <Route element={<MainLayout />}>
                   
-                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/prets" element={<Dashboard />} />
                         <Route path="/employees" element={<EmployeesList />} />
                         <Route path="/employees/:eid/" element={<EmployeeDetail />} />                    
                         <Route path="/employees/primes/" element={<PrimesList />} />
+
+                        <Route path="/facilities" element={<FaciliteApp />} />
                 </Route>
             </Route>
         </Routes>
