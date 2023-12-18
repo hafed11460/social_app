@@ -19,7 +19,7 @@ const AgencyItem = () => {
 
 const ProfileDropdwon = () => {
     const { user, isVendor } = useAuth()
-    const  token:Token | null  = useSelector(selectAccessToken)
+    const token: Token | null = useSelector(selectAccessToken)
     const [LogoutUser, { isSuccess: isLogout }] = useLogoutUserMutation()
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -53,7 +53,8 @@ const ProfileDropdwon = () => {
                 </div>
             </Dropdown.Toggle>
 
-            <Dropdown.Menu className=" dropdown-menu-card rounded-0 shadow-sm dropdown-menu-end mt-2" style={{ minWidth: '250px' }}>
+            <Dropdown.Menu className=" dropdown-menu-card rounded-0 shadow-sm dropdown-menu-end mt-2"
+                style={{ minWidth: '250px' }}>
                 <div className="bg-white rounded-2 py-2 dark__bg-1000">
                     <Dropdown.Item as={Link} to="/account/">
                         <div className="d-flex align-items-center flex-row ">
@@ -61,7 +62,7 @@ const ProfileDropdwon = () => {
                             <div className="mx-2 h6">{user && user.first_name} {user && user.last_name}</div>
                         </div>
                     </Dropdown.Item>
-                    <Dropdown.Divider/>
+                    <Dropdown.Divider />
                     <Dropdown.Item as={Link} to="/account/">
                         Account
                     </Dropdown.Item>

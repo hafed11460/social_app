@@ -23,7 +23,7 @@ const SocialRouter = () => {
             <Route element={<PrivateRoute />}>
                 <Route element={<MainLayout />}>
                   
-                        <Route path="/prets" element={<Dashboard />} />
+                        <Route path="/" element={<Dashboard />} />
                         <Route path="/employees" element={<EmployeesList />} />
                         <Route path="/employees/:eid/" element={<EmployeeDetail />} />                    
                         <Route path="/employees/primes/" element={<PrimesList />} />

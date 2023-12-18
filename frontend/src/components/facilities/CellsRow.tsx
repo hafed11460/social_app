@@ -1,23 +1,26 @@
 import { memo, useCallback, useState } from "react"
 import { IFacilite, ITimeline } from "types/types.facilities"
 import Cell from "./Cell"
-import { Col, Row } from "react-bootstrap"
+import './facilities.css'
+
 
 interface YearRowProps {
-    year:number,
+    year: number,
     date: Date,
     facilite: IFacilite
 }
 
-const CellsRow = memo(({ facilite, date ,year}: YearRowProps) => {
+
+const CellsRow = memo(({ facilite, date, year }: YearRowProps) => {
+    console.log('render CellsRow Componente')
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
 
-    
+
     const isExistMont = useCallback((month: number) => {
         const item: ITimeline | undefined = facilite.timelines.find((item: any) => item.month == month)
-        if (!item){
-            const tLine: ITimeline = {  
-                facilite:facilite.id,     
+        if (!item) {
+            const tLine: ITimeline = {
+                facilite: facilite.id,
                 month: month,
                 mois: `${year}-${month}-01`,
                 somme: 0,
@@ -25,26 +28,34 @@ const CellsRow = memo(({ facilite, date ,year}: YearRowProps) => {
             }
             return <Cell timeline={tLine} />
         }
-        
+
         return <Cell timeline={item} />
 
 
     }, [facilite])
     return (
-        <Row className='border p-0'>
-            <Col md={{ span: 1 }}>{facilite.employee.matricule}</Col>
-            <Col md={{ span: 2 }}>{facilite.employee.nom.substring(0,10)} {facilite.employee.prenom.substring(0,1)}</Col>
-            {
-                montCells && montCells.map((month, index) =>
-                    <Col className='border-start p-0' key={index}>
-                        {/* {date.getFullYear()}  */}
-                        {/* {index + 1} */}
-                        {
-                            isExistMont(month)}
-                    </Col>
-                )
-            }
-        </Row>
+        <>
+
+            <div className='d-flex'>
+                <div className="cell-border border-start text-center cell flex-cell"><small>{facilite.employee.matricule}</small></div>
+                <div className="cell-border text-center employee-cell flex-cell">
+                    <small>{facilite.employee.nom.substring(0, 10)}
+                        {facilite.employee.prenom.substring(0, 1)}</small>
+                </div>
+                <div className="cell-border text-center cell flex-cell"><small>{facilite.duree} Mois</small></div>
+                <div className="cell-border text-center montant-cell flex-cell"><small>{facilite.montant}</small></div>
+                <div className="cell-border text-center cell flex-cell"><small>{facilite.date_achat}</small></div>
+                {
+                    montCells && montCells.map((month, index) =>
+                        <div className="cell-border fw-bold text-center cell flex-cell">
+                            {isExistMont(month)}
+                        </div>
+                    )
+                }
+            </div>
+
+
+        </>
     )
 })
 
