@@ -37,10 +37,13 @@ const CellsRow = memo(({ facilite, date, year }: YearRowProps) => {
         <>
 
             <div className='d-flex'>
-                <div className="cell-border border-start text-center cell flex-cell"><small>{facilite.employee.matricule}</small></div>
+                <div
+                    className="cell-border  text-center cell flex-cell"
+                    style={{ borderLeft: '1px solid #B85B14' }}>
+                    <small>{facilite.employee.matricule}</small>
+                </div>
                 <div className="cell-border text-center employee-cell flex-cell">
-                    <small>{facilite.employee.nom.substring(0, 10)}
-                        {facilite.employee.prenom.substring(0, 1)}</small>
+                    <small>{facilite.employee.nom.substring(0, 15)} {facilite.employee.prenom.substring(0, 10)}</small>
                 </div>
                 <div className="cell-border text-center cell flex-cell"><small>{facilite.duree} Mois</small></div>
                 <div className="cell-border text-center montant-cell flex-cell"><small>{facilite.montant}</small></div>

@@ -67,3 +67,19 @@ class FaciliteSerializer(serializers.ModelSerializer):
         )
 
         return TimelineSerialiser(results, many=True).data
+
+
+##*******************************************
+
+class CreateFaciliteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Facilite
+        fields = ["id", "employee",'duree', "date_achat", "montant"]
+
+
+    def create(self, validated_data):
+        print(validated_data)
+        answer, created = Timeline.objects.update_or_create(
+            id=validated_data.get("id",None),
+        )
+        return answer

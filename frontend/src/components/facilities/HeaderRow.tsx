@@ -5,8 +5,8 @@ import './facilities.css'
 const HeaderRow = () => {
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     return (
-        <div className='d-flex border-top'>
-            <div className="cell-border border-start  fw-bold text-center cell flex-cell"><small>{MATRICULE}</small></div>
+        <div className='d-flex cell-border-top' >
+            <div className="cell-border fw-bold text-center cell flex-cell cell-border-left"><small>{MATRICULE}</small></div>
             <div className="cell-border fw-bold text-center employee-cell flex-cell"><small>{EMPLOYEE}</small></div>
             <div className="cell-border fw-bold text-center cell flex-cell"><small>{DUREE}</small></div>
             <div className="cell-border fw-bold text-center montant-cell flex-cell"><small>{MONTANT_ACHAT}</small></div>

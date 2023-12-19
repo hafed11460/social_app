@@ -7,9 +7,10 @@ type ErrorObject ={
 
 type ErrorType = {
     name:string
+    variant?:string
     error:any
 }
-const ErrorText = ({ name, error }:ErrorType) => {
+const ErrorText = ({ name, error,variant='danger' }:ErrorType) => {
     
     const [content, setContent] = useState<any>(null)
     useEffect(() => {
@@ -17,7 +18,7 @@ const ErrorText = ({ name, error }:ErrorType) => {
             if (error) {
                 if (name in error.data) {
                     setContent(
-                        <Form.Text className="text-danger">
+                        <Form.Text className={`text-${variant}`}>
                             {error.data[name]}
                         </Form.Text>
                     )

@@ -15,7 +15,7 @@ const Cell = ({ timeline }: EditCellProps) => {
     const [isEdit, setIsEdit] = useState(false)
     const [value, setValue] = useState<number>(Number(timeline ? timeline.somme : 0))
     const [newTLine, setNewTLine] = useState<ITimeline>(timeline)
-    const [bg,setBg] = useState('white')
+    const [bg, setBg] = useState('white')
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         setIsEdit(false)
         if (!newTLine.id) {
@@ -53,15 +53,16 @@ const Cell = ({ timeline }: EditCellProps) => {
         setIsShown(true);
         setBg('#77b9f7')
     }
-    
+
 
     return (
         <div
             className="position-relative"
             onContextMenu={onContextMenu}
             onClick={onClick}
-            style={{backgroundColor:bg}}
-            >
+            onBlur={() => setIsShown(false)}
+            style={{ backgroundColor: bg }}
+        >
             {!isEdit ?
                 <div
                     // className="border "
@@ -79,12 +80,13 @@ const Cell = ({ timeline }: EditCellProps) => {
                     type='number' style={{ width: '100%', height: '100%' }}
                 />
             }
-            <Dropdown.Menu show={isShown} className=" dropdown-menu-card rounded-0 shadow-sm dropdown-menu-end mt-2">
+            <Dropdown.Menu            
+                show={isShown}
+                className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
                 <Dropdown.Header>Dropdown header</Dropdown.Header>
                 <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
                 <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
             </Dropdown.Menu>
-           
         </div>
     )
 }

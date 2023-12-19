@@ -14,7 +14,8 @@ class Facilite(WithTimestamp, models.Model):
     duree = models.IntegerField(_("Duree"))
     montant = models.DecimalField(_("Montant"), max_digits=12, decimal_places=2)
     date_achat = models.DateField(_("Date Achat "), auto_now=False, auto_now_add=False)
-    is_completed = models.BooleanField(_("Is Completed"))
+    observation = models.TextField(_("Observation"), null=True, blank=True)
+    is_completed = models.BooleanField(_("Is Completed"), default=False)
 
     class Meta:
         unique_together = ["employee", "date_achat","is_completed"]
@@ -25,6 +26,7 @@ class Facilite(WithTimestamp, models.Model):
 
 def MONTH_TYPES():
     return [(f'{r}',f'{r}') for r in range(1,13)]
+
 
 class Timeline(WithTimestamp, models.Model):
     facilite = models.ForeignKey(
@@ -39,7 +41,8 @@ class Timeline(WithTimestamp, models.Model):
     )
     somme = models.DecimalField(_("Somme"), max_digits=12, decimal_places=2)
     is_commited = models.BooleanField(_("is commit"), default=False)
-
+    color = models.CharField(_("Color"),null=True, blank=True, max_length=10)
+    
     class Meta:
         unique_together = ["facilite", "mois"]
 

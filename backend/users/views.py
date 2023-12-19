@@ -139,7 +139,7 @@ class PasswordTokenCheckAPI(GenericAPIView):
 
         except DjangoUnicodeDecodeError:
             if not PasswordResetTokenGenerator().check_token(user,token):
-                return Response({'erro':'Token is not valid , please request a new one '},status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error':'Token is not valid , please request a new one '},status=status.HTTP_401_UNAUTHORIZED)
 
 
 class SetNewPasswordAPIView(GenericAPIView):

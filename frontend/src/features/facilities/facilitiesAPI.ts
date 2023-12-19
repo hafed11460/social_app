@@ -33,6 +33,17 @@ export const facilitiesAPI = createApi({
       // providesTags: (data) =>
       //   data ? data.map(({ id }: { id: number }) => ({ type: 'Primes', id })) : ['Primes'],
     }),
+    createFacilite: builder.mutation({
+      query: (body) => {
+        console.log(body)       
+        return {
+          url: `${facilities_root}/create/`,
+          method: 'POST',
+          data: body
+        }
+      },
+      invalidatesTags: ['Facilities']
+    }),
     // getPrimeById: builder.mutation({
     //   query: (pid:any) => {
     //     return {
@@ -44,7 +55,7 @@ export const facilitiesAPI = createApi({
     //   // providesTags: (result, error, id) => [{ type: 'Employees', id }],
     // }),
 
-    CreateTimeline: builder.mutation({
+    createTimeline: builder.mutation({
       query: (body) => {
         console.log(body)       
         return {
@@ -72,7 +83,9 @@ export const facilitiesAPI = createApi({
 })
 
 export const {
+
   useGetFacilitiesMutation,
+  useCreateFaciliteMutation,
   useCreateTimelineMutation,
   useUpdateTimelineMutation,
 

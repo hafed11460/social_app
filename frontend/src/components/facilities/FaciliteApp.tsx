@@ -1,13 +1,13 @@
 // import { facilities } from 'data/facilities'
 import { useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
 import { memo, useEffect, useState } from 'react'
-import { Button, ButtonGroup, Card, Col, Navbar, Row } from 'react-bootstrap'
+import { Button, ButtonGroup, Card, Col, Form, Navbar, Row } from 'react-bootstrap'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { IFacilite } from 'types/types.facilities'
 import CellsRow from './CellsRow'
-
 import HeaderRow from './HeaderRow'
-import TestSheet from './TestSheet'
+import CreateFacilite from './CreateFacilite'
+
 
 interface HeaderNavbarProps {
     date: Date,
@@ -18,15 +18,31 @@ interface HeaderNavbarProps {
 
 const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbarProps) => {
     return (
-        <Navbar className=' p-0 mb-2' style={{ height: '50px' }}>
+        <Navbar className='justify-content-between p-0 mb-2' style={{ height: '50px' }}>
             <ButtonGroup className='border'>
                 <Button size='sm' variant="light" onClick={handlePrevYear}><BsChevronLeft /> Prev</Button>
                 <Button size='sm' variant="">{date.getFullYear()}</Button>
                 <Button size='sm' variant="primary" onClick={handleNexYear}>Nex <BsChevronRight /></Button>
             </ButtonGroup>
+            <Form >
+                <Row>
+                    <Col xs="auto">
+                        <Form.Control
+                            type="text"
+                            placeholder="Search"
+                            className=" mr-sm-2"
+                        />
+                    </Col>
+                    <Col xs="auto">
+                        <CreateFacilite/>
+                    </Col>
+                </Row>
+            </Form>
         </Navbar>
     )
 })
+
+
 
 const FaciliteApp = () => {
     const [getFacilities, { data: facilities }] = useGetFacilitiesMutation()
@@ -49,7 +65,6 @@ const FaciliteApp = () => {
         <>
             <Card>
                 <Card.Body>
-
                     <HeaderNavbar date={date} handleNexYear={handleNexYear} handlePrevYear={handlePrevYear} />
                     <div className="container-div flex-sheet">
                         <HeaderRow />
