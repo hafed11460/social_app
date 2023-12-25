@@ -1,26 +1,47 @@
+import ErrorText from "components/common/ErrorText";
 import { useCreateTimelineMutation, useUpdateTimelineMutation } from "features/facilities/facilitiesAPI";
-import { KeyboardEvent, useRef, useState } from "react";
-import { Dropdown } from "react-bootstrap";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { Alert, Button, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { ITimeline } from "types/types.facilities";
 
 interface EditCellProps {
-    timeline: ITimeline
+    timeline: ITimeline,
+    isExist: boolean,
+    isFacCompleted:boolean,
+    
 }
-const Cell = ({ timeline }: EditCellProps) => {
-    console.log('render Cell Componente', timeline)
+
+
+const Cell = ({ timeline, isExist,isFacCompleted }: EditCellProps) => {
+    // console.log('render Cell Componente')
     const [isShown, setIsShown] = useState(false);
-    const [createTimeline, { data: created }] = useCreateTimelineMutation()
-    const [updateTimeline, { data: updated }] = useUpdateTimelineMutation()
-    const inputRef = useRef(null);
+    const [createTimeline, { data: created, isError, error }] = useCreateTimelineMutation()
+    const [updateTimeline, { data: updated, isError:isUpdateError, error:updateError }] = useUpdateTimelineMutation()
+    const inputRef = useRef(Number(timeline ? timeline.somme : 0));
     const [isEdit, setIsEdit] = useState(false)
     const [value, setValue] = useState<number>(Number(timeline ? timeline.somme : 0))
     const [newTLine, setNewTLine] = useState<ITimeline>(timeline)
     const [bg, setBg] = useState('white')
+
+    useEffect(() => {
+        setNewTLine({
+            ...newTLine,
+            somme: Number(inputRef.current)
+        })
+    }, [inputRef.current])
+
+    useEffect(() => {
+
+    }, [newTLine])
+
+
     const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         setIsEdit(false)
-        if (!newTLine.id) {
+        if (newTLine.somme <= 0) return;
+        if (!newTLine.id && newTLine.somme) {
             createTimeline(newTLine)
         } else {
+            // createTimeline(newTLine)
             updateTimeline(newTLine)
         }
     }
@@ -28,11 +49,9 @@ const Cell = ({ timeline }: EditCellProps) => {
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const re = /([0-9]*[.])?[0-9]+/;
         if (e.target.value === '' || re.test(e.target.value)) {
+            if (inputRef.current != Number(e.target.value))
+                inputRef.current = Number(e.target.value)
             setValue(Number(e.target.value))
-            setNewTLine({
-                ...newTLine,
-                somme: Number(e.target.value)
-            })
         }
     }
 
@@ -55,9 +74,51 @@ const Cell = ({ timeline }: EditCellProps) => {
     }
 
 
+    if (isError || isUpdateError) return (
+        <OverlayTrigger
+            overlay={
+                <Tooltip
+                    color="red"
+                    className="p-0">
+                    <Alert variant="warning" className="m-0">
+                        <ErrorText name="error" error={error || updateError} variant="dark" />
+                    </Alert>
+                </Tooltip>
+            }
+        >
+            <div
+
+                className={`position-relative ${isExist ? 'cell-exist' : ''} ${isError || isUpdateError ? 'cell-error' : ''} `}
+                onContextMenu={onContextMenu}
+                onClick={onClick}
+                onBlur={() => setIsShown(false)}
+                style={{ backgroundColor: bg }}
+            >
+                {!isEdit ?
+                    <div
+                        // className="border "
+                        style={{ minHeight: '100%', width: '100%', minWidth: '100%', height: '100%' }}
+                    >
+                        {inputRef.current == 0 ? '-' : inputRef.current}
+                    </div> :
+                    <input
+                        onKeyUp={onKeyUp}
+                        value={inputRef.current}
+                        autoFocus
+                        // ref={inputRef}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        type='number' style={{ width: '100%', height: '100%' }}
+                    />
+                }                
+            </div>
+        </OverlayTrigger>
+    )
+
     return (
         <div
-            className="position-relative"
+            
+            className={`position-relative ${isExist ? 'cell-exist' : ''} ${isError ? 'cell-error' : ''} `}
             onContextMenu={onContextMenu}
             onClick={onClick}
             onBlur={() => setIsShown(false)}
@@ -68,19 +129,21 @@ const Cell = ({ timeline }: EditCellProps) => {
                     // className="border "
                     style={{ minHeight: '100%', width: '100%', minWidth: '100%', height: '100%' }}
                 >
-                    {value == 0 ? '-' : value}
+                    {inputRef.current == 0 ? '-' : inputRef.current}
                 </div> :
                 <input
+                    disabled={isFacCompleted}
                     onKeyUp={onKeyUp}
-                    value={value}
+                    value={inputRef.current}
                     autoFocus
-                    ref={inputRef}
+                    // ref={inputRef}
                     onBlur={onBlur}
                     onChange={onChange}
                     type='number' style={{ width: '100%', height: '100%' }}
                 />
             }
-            <Dropdown.Menu            
+            
+            <Dropdown.Menu
                 show={isShown}
                 className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
                 <Dropdown.Header>Dropdown header</Dropdown.Header>

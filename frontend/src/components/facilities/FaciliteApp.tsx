@@ -1,5 +1,5 @@
 // import { facilities } from 'data/facilities'
-import { useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
+import { useGetFaciliteQuery, useGetFacilitesQuery, useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
 import { memo, useEffect, useState } from 'react'
 import { Button, ButtonGroup, Card, Col, Form, Navbar, Row } from 'react-bootstrap'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
@@ -34,7 +34,7 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
                         />
                     </Col>
                     <Col xs="auto">
-                        <CreateFacilite/>
+                        {/* <CreateFacilite/> */}
                     </Col>
                 </Row>
             </Form>
@@ -45,7 +45,8 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
 
 
 const FaciliteApp = () => {
-    const [getFacilities, { data: facilities }] = useGetFacilitiesMutation()
+    // const [getFacilities, { data: facilities }] = useGetFacilitiesMutation()
+    const  { data: facilities } = useGetFacilitesQuery(undefined)
     const [date, setDate] = useState(new Date())
 
     const handleNexYear = () => {
@@ -57,9 +58,9 @@ const FaciliteApp = () => {
         setDate(new Date(newdate))
     }
 
-    useEffect(() => {
-        getFacilities(date.getFullYear())
-    }, [date])
+    // useEffect(() => {
+    //     getFacilities(date.getFullYear())
+    // }, [date])
 
     return (
         <>

@@ -1,24 +1,48 @@
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from 'features/AxiosBaseQuery'
+import { useDispatch } from 'react-redux'
+import { IFacilite } from 'types/types.facilities'
 
 const facilities_root = '/facilities'
+
+type FaciliteResponse = IFacilite[]
 
 export const facilitiesAPI = createApi({
   reducerPath: 'facilitiesAPI',
   baseQuery: axiosBaseQuery(),
-  tagTypes: ['Facilities'],
+  // baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
+  tagTypes: ['Facilite'],
   endpoints: (builder) => ({
 
-    // getPrimetypes: builder.mutation({
-    //   query: () => {
-    //     return {
-    //       url: `${primes_root}/`,
-    //       method: 'GET',
-    //       data: {},
-    //     };
-    //   },
-    // }),
+    getFacilite: builder.query<IFacilite, number>({
+      query: (id: number) => ({
+        url: `facilities/${id}/`,
+        method: 'GET',
+        data: {}
+      }),
+      providesTags: ['Facilite'],
+    }),
+
+
+
+    getFacilites: builder.query({
+      query: (params = null) => {
+        return {
+          // url: `${facilities_root}/?date=${params != null ? params : ''}`,
+          url: `${facilities_root}/`,
+          method: 'GET',
+          data: {},
+        }
+      },
+      // providesTags: (result) =>
+      // result
+      //   ? [
+      //       ...result.map(({ id }:{id:number}) => ({ type: 'IFacilite' as const, id })),
+      //       { type: 'IFacilite', id: 'LIST' },
+      //     ]
+      //   : [{ type: 'IFacilite', id: 'LIST' }],  
+    }),
 
     getFacilities: builder.mutation({
       query: (params = null) => {
@@ -29,61 +53,99 @@ export const facilitiesAPI = createApi({
           data: {},
         }
       },
-
-      // providesTags: (data) =>
-      //   data ? data.map(({ id }: { id: number }) => ({ type: 'Primes', id })) : ['Primes'],
     }),
+
+
     createFacilite: builder.mutation({
       query: (body) => {
-        console.log(body)       
+        console.log(body)
         return {
           url: `${facilities_root}/create/`,
           method: 'POST',
           data: body
         }
       },
-      invalidatesTags: ['Facilities']
+      invalidatesTags: ['Facilite']
     }),
-    // getPrimeById: builder.mutation({
-    //   query: (pid:any) => {
-    //     return {
-    //       url: `${primes_root}/${pid}/`,
-    //       method: 'GET',
-    //       data: {}
-    //     }
-    //   },
-    //   // providesTags: (result, error, id) => [{ type: 'Employees', id }],
-    // }),
+
 
     createTimeline: builder.mutation({
       query: (body) => {
-        console.log(body)       
+        console.log(body)
         return {
           url: `${facilities_root}/timelines/create/`,
           method: 'POST',
           data: body
         }
       },
-      invalidatesTags: ['Facilities']
+      invalidatesTags: ['Facilite']
     }),
 
+
+
     updateTimeline: builder.mutation({
-        query: (body) => {       
-          console.log(body.id)   
-          return {
-            url: `${facilities_root}/timelines/${body.id}/update/`,
-            // url: `properties/${body.get('id')}/update/`,
-            method: 'PUT',
-            data: body
-          }
-        },
-        invalidatesTags: ['Facilities']
-      }),
+      query: ({ id, ...data }) => {
+        console.log(data)
+        return {
+          url: `${facilities_root}/timelines/${id}/update/`,
+          method: 'PATCH',
+          data: data
+        }
+      },
+
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const { data: updatedPost } = await queryFulfilled
+        const patchResult = dispatch(
+          facilitiesAPI.util.updateQueryData('getFacilites', undefined, (draft) => {
+            console.log(draft)
+            let project = draft?.find((item) => item?.id === args?.id);
+            console.log('project',project)
+            Object.assign(draft, updatedPost)
+          })
+        )
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+
+          /**
+           * Alternatively, on failure you can invalidate the corresponding cache tags
+           * to trigger a re-fetch:
+          */
+          dispatch(facilitiesAPI.util.invalidateTags(['Facilite']))
+        }
+      },
+      // async onQueryStarted(args, { queryFulfilled, dispatch }) {
+      //   try {
+      //     const { data: updateFacilite } = await queryFulfilled
+      //     console.log('updateFacilite', updateFacilite)
+      //     console.log('args', args)
+
+      //     try{              
+      //       const up = dispatch(
+      //         facilitiesAPI.util.updateQueryData(
+      //           'getFacilite',
+      //           args?.id,
+      //           (draft) => {  
+      //             console.log(JSON.stringify(draft))
+      //             // Object.assign(draft, data)
+      //           })
+      //           )
+                
+      //         }catch(err){
+      //           console.log(err)
+      //         }
+      //   } catch (error) {
+      //     console.log(error)
+      //   }
+      // },
+    }),
   }),
 })
 
 export const {
-
+  useGetFacilitesQuery,
+  useGetFaciliteQuery,
   useGetFacilitiesMutation,
   useCreateFaciliteMutation,
   useCreateTimelineMutation,

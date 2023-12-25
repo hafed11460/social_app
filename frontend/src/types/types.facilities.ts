@@ -14,6 +14,7 @@ export interface IFacilite{
     employee:IEmployee,
     duree:string,
     montant:number,
+    solde?:number,
     date_achat:string,
     is_completed:boolean,
     timelines:ITimeline[], 

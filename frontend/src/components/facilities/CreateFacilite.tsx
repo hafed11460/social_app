@@ -6,11 +6,11 @@ import { useGetEmployeesQuery } from "features/employees/employeeAPI";
 import { useCreateFaciliteMutation } from "features/facilities/facilitiesAPI";
 import { DATE_DE_FETE, DUREE, EMPLOYEE, MONTANT, OBSERVATION } from "headers/headers";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { FaPlusCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { IEmployee } from "types/types.employees";
-
+import Select from 'react-select';
 
 
 export interface CreateFaciliteFromData {
@@ -35,28 +35,45 @@ interface CreateFaciliteProps {
     employee: IEmployee
 }
 
+interface EmployeeOption{
+    value:number,
+    label:string,
+}
+
 
 const CreateFacilite = () => {
-
+    console.log("render CreateFacilite")
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     const [show, setShow] = useState(false);
     const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
     const { data: employees } = useGetEmployeesQuery({})
-
+    const [employeesList,setEmployeesList] = useState([])
+    
+    
     const {
         register,
         handleSubmit,
         getValues,
+        control ,
         formState: { errors }
     } = useForm<CreateFaciliteFromData>({
         mode: 'onBlur',
         defaultValues: initState
     })
+    const { field: { value: employeeValue, onChange: employeeChange, ...employeeField } } = useController({ name: 'employee', control });
 
     const onSubmitData = async (values: CreateFaciliteFromData) => {
         createFacilite(values)
     };
 
+    useEffect(()=>{
+        if(employees){
+
+            const e = employees.map((emp:IEmployee)=>{return {'value':emp.id,'label':`${emp.nom} ${emp.prenom}`}})
+            console.log(e)
+            setEmployeesList(e)
+        }
+    },[employees])
 
 
     useEffect(() => {
@@ -108,7 +125,24 @@ const CreateFacilite = () => {
 
                                 <Form.Group className="mb-3 " >
                                     <Form.Label>{EMPLOYEE}</Form.Label>
-                                    <Form.Select
+                                    <Select
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        // defaultValue={colourOptions[0]}
+                                        // isDisabled={isDisabled}
+                                        // isLoading={isLoading}
+                                        // isClearable={isClearable}
+                                        // isRtl={isRtl}
+                                        isSearchable={true}
+                                        // name="color"
+                                        value={employeeValue ? employeesList.find((x:IEmployee) => x.id === employeeValue) : employeeValue}
+                                        onChange={option => employeeChange(option ? option.value : option)}
+                                        {...employeeField}
+                                        // {...register("employee", { required: "This Feild Is required" })}
+                                        options={employeesList}
+                                    />
+                                    {/* <Form.Select
+                                        className="choices"
                                         {...register("employee", { required: "This Feild Is required" })}
                                     >
                                         <option>employee</option>
@@ -119,7 +153,7 @@ const CreateFacilite = () => {
                                                 {employee.nom} {employee.prenom}
                                             </option>
                                         ))}
-                                    </Form.Select>
+                                    </Form.Select> */}
                                     {/* <ErrorText name='city' error={error} /> */}
                                     {errors.employee && (
                                         <Form.Text className="text-danger">

@@ -16,7 +16,10 @@ class Facilite(WithTimestamp, models.Model):
     date_achat = models.DateField(_("Date Achat "), auto_now=False, auto_now_add=False)
     observation = models.TextField(_("Observation"), null=True, blank=True)
     is_completed = models.BooleanField(_("Is Completed"), default=False)
-
+    
+    @property
+    def solde(self):
+        return sum([item.somme for item in self.timelines.all()])
     class Meta:
         unique_together = ["employee", "date_achat","is_completed"]
 
@@ -44,12 +47,16 @@ class Timeline(WithTimestamp, models.Model):
     color = models.CharField(_("Color"),null=True, blank=True, max_length=10)
     
     class Meta:
-        unique_together = ["facilite", "mois"]
+        # unique_together = ["facilite", "mois"]
+        constraints = [
+            models.UniqueConstraint(fields=["facilite", "mois"], name='name of constraint'),
+            # models.UniqueConstraint(fields=["field1", "field3"], name='name of secound constraint')
+    ]
 
     def __str__(self):
         return f"{self.facilite}"
 
-    def save(self, *args, **kwargs):
-        print(self.facilite.montant)
-        print(self.facilite.duree)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     print(self.facilite.montant)
+    #     print(self.facilite.duree)
+    #     super().save(*args, **kwargs)

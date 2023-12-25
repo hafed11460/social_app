@@ -2,6 +2,7 @@
 from django.urls import path
 from .views import (
     FaciliteListAPIView,
+    FaciliteDetailAPIView,
     CreateFaciliteAPIView,
     CreateTimelineAPIView,
     UpdateTimelineAPIView,
@@ -12,6 +13,7 @@ from .views import (
 urlpatterns = [
     path('', FaciliteListAPIView.as_view(), name='facilite-list'),
     path('create/', CreateFaciliteAPIView.as_view(), name='timeline-create'),
+    path('<int:pk>/', FaciliteDetailAPIView.as_view(), name='facilite-detail'),
 
     path('timelines/create/', CreateTimelineAPIView.as_view(), name='timeline-create'),
     path('timelines/<int:pk>/update/', UpdateTimelineAPIView.as_view(), name='timeline-update'),
