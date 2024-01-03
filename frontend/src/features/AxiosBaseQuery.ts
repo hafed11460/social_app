@@ -4,7 +4,7 @@ import { Token } from './auth/authApi'
 
 export const axiosBaseQuery =
   (
-    { baseUrl }= { baseUrl: '' }
+    { baseUrl } = { baseUrl: '' }
   ) =>
   async ({ url, method, data }:{url:string,method:string,data:object}) => {
     try {

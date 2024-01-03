@@ -48,6 +48,18 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
             "created_at",
             'primes'
         ]
+
+
+class LiteEmployeeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Employee
+        fields = [
+            "id",
+            "matricule",
+            "nom",
+            "prenom",                       
+        ]
 class EmployeeSerializer(serializers.ModelSerializer):
     direction = DirectionSerializer()
 

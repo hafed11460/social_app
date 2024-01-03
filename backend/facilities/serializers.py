@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from .models import Facilite, Timeline
-from employees.serializers import EmployeeSerializer
+from employees.serializers import EmployeeSerializer,LiteEmployeeSerializer
 from datetime import datetime, timedelta
 
 
@@ -100,7 +100,7 @@ class TimelineSerialiser(serializers.ModelSerializer):
 class FaciliteSerializer(serializers.ModelSerializer):
     # timelines = TimelineSerialiser(many=True, read_only=True)
     timelines = serializers.SerializerMethodField()
-    employee = EmployeeSerializer()
+    employee = LiteEmployeeSerializer()
 
     solde = serializers.ReadOnlyField()
     # solde = serializers.SerializerMethodField()

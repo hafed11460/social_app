@@ -19,7 +19,7 @@ from .serializers import (
 class CreateTimelineAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     # serializer_class = (CreateTimelineSerializer,)
-    parser_classes = (MultiPartParser, FormParser)
+    # parser_classes = (MultiPartParser, FormParser)
     queryset = Timeline.objects.all()
 
     def post(self, request):
@@ -60,26 +60,26 @@ class CreateTimelineAPIView(generics.CreateAPIView):
 class UpdateTimelineAPIView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UpdateTimelineSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    # parser_classes = (MultiPartParser, FormParser)
     queryset = Timeline.objects.all()
     
-    def update(self, request, *args, **kwargs):
-       partial = kwargs.pop('partial', False)
-       instance = self.get_object()
-       serializer = self.get_serializer(instance, data=request.data, partial=partial)
-       serializer.is_valid(raise_exception=True)
-       self.perform_update(serializer)
+    # def update(self, request, *args, **kwargs):
+    #    partial = kwargs.pop('partial', False)
+    #    instance = self.get_object()
+    #    serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    #    serializer.is_valid(raise_exception=True)
+    #    self.perform_update(serializer)
 
-    #    print(instance.facilite.montant)
-       res = FaciliteSerializer(instance.facilite,context={"request": request})
-    #    print(res.data)
-    #    result = {
-    #     "message": "success",
-    #     "details": serializer.data,
-    #     "status": 200,
+    # #    print(instance.facilite.montant)
+    #    res = FaciliteSerializer(instance.facilite,context={"request": request})
+    # #    print(res.data)
+    # #    result = {
+    # #     "message": "success",
+    # #     "details": serializer.data,
+    # #     "status": 200,
 
-    #    }
-       return Response(res.data)
+    # #    }
+    #    return Response(res.data)
     
 
 
@@ -116,7 +116,7 @@ class FaciliteDetailAPIView(generics.RetrieveAPIView):
 class CreateFaciliteAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = (CreateFaciliteSerializer,)
-    parser_classes = (MultiPartParser, FormParser)
+    # parser_classes = (MultiPartParser, FormParser)
     queryset = Facilite.objects.all()
 
     def post(self, request):
@@ -128,8 +128,10 @@ class CreateFaciliteAPIView(generics.CreateAPIView):
         if not Facilite.objects.filter(
             employee=serializer.validated_data.get("employee"), is_completed=False
         ).exists():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            instance = serializer.save()
+            print(serializer.data)
+            new_serializer = FaciliteSerializer(instance,context={"request": request})
+            return Response(new_serializer.data, status=status.HTTP_200_OK)
 
         return Response(
             {"error": "Can not create this recorde"}, status=status.HTTP_404_NOT_FOUND

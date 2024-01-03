@@ -1,7 +1,8 @@
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useMemo, useState } from "react"
 import { IFacilite, ITimeline } from "types/types.facilities"
 import Cell from "./Cell"
 import './facilities.css'
+import Cells from "./Cells"
 
 
 interface YearRowProps {
@@ -11,41 +12,38 @@ interface YearRowProps {
 }
 
 
-const CellsRow = memo(({ facilite, date, year }: YearRowProps) => {
+
+const CellsRow = ({ facilite, date, year }: YearRowProps) => {
     // console.log('render CellsRow Componente')
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
 
-
-    const isExistMont = useCallback((month: number) => {
-        let item: ITimeline | undefined = facilite.timelines.find((item: any) => item.month == month)
-        let isExist = true
-        if (!item) {
-            item = {
-                facilite: facilite.id,
-                month: month,
-                mois: `${year}-${month}-01`,
-                somme: 0,
-                is_commited: false
-            }
-            isExist = false
-            // return <Cell  timeline={tLine} isExist={false} />
+    const solde = useMemo(()=>{
+        let val = 0;
+        for (let index = 0; index < facilite.timelines.length; index++) {
+            const element = facilite.timelines[index];
+            val += Number(element.somme)
         }
+        return val
+    },[facilite.timelines])
 
-        return <Cell isFacCompleted={facilite.is_completed} timeline={item} isExist={isExist} />
-
-
-    }, [facilite])
     return (
         <>
 
             <div className='d-flex'>
                 <div className="cell-border text-center montant-cell flex-cell"><small>{facilite.montant}</small></div>
-                <div className="cell-border text-center montant-cell flex-cell"><small>{facilite.solde}</small></div>
+                <div className="cell-border text-center montant-cell flex-cell"><small>{solde}</small></div>
 
-                {
+                {/* {
                     montCells && montCells.map((month, index) =>
                         <div key={index} className="cell-border fw-bold text-center cell flex-cell">
                             {isExistMont(month)}
+                        </div>
+                    )
+                } */}
+                {
+                    montCells && montCells.map((month, index) =>
+                        <div key={index} className="cell-border fw-bold text-center cell flex-cell">
+                            <Cells facilite={facilite} month={month} year={year}/>
                         </div>
                     )
                 }
@@ -67,6 +65,6 @@ const CellsRow = memo(({ facilite, date, year }: YearRowProps) => {
 
         </>
     )
-})
+}
 
 export default CellsRow

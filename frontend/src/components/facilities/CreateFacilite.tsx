@@ -11,6 +11,8 @@ import { FaPlusCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { IEmployee } from "types/types.employees";
 import Select from 'react-select';
+import { useDispatch } from "react-redux";
+import { createFacilite } from "features/facilities/facilitiesSlice";
 
 
 export interface CreateFaciliteFromData {
@@ -35,26 +37,32 @@ interface CreateFaciliteProps {
     employee: IEmployee
 }
 
-interface EmployeeOption{
-    value:number,
-    label:string,
+interface EmployeeOption {
+    value: number,
+    label: string,
 }
 
 
 const CreateFacilite = () => {
-    console.log("render CreateFacilite")
+    // console.log("render CreateFacilite")
+    const dispatch = useDispatch()
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     const [show, setShow] = useState(false);
-    const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
+    // const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
     const { data: employees } = useGetEmployeesQuery({})
-    const [employeesList,setEmployeesList] = useState([])
-    
-    
+    const [employeesList, setEmployeesList] = useState([])
+    const [error, setError] = useState()
+
+    useEffect(()=>{
+        if(show){
+            
+        }
+    },[show])
     const {
         register,
         handleSubmit,
         getValues,
-        control ,
+        control,
         formState: { errors }
     } = useForm<CreateFaciliteFromData>({
         mode: 'onBlur',
@@ -63,26 +71,26 @@ const CreateFacilite = () => {
     const { field: { value: employeeValue, onChange: employeeChange, ...employeeField } } = useController({ name: 'employee', control });
 
     const onSubmitData = async (values: CreateFaciliteFromData) => {
-        createFacilite(values)
+        dispatch(createFacilite(values))
     };
 
-    useEffect(()=>{
-        if(employees){
+    useEffect(() => {
+        if (employees) {
 
-            const e = employees.map((emp:IEmployee)=>{return {'value':emp.id,'label':`${emp.nom} ${emp.prenom}`}})
-            console.log(e)
+            const e = employees.map((emp: IEmployee) => { return { 'value': emp.id, 'label': `${emp.nom} ${emp.prenom}` } })
+            // console.log(e)
             setEmployeesList(e)
         }
-    },[employees])
+    }, [employees])
 
 
-    useEffect(() => {
-        if (isSuccess) {
-            // setInitialValues(initState)
-            setShow(false)
-            toast.success('Property add Successfully')
-        }
-    }, [isSuccess])
+    // useEffect(() => {
+    //     if (isSuccess) {
+    //         // setInitialValues(initState)
+    //         setShow(false)
+    //         toast.success('Property add Successfully')
+    //     }
+    // }, [isSuccess])
 
 
     return (
@@ -110,7 +118,7 @@ const CreateFacilite = () => {
                     <Card as={Form} className="form-vertical"
                         onSubmit={handleSubmit(onSubmitData)}
                         style={{ minHeight: "550px", minWidth: '650px' }}>
-                        {isError &&
+                        {error &&
                             <Card.Header>
                                 <Alert variant="warning">
                                     <h4 className="alert-heading">Warning</h4>
@@ -135,7 +143,7 @@ const CreateFacilite = () => {
                                         // isRtl={isRtl}
                                         isSearchable={true}
                                         // name="color"
-                                        value={employeeValue ? employeesList.find((x:IEmployee) => x.id === employeeValue) : employeeValue}
+                                        value={employeeValue ? employeesList.find((x: IEmployee) => x.id === employeeValue) : employeeValue}
                                         onChange={option => employeeChange(option ? option.value : option)}
                                         {...employeeField}
                                         // {...register("employee", { required: "This Feild Is required" })}

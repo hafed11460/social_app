@@ -1,12 +1,13 @@
 // import { facilities } from 'data/facilities'
-import { useGetFaciliteQuery, useGetFacilitesQuery, useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
+// import { useGetFaciliteQuery, useGetFacilitesQuery, useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
+import { getFacilities, selectFacilities } from 'features/facilities/facilitiesSlice'
 import { memo, useEffect, useState } from 'react'
 import { Button, ButtonGroup, Card, Col, Form, Navbar, Row } from 'react-bootstrap'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
+import { useDispatch, useSelector } from 'react-redux'
 import { IFacilite } from 'types/types.facilities'
 import CellsRow from './CellsRow'
 import HeaderRow from './HeaderRow'
-import CreateFacilite from './CreateFacilite'
 
 
 interface HeaderNavbarProps {
@@ -34,7 +35,7 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
                         />
                     </Col>
                     <Col xs="auto">
-                        {/* <CreateFacilite/> */}
+                        {/* <CreateFacilite /> */}
                     </Col>
                 </Row>
             </Form>
@@ -45,9 +46,10 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
 
 
 const FaciliteApp = () => {
-    // const [getFacilities, { data: facilities }] = useGetFacilitiesMutation()
-    const  { data: facilities } = useGetFacilitesQuery(undefined)
-    const [date, setDate] = useState(new Date())
+    const dispatch = useDispatch()
+    const facilities = useSelector(selectFacilities)
+    const [date, setDate] = useState(new Date('2023'))
+    // const [date, setDate] = useState(new Date('2023'))
 
     const handleNexYear = () => {
         const newdate = date.setFullYear(date.getFullYear() + 1)
@@ -58,9 +60,14 @@ const FaciliteApp = () => {
         setDate(new Date(newdate))
     }
 
-    // useEffect(() => {
-    //     getFacilities(date.getFullYear())
-    // }, [date])
+    useEffect(() => {
+        console.log(date)
+        if(date){
+            dispatch(getFacilities({ date: date.getFullYear() }))
+        }
+    }, [])
+
+    if (!facilities) return <div> No results</div>
 
     return (
         <>
@@ -69,7 +76,6 @@ const FaciliteApp = () => {
                     <HeaderNavbar date={date} handleNexYear={handleNexYear} handlePrevYear={handlePrevYear} />
                     <div className="container-div flex-sheet">
                         <HeaderRow />
-
                         {
                             facilities && facilities.map((facilite: IFacilite) =>
                                 <CellsRow key={facilite.id} facilite={facilite} date={date} year={date.getFullYear()} />
@@ -77,7 +83,6 @@ const FaciliteApp = () => {
                         }
                     </div>
                 </Card.Body>
-
             </Card>
         </>
     )
