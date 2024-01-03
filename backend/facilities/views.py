@@ -13,6 +13,7 @@ from .serializers import (
     CreateFaciliteSerializer,
     CreateTimelineSerializer,
     UpdateTimelineSerializer,
+    TimelineSerialiser
 )
 
 
@@ -81,12 +82,16 @@ class UpdateTimelineAPIView(generics.UpdateAPIView):
     # #    }
     #    return Response(res.data)
     
-
+class DeleteTimelineAPIView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TimelineSerialiser
+    queryset = Timeline.objects.all()
 
 
 
 
 class FaciliteListAPIView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = FaciliteSerializer
     queryset = Facilite.objects.all()
 
@@ -107,7 +112,7 @@ class FaciliteListAPIView(generics.ListAPIView):
 ##*********************************************************************************
 
 class FaciliteDetailAPIView(generics.RetrieveAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = FaciliteSerializer
     queryset = Facilite.objects.all()
 
@@ -129,7 +134,6 @@ class CreateFaciliteAPIView(generics.CreateAPIView):
             employee=serializer.validated_data.get("employee"), is_completed=False
         ).exists():
             instance = serializer.save()
-            print(serializer.data)
             new_serializer = FaciliteSerializer(instance,context={"request": request})
             return Response(new_serializer.data, status=status.HTTP_200_OK)
 

@@ -1,4 +1,4 @@
-import { updateTimeline } from "features/facilities/facilitiesSlice";
+import { deleteTimeline, updateTimeline } from "features/facilities/facilitiesSlice";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Alert, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch } from "react-redux";
@@ -25,6 +25,18 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
     const [bg, setBg] = useState(bg_exist)
     const [error, setError] = useState<string>('')
 
+    const handleDelete = () => {
+        console.log('delete clicked')
+        dispatch(deleteTimeline(timeline))
+            .unwrap()
+            .then(() => {
+                setError('')
+            })
+            .catch((err) => {
+                setError('Can\'t remove this timeline')
+            })
+    }
+
     useEffect(() => {
         setNewTLine({
             ...newTLine,
@@ -38,16 +50,16 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
         setIsEdit(false)
         setBg(bg_exist)
         if (newTLine.somme < 0) return;
-        dispatch(updateTimeline(newTLine))
-            .unwrap()
-            .then(() => {
-                setError('')
-            })
-            .catch((err) => {
-                console.log('errrrrrrrror', err['error'])
-                setError(err['error'])
-            })
-        
+        // dispatch(updateTimeline(newTLine))
+        //     .unwrap()
+        //     .then(() => {
+        //         setError('')
+        //     })
+        //     .catch((err) => {
+        //         console.log('errrrrrrrror', err['error'])
+        //         setError(err['error'])
+        //     })
+
 
     }
 
@@ -75,18 +87,18 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
     const onContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
         setShowMenu(true);
-        setBg(bg_actvie)
+        // setBg(bg_actvie)
     }
 
 
-    useEffect(() => {
-        const handleClick = () => setShowMenu(false);
-        
-        window.addEventListener("mousedown", handleClick);
-        return () => {
-            window.removeEventListener("mousedown", handleClick);
-        };
-    }, [])
+    // useEffect(() => {
+    //     const handleClick = () => setShowMenu(false);
+
+    //     window.addEventListener("mousedown", handleClick);
+    //     return () => {
+    //         window.removeEventListener("mousedown", handleClick);
+    //     };
+    // }, [])
 
     if (error) {
         return (
@@ -106,7 +118,7 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
                     className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
                     onContextMenu={onContextMenu}
                     onClick={onClick}
-                    onBlur={() => setShowMenu(false)}
+                    // onBlur={() => setShowMenu(false)}
                     style={{ backgroundColor: bg }}
                 >
                     {!isEdit ?
@@ -134,7 +146,7 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
             className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
             onContextMenu={onContextMenu}
             onClick={onClick}
-            onBlur={() => setShowMenu(false)}
+            // onBlur={() => setShowMenu(false)}
             style={{ backgroundColor: bg }}
         >
             {!isEdit ?
@@ -160,7 +172,7 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
                 show={showMenu}
                 className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
                 <Dropdown.Header>Dropdown header</Dropdown.Header>
-                <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+                <Dropdown.Item  onClick={handleDelete}>Remove </Dropdown.Item>
                 <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
             </Dropdown.Menu>
         </div>

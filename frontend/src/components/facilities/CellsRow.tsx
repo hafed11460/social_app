@@ -7,13 +7,12 @@ import Cells from "./Cells"
 
 interface YearRowProps {
     year: number,
-    date: Date,
     facilite: IFacilite
 }
 
 
 
-const CellsRow = ({ facilite, date, year }: YearRowProps) => {
+const CellsRow = ({ facilite, year }: YearRowProps) => {
     // console.log('render CellsRow Componente')
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
 

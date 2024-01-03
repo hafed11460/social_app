@@ -1,7 +1,7 @@
 // import { facilities } from 'data/facilities'
 // import { useGetFaciliteQuery, useGetFacilitesQuery, useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
 import { getFacilities, selectFacilities } from 'features/facilities/facilitiesSlice'
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { Button, ButtonGroup, Card, Col, Form, Navbar, Row } from 'react-bootstrap'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
@@ -48,24 +48,33 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
 const FaciliteApp = () => {
     const dispatch = useDispatch()
     const facilities = useSelector(selectFacilities)
-    const [date, setDate] = useState(new Date('2023'))
     // const [date, setDate] = useState(new Date('2023'))
+    const [date, setDate] = useState<Date>()
+    const dateRef = useRef(date)
 
     const handleNexYear = () => {
-        const newdate = date.setFullYear(date.getFullYear() + 1)
-        setDate(new Date(newdate))
+        if(date){
+            const newdate = date.setFullYear(date.getFullYear() + 1)
+            setDate(new Date(newdate))
+        }
     }
     const handlePrevYear = () => {
-        const newdate = date.setFullYear(date.getFullYear() - 1)
-        setDate(new Date(newdate))
+        if(date){
+            const newdate = date?.setFullYear(date.getFullYear() - 1)
+            setDate(new Date(newdate))
+        }
     }
 
     useEffect(() => {
-        console.log(date)
         if(date){
             dispatch(getFacilities({ date: date.getFullYear() }))
         }
+    }, [date])
+
+    useEffect(() => {
+        setDate(new Date('2023'))        
     }, [])
+    
 
     if (!facilities) return <div> No results</div>
 
@@ -73,12 +82,14 @@ const FaciliteApp = () => {
         <>
             <Card>
                 <Card.Body>
+                    {date &&
                     <HeaderNavbar date={date} handleNexYear={handleNexYear} handlePrevYear={handlePrevYear} />
+                    }
                     <div className="container-div flex-sheet">
                         <HeaderRow />
                         {
                             facilities && facilities.map((facilite: IFacilite) =>
-                                <CellsRow key={facilite.id} facilite={facilite} date={date} year={date.getFullYear()} />
+                                <CellsRow key={facilite.id} facilite={facilite}  year={date ? date.getFullYear():0} />
                             )
                         }
                     </div>

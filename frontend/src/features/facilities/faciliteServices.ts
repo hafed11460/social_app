@@ -3,8 +3,8 @@ import { IFacilite, ITimeline } from 'types/types.facilities'
 import http, { api } from './http-common'
 
 class FaciliteDataService {
-    getFacilities(args: any) {        
-        return http.get(`/facilities/?date=${args.date ? args.date:''}`)
+    getFacilities(args: any) {
+        return http.get(`/facilities/?date=${args.date ? args.date : ''}`)
     }
 
     createFacilite(facilite: IFacilite) {
@@ -16,12 +16,16 @@ class FaciliteDataService {
     }
 
     updateTimeline(timeline: ITimeline) {
-        return api({
-            url: `/facilities/timelines/${timeline.id}/update/`,
-            method: 'PUT',
-            data: timeline
-        })
-        // return http.put(`/facilities/timelines/${timeline.id}/update/`, timeline)
+        // return api({
+        //     url: `/facilities/timelines/${timeline.id}/update/`,
+        //     method: 'PUT',
+        //     data: timeline
+        // })
+        return http.put(`/facilities/timelines/${timeline.id}/update/`, timeline)
+    }
+
+    deleteTimeline(timelineId:number) {
+        return http.delete(`/facilities/timelines/${timelineId}/`)
     }
 }
 

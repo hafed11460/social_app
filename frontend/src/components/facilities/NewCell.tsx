@@ -16,7 +16,7 @@ interface NewCellProps {
 
 const NewCell = ({ timeline, month, year }: NewCellProps) => {
     const dispatch = useDispatch()
-    const [isShown, setIsShown] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
     // const inputRef = useRef(Number(timeline ? timeline.somme : 0));
     const [isEdit, setIsEdit] = useState(false)
     const [value, setValue] = useState<number>(Number(timeline ? timeline.somme : 0))
@@ -64,16 +64,24 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
     const onClick = () => {
         setIsEdit(true)
         // value.focus()
-        setIsShown(false);
+        setShowMenu(false);
         // setBg('#cccccc');
     }
 
     const onContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
-        setIsShown(true);
+        setShowMenu(true);
         setBg('#77b9f7')
     }
 
+    useEffect(() => {
+        const handleClick = () => setShowMenu(false);
+
+        window.addEventListener("mousedown", handleClick);
+        return () => {
+            window.removeEventListener("mousedown", handleClick);
+        };
+    }, [])
 
     if (error) {
         return (
@@ -93,7 +101,7 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
                     className={`position-relative  ${error ? 'cell-error' : ''} `}
                     onContextMenu={onContextMenu}
                     onClick={onClick}
-                    onBlur={() => setIsShown(false)}
+                    onBlur={() => setShowMenu(false)}
                     style={{ backgroundColor: bg }}
                 >
                     {!isEdit ?
@@ -123,7 +131,7 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
             className={`position-relative ${error ? 'cell-error' : ''} `}
             onContextMenu={onContextMenu}
             onClick={onClick}
-            onBlur={() => setIsShown(false)}
+            onBlur={() => setShowMenu(false)}
             style={{ backgroundColor: bg }}
         >
             {!isEdit ?
@@ -146,7 +154,7 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
             }
 
             <Dropdown.Menu
-                show={isShown}
+                show={showMenu}
                 className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
                 <Dropdown.Header>Dropdown header</Dropdown.Header>
                 <Dropdown.Item eventKey="2">Another action</Dropdown.Item>

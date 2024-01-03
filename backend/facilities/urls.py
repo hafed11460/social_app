@@ -6,6 +6,7 @@ from .views import (
     CreateFaciliteAPIView,
     CreateTimelineAPIView,
     UpdateTimelineAPIView,
+    DeleteTimelineAPIView,
    
    
 )
@@ -17,6 +18,8 @@ urlpatterns = [
 
     path('timelines/create/', CreateTimelineAPIView.as_view(), name='timeline-create'),
     path('timelines/<int:pk>/update/', UpdateTimelineAPIView.as_view(), name='timeline-update'),
+    path('timelines/<int:pk>/', DeleteTimelineAPIView.as_view(), name='timeline-delete'),
+    
     # path('<int:pk>/', EmployeeDetailAPIView.as_view(), name='employee-detail'),
     # path('agency/', AgencyPropertyListAPIView.as_view(), name='agency-property-list'),
     # path('<int:pk>/', DetailPropertyAPIView.as_view(), name='property-deatil'),

@@ -29,12 +29,29 @@ export const createFacilite = createAsyncThunk(
         }
     })
 
+
 export const createTimeline = createAsyncThunk(
     'timelines/create',
     async (timeline: ITimeline,{rejectWithValue }) => {
         try {
             const res = await FServices.createTimeline(timeline)
             return res.data;
+
+        } catch (err:any) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    })
+
+export const deleteTimeline = createAsyncThunk(
+    'timelines/delete',
+    async (timeline: ITimeline,{rejectWithValue }) => {
+        try {
+
+            const res = await FServices.deleteTimeline(timeline.id)
+            return timeline    
 
         } catch (err:any) {
             if (!err.response) {
@@ -170,6 +187,29 @@ export const facilitiesSlice = createSlice({
             })
         })
         builder.addCase(updateTimeline.rejected, (state, action) => {
+            state.isLoading = false;
+            state.isSuccess = false
+            state.isError = true
+            // state.error = action.payload;
+            // console.log('error', action.payload)
+        })
+
+
+        //*****  Delete timeline  */        
+        builder.addCase(deleteTimeline.pending, (state, action) => {
+            state.isLoading = true;
+            // state.postID = action.meta.arg.post
+        })
+        builder.addCase(deleteTimeline.fulfilled, (state, action) => {  
+            state.facilities.filter((facilite: IFacilite) => {
+                if (facilite.id === action.payload.facilite) {
+                    facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => timeline.id !== action.payload.id)
+                    return facilite
+                }
+                return facilite
+            })
+        })
+        builder.addCase(deleteTimeline.rejected, (state, action) => {
             state.isLoading = false;
             state.isSuccess = false
             state.isError = true

@@ -126,12 +126,10 @@ class FaciliteSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         date = request.GET.get("date", "")
 
-        print(date)
         if not date:
             date = datetime.today().strftime("%Y")
 
         date = datetime.strptime(date, "%Y")
-        print(date)
         results = Timeline.objects.filter(
             facilite__id=obj.id,
             mois__year__gte=date.year,
