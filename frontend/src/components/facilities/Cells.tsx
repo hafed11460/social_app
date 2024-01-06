@@ -43,6 +43,7 @@ const Cells = ({ facilite, month, year }: EditCellProps) => {
     if (item === undefined)
 
         return <NewCell timeline = {{
+            id:0,
             facilite: facilite.id,
             month: month,
             mois: `${year}-${month}-01`,

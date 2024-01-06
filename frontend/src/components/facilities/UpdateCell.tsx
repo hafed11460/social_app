@@ -1,6 +1,6 @@
 import { deleteTimeline, updateTimeline } from "features/facilities/facilitiesSlice";
-import { KeyboardEvent, useEffect, useState } from "react";
-import { Alert, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { KeyboardEvent, memo, useEffect, useRef, useState } from "react";
+import { Alert, Dropdown, ListGroup, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ITimeline } from "types/types.facilities";
 import ErrorCell from "./ErrorCell";
@@ -15,8 +15,8 @@ const bg_actvie = "#77b9f7"
 const bg_exist = "#dddddd"
 
 
-const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
-    // console.log('render cell ', timeline.id)
+const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
+    console.log('render cell ', timeline.id)
     const dispatch = useDispatch()
     const [showMenu, setShowMenu] = useState(false);
     const [isEdit, setIsEdit] = useState(false)
@@ -24,8 +24,10 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
     const [newTLine, setNewTLine] = useState<ITimeline>(timeline)
     const [bg, setBg] = useState(bg_exist)
     const [error, setError] = useState<string>('')
+    const menuRef = useRef(null)
+    const cellRef = useRef(null)
 
-    const handleDelete = () => {
+    const handleDelete = (e:React.MouseEvent) => {
         console.log('delete clicked')
         dispatch(deleteTimeline(timeline))
             .unwrap()
@@ -50,24 +52,20 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
         setIsEdit(false)
         setBg(bg_exist)
         if (newTLine.somme < 0) return;
-        // dispatch(updateTimeline(newTLine))
-        //     .unwrap()
-        //     .then(() => {
-        //         setError('')
-        //     })
-        //     .catch((err) => {
-        //         console.log('errrrrrrrror', err['error'])
-        //         setError(err['error'])
-        //     })
-
-
+        dispatch(updateTimeline(newTLine))
+            .unwrap()
+            .then(() => {
+                setError('')
+            })
+            .catch((err) => {
+                console.log('errrrrrrrror', err['error'])
+                setError(err['error'])
+            })
     }
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const re = /([0-9]*[.])?[0-9]+/;
         if (e.target.value === '' || re.test(e.target.value)) {
-            // if (inputRef.current != Number(e.target.value))
-            //     inputRef.current = Number(e.target.value)
             setValue(Number(e.target.value))
         }
     }
@@ -90,63 +88,68 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
         // setBg(bg_actvie)
     }
 
-
-    // useEffect(() => {
-    //     const handleClick = () => setShowMenu(false);
-
-    //     window.addEventListener("mousedown", handleClick);
-    //     return () => {
-    //         window.removeEventListener("mousedown", handleClick);
-    //     };
-    // }, [])
-
-    if (error) {
-        return (
-            <OverlayTrigger
-                overlay={
-                    <Tooltip
-                        color="red"
-                        className="p-0">
-                        <Alert variant="warning" className="m-0">
-                            <ErrorCell error={error} variant="dark" />
-                        </Alert>
-                    </Tooltip>
-                }
-            >
-                <div
-
-                    className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
-                    onContextMenu={onContextMenu}
-                    onClick={onClick}
-                    // onBlur={() => setShowMenu(false)}
-                    style={{ backgroundColor: bg }}
-                >
-                    {!isEdit ?
-                        <div
-                            style={{ minHeight: '100%', width: '100%', minWidth: '100%', height: '100%' }}
-                        >
-                            {value}
-                        </div> :
-                        <input
-                            onKeyUp={onKeyUp}
-                            value={value}
-                            autoFocus
-                            onBlur={onBlur}
-                            onChange={onChange}
-                            type='number' style={{ width: '100%', height: '100%' }}
-                        />
-                    }
-                </div>
-            </OverlayTrigger>
-        )
+    const handleOutsideClick = (event:any) => {
+        if (
+            menuRef.current &&
+            !menuRef.current.contains(event.target) &&
+            event.target !== cellRef.current
+        ) {
+            setShowMenu(false);
+        }
     }
+    useEffect(() => {
+        window.addEventListener("mousedown", handleOutsideClick);
+        return () => {
+            window.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, [])
+
+    // if (error) {
+    //     return (
+    //         <OverlayTrigger
+    //             overlay={
+    //                 <Tooltip
+    //                     color="red"
+    //                     className="p-0">
+    //                     <Alert variant="warning" className="m-0">
+    //                         <ErrorCell error={error} variant="dark" />
+    //                     </Alert>
+    //                 </Tooltip>
+    //             }
+    //         >
+    //             <div
+
+    //                 className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
+    //                 onContextMenu={onContextMenu}
+    //                 onClick={onClick}
+    //                 // onBlur={() => setShowMenu(false)}
+    //                 style={{ backgroundColor: bg }}
+    //             >
+    //                 {!isEdit ?
+    //                     <div
+    //                         style={{ minHeight: '100%', width: '100%', minWidth: '100%', height: '100%' }}
+    //                     >
+    //                         {value}
+    //                     </div> :
+    //                     <input
+    //                         onKeyUp={onKeyUp}
+    //                         value={value}
+    //                         autoFocus
+    //                         onBlur={onBlur}
+    //                         onChange={onChange}
+    //                         type='number' style={{ width: '100%', height: '100%' }}
+    //                     />
+    //                 }
+    //             </div>
+    //         </OverlayTrigger>
+    //     )
+    // }
     return (
         <div
-
+            ref={cellRef}
             className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
             onContextMenu={onContextMenu}
             onClick={onClick}
-            // onBlur={() => setShowMenu(false)}
             style={{ backgroundColor: bg }}
         >
             {!isEdit ?
@@ -161,22 +164,22 @@ const UpdateCell = ({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
                     onKeyUp={onKeyUp}
                     value={value}
                     autoFocus
-                    // ref={inputRef}
                     onBlur={onBlur}
                     onChange={onChange}
                     type='number' style={{ width: '100%', height: '100%' }}
                 />
             }
 
-            <Dropdown.Menu
-                show={showMenu}
-                className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
-                <Dropdown.Header>Dropdown header</Dropdown.Header>
-                <Dropdown.Item  onClick={handleDelete}>Remove </Dropdown.Item>
-                <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
-            </Dropdown.Menu>
+            <Dropdown ref={menuRef} className="shadow-sm border m-auto">
+                <Dropdown.Menu
+                    show={showMenu}
+                    className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
+                    <Dropdown.Item onClick={handleDelete}>Remove </Dropdown.Item>
+                    <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
         </div>
     )
-}
+})
 
 export default UpdateCell
