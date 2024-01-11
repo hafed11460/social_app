@@ -1,13 +1,14 @@
 
-import { IFacilite, ITimeline } from 'types/types.facilities'
+import { IFFilterArgs, IFacilite, ITimeline } from 'types/types.facilities'
 import http, { api } from './http-common'
+import { CreateFaciliteFromData } from 'components/facilities/CreateFacilite'
 
 class FaciliteDataService {
-    getFacilities(args: any) {
-        return http.get(`/facilities/?date=${args.date ? args.date : ''}`)
+    getFacilities(args: IFFilterArgs) {
+        return http.get(`/facilities/?date=${args.date ? args.date : ''}&page=${args.page ? args.page : 1}&${args?.query ? args.query : ''}`)
     }
 
-    createFacilite(facilite: IFacilite) {
+    createFacilite(facilite: CreateFaciliteFromData) {
         return http.post(`/facilities/create/`, facilite)
     }
 

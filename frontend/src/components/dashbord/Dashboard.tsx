@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Dropdown, ListGroup } from "react-bootstrap"
+import { Button, ButtonToolbar, Dropdown, ListGroup, OverlayTrigger, Popover, Tooltip } from "react-bootstrap"
 import NavBar from "./Navbar"
 
 
@@ -49,10 +49,64 @@ const Cell = ({ month }: { month: number }) => {
     )
 }
 
+const Example2TooltipCustomClass = () => {
+    return (
+        <ButtonToolbar>
+            {["custom-1", "custom-2"].map(customClass => (
+                <OverlayTrigger
+                    key={customClass}
+                    placement="bottom"
+                    overlay={
+                        <Tooltip
+                            id={`tooltip-${customClass}`}
+                            className={`tooltip-${customClass}`}
+                        >
+                            Tooltip {customClass} example
+                        </Tooltip>
+                    }
+                >
+                    <Button className="ml-2 mb-5" variant="secondary">
+                        Tooltip {customClass}
+                    </Button>
+                </OverlayTrigger>
+            ))}
+        </ButtonToolbar>
+    );
+};
+
+
+
+const Toolpit = () => {
+    const [isError] = useState(true)
+    return (
+        <>
+
+            <OverlayTrigger trigger="hover" placement="bottom"
+                overlay={isError ?
+                    <Popover id="popover-basic">
+                        <Popover.Header as="h3">Popover right</Popover.Header>
+                        <Popover.Body>
+                            And here's some <strong>amazing</strong> content. It's very engaging.eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+                            right?
+                        </Popover.Body>
+                    </Popover> : <></>}
+            >
+                <Button variant="success">Click me to see</Button>
+            </OverlayTrigger>
+
+        </>
+    )
+}
+
 const Dashboard = () => {
     const [montCells] = useState<number[]>(Array.from({ length: 3 }, (value, index) => index + 1))
     return (
         <>
+            <Example2TooltipCustomClass />
+            <Toolpit />
+            <span className="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Disabled popover">
+                <button className="btn btn-primary" type="button" disabled>Disabled button</button>
+            </span>
             <NavBar />
             {
                 montCells && montCells.map((month, index) =>

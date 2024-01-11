@@ -1,18 +1,16 @@
 import { useState } from "react";
 import { Alert, Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 
+import { useAppDispatch } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
 import { useGetEmployeesQuery } from "features/employees/employeeAPI";
-import { useCreateFaciliteMutation } from "features/facilities/facilitiesAPI";
+import { createFacilite } from "features/facilities/facilitiesSlice";
 import { DATE_DE_FETE, DUREE, EMPLOYEE, MONTANT, OBSERVATION } from "headers/headers";
 import { useEffect } from "react";
 import { useController, useForm } from "react-hook-form";
 import { FaPlusCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
-import { IEmployee } from "types/types.employees";
 import Select from 'react-select';
-import { useDispatch } from "react-redux";
-import { createFacilite } from "features/facilities/facilitiesSlice";
+import { IEmployee } from "types/types.employees";
 
 
 export interface CreateFaciliteFromData {
@@ -45,7 +43,7 @@ interface EmployeeOption {
 
 const CreateFacilite = () => {
     // console.log("render CreateFacilite")
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     const [show, setShow] = useState(false);
     // const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
@@ -72,6 +70,10 @@ const CreateFacilite = () => {
 
     const onSubmitData = async (values: CreateFaciliteFromData) => {
         dispatch(createFacilite(values))
+        .unwrap()
+        .then(()=>{
+            setShow(false)
+        })
     };
 
     useEffect(() => {
@@ -95,7 +97,7 @@ const CreateFacilite = () => {
 
     return (
         <>
-            <Button size="sm" onClick={() => setShow(!show)}>
+            <Button  onClick={() => setShow(!show)}>
                 <FaPlusCircle /> Prime
             </Button>
 

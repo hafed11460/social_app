@@ -13,6 +13,20 @@ interface NewCellProps {
     year: number,
 }
 
+interface CustomTooltipProps {
+    error: string
+}
+
+const CustomTooltip = ({ error }: CustomTooltipProps) => {
+    return (
+        <Tooltip
+            className="cell-tooltip p-0" >
+            <Alert variant="warning" className="m-0">
+                <ErrorCell error={error} variant="dark" />
+            </Alert>
+        </Tooltip>
+    )
+}
 
 const NewCell = ({ timeline, month, year }: NewCellProps) => {
     const dispatch = useDispatch()
@@ -25,7 +39,7 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
     const [error, setError] = useState<string>('')
 
     useEffect(() => {
-        setNewTLine({   
+        setNewTLine({
             ...newTLine,
             somme: value
         })
@@ -37,21 +51,21 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
         if (newTLine.somme <= 0) return;
         if (!newTLine.id && newTLine.somme) {
             dispatch(createTimeline(newTLine))
-            .unwrap()
-            .then(()=>{
-                setError('')
-            })            
-            .catch((err) => {                
-                console.log('errrrrrrrror' ,err['error'])
-                setError(err['error'])
-            })
-        } 
+                .unwrap()
+                .then(() => {
+                    setError('')
+                })
+                .catch((err) => {
+                    console.log('errrrrrrrror', err['error'])
+                    setError(err['error'])
+                })
+        }
     }
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const re = /([0-9]*[.])?[0-9]+/;
         if (e.target.value === '' || re.test(e.target.value)) {
-           
+
             setValue(Number(e.target.value))
         }
     }
@@ -88,10 +102,9 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
             <OverlayTrigger
                 overlay={
                     <Tooltip
-                        color="red"
-                        className="p-0">
+                        className="cell-tooltip p-0" >
                         <Alert variant="warning" className="m-0">
-                        <ErrorCell error={error} variant="dark" />
+                            {error}
                         </Alert>
                     </Tooltip>
                 }

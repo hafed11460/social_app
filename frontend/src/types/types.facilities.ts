@@ -1,5 +1,11 @@
 import { IEmployee } from "./types.employees";
 
+
+export interface IFFilterArgs{
+    date?:number,
+    query?:string,
+    page?:number
+}
 export interface ITimeline{
     facilite:number,
     id:number,

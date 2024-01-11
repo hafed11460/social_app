@@ -1,9 +1,11 @@
 import { deleteTimeline, updateTimeline } from "features/facilities/facilitiesSlice";
-import { KeyboardEvent, memo, useEffect, useRef, useState } from "react";
-import { Alert, Dropdown, ListGroup, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState, useSignal } from "react";
+import { Dropdown } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { ITimeline } from "types/types.facilities";
+import CreateComment from "./CreateComment";
 import ErrorCell from "./ErrorCell";
+import { useAppDispatch } from "app/hooks";
 
 interface UpdateCellProps {
     timeline: ITimeline,
@@ -15,9 +17,11 @@ const bg_actvie = "#77b9f7"
 const bg_exist = "#dddddd"
 
 
+
+
 const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps) => {
     console.log('render cell ', timeline.id)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const [showMenu, setShowMenu] = useState(false);
     const [isEdit, setIsEdit] = useState(false)
     const [value, setValue] = useState<number>(Number(timeline ? timeline.somme : 0))
@@ -26,8 +30,14 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
     const [error, setError] = useState<string>('')
     const menuRef = useRef(null)
     const cellRef = useRef(null)
+    const [showModal, setShowModal] = useState(false);
 
-    const handleDelete = (e:React.MouseEvent) => {
+    const handleAddComment = () => {
+        setShowModal(true)
+        // setShowMenu(false)
+    }
+
+    const handleDelete = (e: React.MouseEvent) => {
         console.log('delete clicked')
         dispatch(deleteTimeline(timeline))
             .unwrap()
@@ -46,11 +56,8 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
         })
     }, [value])
 
-
-
-    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-        setIsEdit(false)
-        setBg(bg_exist)
+    const handleUpdateTimeline = useCallback(() => {
+        console.log('useCalback')
         if (newTLine.somme < 0) return;
         dispatch(updateTimeline(newTLine))
             .unwrap()
@@ -61,6 +68,13 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
                 console.log('errrrrrrrror', err['error'])
                 setError(err['error'])
             })
+    }, [newTLine])
+
+
+    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        setIsEdit(false)
+        setBg(bg_exist)
+        handleUpdateTimeline()
     }
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +89,7 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
             e.currentTarget.blur()
         }
     }
-    const onClick = () => {
+    const onDoubleClick = () => {
         setIsEdit(true)
         // inputRef.current.focus()
         setShowMenu(false);
@@ -83,12 +97,13 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
     }
 
     const onContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+        console.log('onContext Menu')
         event.preventDefault();
         setShowMenu(true);
         // setBg(bg_actvie)
     }
 
-    const handleOutsideClick = (event:any) => {
+    const handleOutsideClick = (event: any) => {
         if (
             menuRef.current &&
             !menuRef.current.contains(event.target) &&
@@ -104,6 +119,7 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
         };
     }, [])
 
+   
     // if (error) {
     //     return (
     //         <OverlayTrigger
@@ -147,37 +163,48 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
     return (
         <div
             ref={cellRef}
-            className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
+            className={`cell position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
             onContextMenu={onContextMenu}
-            onClick={onClick}
+            onDoubleClick={onDoubleClick}
             style={{ backgroundColor: bg }}
         >
-            {!isEdit ?
-                <div
-                    // className="border "
-                    style={{ minHeight: '100%', width: '100%', minWidth: '100%', height: '100%' }}
-                >
-                    {value.toFixed(2)}
-                </div> :
-                <input
-                    disabled={isFacCompleted}
-                    onKeyUp={onKeyUp}
-                    value={value}
-                    autoFocus
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    type='number' style={{ width: '100%', height: '100%' }}
-                />
+            <CreateComment show={showModal} setShow={setShowModal} />
+            {
+                !isEdit ?
+                    <div style={{
+                        minHeight: '100%',
+                        width: '100%',
+                        minWidth: '100%',
+                        height: '100%'
+                    }} >
+                        {value.toFixed(2)}
+                    </div>
+                    :
+                    <input
+                        disabled={isFacCompleted}
+                        onKeyUp={onKeyUp}
+                        value={value}
+                        autoFocus
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        type='number' style={{ width: '100%', height: '100%' }}
+                    />
+            }
+            {error &&
+                <div className="popup-error position-absolute px-3 py-2 bg-warning  top-100 start-100 rounded">
+                    <div className="popover-body">
+                        {error}
+                    </div>
+                </div>
             }
 
-            <Dropdown ref={menuRef} className="shadow-sm border m-auto">
-                <Dropdown.Menu
-                    show={showMenu}
-                    className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
-                    <Dropdown.Item onClick={handleDelete}>Remove </Dropdown.Item>
-                    <Dropdown.Item eventKey="3">Something else here</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
+            <Dropdown.Menu
+                ref={menuRef}
+                show={showMenu}
+                className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2">
+                <Dropdown.Item className="border-bottom" onClick={handleDelete}>Remove </Dropdown.Item>
+                <Dropdown.Item onClick={handleAddComment} >Add Comment</Dropdown.Item>
+            </Dropdown.Menu>
         </div>
     )
 })

@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .models import Facilite, Timeline
 from employees.models import Employee
+from .paginations import FacilitiesPaginations
 
 from .serializers import (
     FaciliteSerializer,
@@ -91,10 +92,14 @@ class DeleteTimelineAPIView(generics.DestroyAPIView):
 
 
 class FaciliteListAPIView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    pagination_class = FacilitiesPaginations
+    # permission_classes = [IsAuthenticated]
     serializer_class = FaciliteSerializer
     queryset = Facilite.objects.all()
-
+    filterset_fields = {
+        'employee__matricule':['exact'],           
+    }
+    
     # pagination_class = PropertiesPaginations
     # filterset_fields = {
     #     'matricule':['exact'],

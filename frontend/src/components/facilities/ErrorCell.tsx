@@ -13,9 +13,9 @@ type ErrorType = {
 const ErrorCell = ({ error, variant = 'danger' }: ErrorType) => {
     console.log(error)    
     return (
-        <Form.Text className={`text-${variant}`}>
+        <p className={`text-${variant}`}>
             {error}
-        </Form.Text>
+        </p>
     )
 }
 export default memo(ErrorCell)

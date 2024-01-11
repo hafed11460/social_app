@@ -19,7 +19,7 @@ class UpdateTimelineSerializer(serializers.ModelSerializer):
         
         if ((facilite.solde - instance.somme) + somme) > facilite.montant:
             raise ValidationError(
-                {"error": "Can't update new cell because Solde => Montant"}
+                {"error": "Impossible de mettre à jour la nouvelle cellule car Solde sera supérieur à Montant Avec cette nouvelle valeur    "}
             )
 
         if facilite.is_completed:
@@ -28,13 +28,16 @@ class UpdateTimelineSerializer(serializers.ModelSerializer):
                     "error": "Impossible d'ajouter une cellule. this facilite is completed"
                 }
             )
-
-        if facilite.timelines.count() >= int(facilite.duree):
-            raise ValidationError(
-                {
-                    "error": "Impossible d'ajouter une cellule. Il a dépassé le nombre de mois"
-                },
-            )
+        print('Montant' , facilite.montant)
+        print('solde' , facilite.solde)
+        print('instantce' , instance.somme)
+        print('somme' , somme)
+        # if facilite.timelines.count() >= int(facilite.duree):
+        #     raise ValidationError(
+        #         {
+        #             "error": "Impossible d'ajouter une cellule. Il a dépassé le nombre de mois"
+        #         },
+        #     )
 
         instance.somme = somme
         instance.save()

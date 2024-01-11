@@ -1,14 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RootState } from "app/store"
-import { IFacilite, ITimeline } from "types/types.facilities"
+import { IFFilterArgs, IFacilite, ITimeline } from "types/types.facilities"
 import FServices from "./faciliteServices"
+import { CreateFaciliteFromData } from "components/facilities/CreateFacilite"
 
-interface Error{
-
-}
 export const getFacilities = createAsyncThunk(
     'facilities/',
-    async (args) => {
+    async (args:IFFilterArgs) => {
         const res = await FServices.getFacilities(args)
         return res.data;
     })
@@ -16,12 +14,12 @@ export const getFacilities = createAsyncThunk(
 
 export const createFacilite = createAsyncThunk(
     'facilities/create',
-    async (facilite: IFacilite,{rejectWithValue }) => {
+    async (facilite: CreateFaciliteFromData, { rejectWithValue }) => {
         try {
             const res = await FServices.createFacilite(facilite)
             return res.data;
 
-        } catch (err:any) {
+        } catch (err: any) {
             if (!err.response) {
                 throw err
             }
@@ -32,12 +30,12 @@ export const createFacilite = createAsyncThunk(
 
 export const createTimeline = createAsyncThunk(
     'timelines/create',
-    async (timeline: ITimeline,{rejectWithValue }) => {
+    async (timeline: ITimeline, { rejectWithValue }) => {
         try {
             const res = await FServices.createTimeline(timeline)
             return res.data;
 
-        } catch (err:any) {
+        } catch (err: any) {
             if (!err.response) {
                 throw err
             }
@@ -47,13 +45,13 @@ export const createTimeline = createAsyncThunk(
 
 export const deleteTimeline = createAsyncThunk(
     'timelines/delete',
-    async (timeline: ITimeline,{rejectWithValue }) => {
+    async (timeline: ITimeline, { rejectWithValue }) => {
         try {
 
             const res = await FServices.deleteTimeline(timeline.id)
-            return timeline    
+            return timeline
 
-        } catch (err:any) {
+        } catch (err: any) {
             if (!err.response) {
                 throw err
             }
@@ -63,22 +61,38 @@ export const deleteTimeline = createAsyncThunk(
 
 export const updateTimeline = createAsyncThunk(
     'timelines/update',
-    async (timeline: ITimeline, {rejectWithValue }) => {
+    async (timeline: ITimeline, { rejectWithValue }) => {
         try {
             const res = await FServices.updateTimeline(timeline)
             return res.data;
 
-        } catch (err:any) {
+        } catch (err: any) {
             if (!err.response) {
                 throw err
             }
             // return err
             return rejectWithValue(err.response.data)
-        }       
+        }
     })
 
+
+interface FacilteResponse {
+    results: IFacilite[],
+    pages: number,
+    count: number,
+    links: {
+        next: string,
+        previous: string,
+        current:string
+    },
+}
+
 interface FacilitiesState {
-    facilities: IFacilite[],
+    selectedDate?:number,
+    query?:string,
+    facilities?: FacilteResponse,
+    count?: number,
+    pages?: number,
     isLoading?: boolean,
     isError?: boolean,
     error?: any
@@ -93,8 +107,12 @@ function isEmpty(obj: Record<string, any>): boolean {
 }
 
 
+
 const initialState: FacilitiesState = {
-    facilities: [],
+    facilities: undefined,
+    query:'',
+    count: 0,
+    pages: 1,
     isError: false,
     isLoading: false,
     error: null,
@@ -105,8 +123,14 @@ const initialState: FacilitiesState = {
 export const facilitiesSlice = createSlice({
     name: 'facilities',
     initialState,
+    
     reducers: {
-
+        setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: number }>) => {
+            state.selectedDate = date            
+        },        
+        setQuery: (state, { payload: { query } }: PayloadAction<{ query: string }>) => {
+            state.query = query            
+        },        
     },
     extraReducers: (builder) => {
 
@@ -116,7 +140,7 @@ export const facilitiesSlice = createSlice({
         builder.addCase(getFacilities.fulfilled, (state, action) => {
             state.isLoading = true;
             state.isError = false
-            state.facilities = action.payload
+            state.facilities = action.payload           
         })
         builder.addCase(getFacilities.rejected, (state, action) => {
             state.isLoading = false;
@@ -131,8 +155,8 @@ export const facilitiesSlice = createSlice({
         })
         builder.addCase(createFacilite.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.isError = false             
-            state.facilities.push(action.payload)
+            state.isError = false
+            state.facilities?.results.push(action.payload)
         })
         builder.addCase(createFacilite.rejected, (state, action) => {
             state.isLoading = false;
@@ -152,7 +176,7 @@ export const facilitiesSlice = createSlice({
             state.isError = false
             // state.isSuccess = true
             // state.postID = null;    
-            state.facilities.filter((facilite: IFacilite) => {
+            state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
                     return facilite.timelines.push(action.payload)
                 }
@@ -177,7 +201,7 @@ export const facilitiesSlice = createSlice({
             state.isError = false
             // state.isSuccess = true
             // state.postID = null;    
-            state.facilities.filter((facilite: IFacilite) => {
+            state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
                     facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => timeline.id !== action.payload.id)
                     facilite.timelines.push(action.payload)
@@ -200,8 +224,8 @@ export const facilitiesSlice = createSlice({
             state.isLoading = true;
             // state.postID = action.meta.arg.post
         })
-        builder.addCase(deleteTimeline.fulfilled, (state, action) => {  
-            state.facilities.filter((facilite: IFacilite) => {
+        builder.addCase(deleteTimeline.fulfilled, (state, action) => {
+            state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
                     facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => timeline.id !== action.payload.id)
                     return facilite
@@ -224,15 +248,16 @@ export const facilitiesSlice = createSlice({
     }
 })
 
-// export const {
-//     setLoginUser,
-//     logout,
-// } = authSlice.actions
+export const {
+    setSelectedDate,
+    setQuery,
+} = facilitiesSlice.actions
 
 export default facilitiesSlice.reducer
 
 
-// export const selectCurrentUser = state => state.auth.user
+export const selectCurrentDate = (state: RootState) => state.facilities.selectedDate
+export const selectQuery = (state: RootState) => state.facilities.query
 // export const selectAccessToken = state => state.auth.token
 
 export const selectFacilities = (state: RootState) => state.facilities.facilities

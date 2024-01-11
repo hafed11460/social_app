@@ -43,7 +43,7 @@ const Login = () => {
     if (isSuccess) {
       if (data) {
         dispatch(setLoginUser(data))
-        navigate('/employees')
+        navigate('/')
       }
     }
   }, [isSuccess])

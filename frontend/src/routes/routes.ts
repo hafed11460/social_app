@@ -3,15 +3,15 @@ import { DashRoute } from "types/types.routes";
 
 
 const dashRoutes:DashRoute[] = [
-    {
-        label: 'PRÊTS',
-        to: '/prets',
-        labelDisable: true,
-        icon: 'bi bi-grid-fill',
-        children: [
+    // {
+    //     label: 'PRÊTS',
+    //     to: '/prets',
+    //     labelDisable: true,
+    //     icon: 'bi bi-grid-fill',
+    //     children: [
             
-        ]
-    },
+    //     ]
+    // },
     {
         label: 'Employees',
         to: '/employees',
