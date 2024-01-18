@@ -7,6 +7,7 @@ from .views import (
     CreateTimelineAPIView,
     UpdateTimelineAPIView,
     DeleteTimelineAPIView,
+    AddCommentToTimelineAPIView
    
    
 )
@@ -18,6 +19,7 @@ urlpatterns = [
 
     path('timelines/create/', CreateTimelineAPIView.as_view(), name='timeline-create'),
     path('timelines/<int:pk>/update/', UpdateTimelineAPIView.as_view(), name='timeline-update'),
+    path('timelines/<int:pk>/comment/', AddCommentToTimelineAPIView.as_view(), name='timeline-add-comment'),
     path('timelines/<int:pk>/', DeleteTimelineAPIView.as_view(), name='timeline-delete'),
     
     # path('<int:pk>/', EmployeeDetailAPIView.as_view(), name='employee-detail'),

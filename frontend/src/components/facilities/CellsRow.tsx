@@ -17,32 +17,34 @@ const CellsRow = ({ facilite, year }: YearRowProps) => {
     // console.log('render CellsRow Componente')
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
 
-    const solde = useMemo(() => {
-        let val = 0;
-        for (let index = 0; index < facilite.timelines.length; index++) {
-            const element = facilite.timelines[index];
-            val += Number(element.somme)
-        }
-        return val
-    }, [facilite.timelines])
+    // const solde = useMemo(() => {
+    //     let val = 0;
+    //     for (let index = 0; index < facilite.timelines.length; index++) {
+    //         const element = facilite.timelines[index];
+    //         val += Number(element.somme)
+    //     }
+    //     return val
+    // }, [facilite.timelines])
 
     return (
         <>
 
-            <div className='d-flex'>
+            <div className={`d-flex`} >
                 <div
-                    className="cell-border  text-center cell flex-cell"
+                    className={`cell-border  text-center cell flex-cell ${facilite.montant == facilite.solde ? 'facilite-completed' : ''}`}
+                    // className={`cell-border  text-center cell flex-cell`}
                     style={{ borderLeft: '1px solid #e6e6e6' }}
                 >
                     <small>{facilite.employee.matricule}</small>
                 </div>
+
                 <div className="cell-border text-center employee-cell flex-cell">
                     <small>{facilite.employee.nom.substring(0, 15)} {facilite.employee.prenom.substring(0, 10)}</small>
                 </div>
                 <div className="cell-border text-center cell flex-cell"><small>{facilite.duree} Mois</small></div>
                 <div className="cell-border text-center cell flex-cell"><small>{facilite.date_achat}</small></div>
                 <div className="cell-border text-center montant-cell flex-cell"><small>{facilite.montant}</small></div>
-                <div className="cell-border text-center montant-cell flex-cell"><small>{solde}</small></div>
+                <div className="cell-border text-center montant-cell flex-cell"><small>{facilite.solde}</small></div>
 
                 {/* {
                     montCells && montCells.map((month, index) =>
@@ -58,10 +60,9 @@ const CellsRow = ({ facilite, year }: YearRowProps) => {
                         </div>
                     )
                 }
-                
-
-
-                <div className={`cell-border text-center cell flex-cell ${facilite.is_completed ? 'btn btn-success btn-sm' : ''}`} ><small className="">comleted</small></div>
+                <div className={`cell-border text-center cell flex-cell`} >
+                    <small className={`badge ${facilite.is_completed ? 'bg-light-success' : 'bg-light-primary'}`}>comleted</small>
+                </div>
             </div>
 
 

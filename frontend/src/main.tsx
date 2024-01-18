@@ -8,6 +8,7 @@ import useToggleStylesheet from "hooks/useToggleStyle"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./assets/compiled/css/app.css"
+import "assets/global.css"
 // import 'assets/base.css'
 
 

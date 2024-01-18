@@ -5,18 +5,28 @@ from employees.serializers import EmployeeSerializer,LiteEmployeeSerializer
 from datetime import datetime, timedelta
 
 
+class AddCommentTimelineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Timeline
+        fields = ["id",'observation']
+
+    def update(self, instance, validated_data):
+        observation = validated_data.get("observation", instance.somme)               
+        instance.observation = observation
+        instance.save()
+        return instance
+    
 class UpdateTimelineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Timeline
-        fields = ["id", "month", "facilite", "mois", "somme", "is_commited"]
+        fields = ["id", "month", "facilite", "mois", "somme","observation", "is_commited"]
 
     def update(self, instance, validated_data):
-        print('-----------------------------------------------------------------------------------')
         facilite = validated_data.get("facilite", instance.facilite)
         somme = validated_data.get("somme", instance.somme)
-        print(somme)
-        print(validated_data)
+        observation = validated_data.get("observation", instance.observation)
         
+        # check if the new value is not great than montant 
         if ((facilite.solde - instance.somme) + somme) > facilite.montant:
             raise ValidationError(
                 {"error": "Impossible de mettre à jour la nouvelle cellule car Solde sera supérieur à Montant Avec cette nouvelle valeur    "}
@@ -27,11 +37,7 @@ class UpdateTimelineSerializer(serializers.ModelSerializer):
                 {
                     "error": "Impossible d'ajouter une cellule. this facilite is completed"
                 }
-            )
-        print('Montant' , facilite.montant)
-        print('solde' , facilite.solde)
-        print('instantce' , instance.somme)
-        print('somme' , somme)
+            )        
         # if facilite.timelines.count() >= int(facilite.duree):
         #     raise ValidationError(
         #         {
@@ -40,9 +46,12 @@ class UpdateTimelineSerializer(serializers.ModelSerializer):
         #     )
 
         instance.somme = somme
+        instance.observation = observation
         instance.save()
 
         return instance
+    
+    
 
 
 class CreateTimelineSerializer(serializers.ModelSerializer):
@@ -97,7 +106,7 @@ class CreateTimelineSerializer(serializers.ModelSerializer):
 class TimelineSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Timeline
-        fields = ["id", "facilite", "month", "mois", "somme", "is_commited"]
+        fields = ["id", "facilite", "month", "mois", "somme",'observation', "is_commited"]
 
 
 class FaciliteSerializer(serializers.ModelSerializer):

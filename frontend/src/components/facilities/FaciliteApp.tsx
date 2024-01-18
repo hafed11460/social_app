@@ -18,7 +18,6 @@ import { useAppDispatch, useAppSelector } from 'app/hooks'
 
 
 const LodingSpiner = ({ isLoding }: { isLoding: boolean }) => {
-
     if (isLoding) return <Spinner animation="border" variant="primary" />
     return null
 }
@@ -39,14 +38,12 @@ const FaciliteApp = () => {
         if (date) {
             const newdate = date.setFullYear(date.getFullYear() + 1)
             setDate(new Date(newdate))
-            setPage(1)
         }
     }
     const handlePrevYear = () => {
         if (date) {
             const newdate = date?.setFullYear(date.getFullYear() - 1)
             setDate(new Date(newdate))
-            setPage(1)
         }
     }
     useEffect(() => {
@@ -58,12 +55,18 @@ const FaciliteApp = () => {
     useEffect(() => {
         if (date) {
             setLoading(true)
-            // setQuery(`?date=${date?.getFullYear()}&page=${page}`)
+            console.log(typeof(query))
+            let q = ''
+           
+            for (let key in query) {
+                q += '&' +query[key];
+            }
+
             dispatch(getFacilities(
                 {
                     date: date.getFullYear(),
                     page: page,
-                    query: query
+                    query: q
                 }
             )).then(() => {
                 setLoading(false)
@@ -71,7 +74,7 @@ const FaciliteApp = () => {
                 setLoading(false)
             })
         }
-    }, [date, page])
+    }, [date, page, query])
 
 
     /**  For the first rendering  */
@@ -99,10 +102,10 @@ const FaciliteApp = () => {
                             )
                         }
                     </div>
-                    <Pagination>
+                    <Pagination className='p-3'>
                         {
-                            facilities.pages && Array.from({ length: facilities.pages }, (value, index) => index + 1).map((page, index) =>
-                                <Pagination.Item onClick={() => setPage(page)}>{page}</Pagination.Item>
+                            facilities.pages && Array.from({ length: facilities.pages }, (value, index) => index + 1).map((pg, index) =>
+                                <Pagination.Item className='mx-1' active={pg == page} key={index} onClick={() => setPage(pg)}>{pg}</Pagination.Item>
                             )
                         }
                     </Pagination>

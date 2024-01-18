@@ -1,7 +1,9 @@
 import { Button, ButtonGroup, Col, Form, Navbar, Row } from "react-bootstrap"
 import CreateFacilite from "./CreateFacilite"
 import { memo } from "react"
-import { BsChevronLeft, BsChevronRight, BsFilterSquareFill } from 'react-icons/bs'
+import { BsChevronLeft, BsChevronRight, BsFilterSquareFill, BsFunnelFill } from 'react-icons/bs'
+import { useAppDispatch, useAppSelector } from "app/hooks"
+import { selectQuery, setQuery } from "features/facilities/facilitiesSlice"
 
 
 interface HeaderNavbarProps {
@@ -12,15 +14,28 @@ interface HeaderNavbarProps {
 }
 
 const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbarProps) => {
+    const dispatch = useAppDispatch()
+    const query = useAppSelector(selectQuery)
+
     return (
         <Navbar className='justify-content-between p-0 px-2 rounded mb-2 ' style={{ height: '50px', backgroundColor: "#eeeeee" }}>
             <Form >
                 <Row>
                     <Col xs="auto">
                         <CreateFacilite />
+                        <Button
+                            onClick={() => dispatch(setQuery({ key: 'init', query: '' }))}
+                            disabled={Object.keys(query).length === 0 ? true : false}
+                            variant="danger"
+                            size="sm"
+                            className="mx-1"
+                        >
+                            <BsFunnelFill />
+                        </Button>
                     </Col>
                     <Col xs="auto">
                         <Form.Control
+                            size="sm"
                             type="text"
                             placeholder="Search"
                             className=" mr-sm-2"
@@ -30,15 +45,13 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
                 </Row>
             </Form>
             <Form>
-                <Form.Control>
 
-                </Form.Control>
             </Form>
 
-            <div className='buttons'>
+            <div>
 
-                <ButtonGroup className='border'>
-                    <Button size='sm' variant="light" onClick={handlePrevYear}><BsChevronLeft /> Prev</Button>
+                <ButtonGroup className='border me-1'>
+                    <Button size='sm' variant="secondary" onClick={handlePrevYear}><BsChevronLeft /> Prev</Button>
                     <Button size='sm' variant="">{date.getFullYear()}</Button>
                     <Button size='sm' variant="primary" onClick={handleNexYear}>Nex <BsChevronRight /></Button>
                 </ButtonGroup>

@@ -2,6 +2,7 @@
 import { IFFilterArgs, IFacilite, ITimeline } from 'types/types.facilities'
 import http, { api } from './http-common'
 import { CreateFaciliteFromData } from 'components/facilities/CreateFacilite'
+import { CreateCommentFromData } from 'components/facilities/CreateComment'
 
 class FaciliteDataService {
     getFacilities(args: IFFilterArgs) {
@@ -16,12 +17,11 @@ class FaciliteDataService {
         return http.post(`/facilities/timelines/create/`, timeline)
     }
 
-    updateTimeline(timeline: ITimeline) {
-        // return api({
-        //     url: `/facilities/timelines/${timeline.id}/update/`,
-        //     method: 'PUT',
-        //     data: timeline
-        // })
+    addCommentToTimeline(args:CreateCommentFromData) {        
+        return http.put(`/facilities/timelines/${args.id}/comment/`, args)
+    }
+
+    updateTimeline(timeline: ITimeline) {       
         return http.put(`/facilities/timelines/${timeline.id}/update/`, timeline)
     }
 

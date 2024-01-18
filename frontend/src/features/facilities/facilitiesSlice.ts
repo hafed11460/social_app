@@ -3,10 +3,11 @@ import { RootState } from "app/store"
 import { IFFilterArgs, IFacilite, ITimeline } from "types/types.facilities"
 import FServices from "./faciliteServices"
 import { CreateFaciliteFromData } from "components/facilities/CreateFacilite"
+import { CreateCommentFromData } from "components/facilities/CreateComment"
 
 export const getFacilities = createAsyncThunk(
     'facilities/',
-    async (args:IFFilterArgs) => {
+    async (args: IFFilterArgs) => {
         const res = await FServices.getFacilities(args)
         return res.data;
     })
@@ -59,6 +60,20 @@ export const deleteTimeline = createAsyncThunk(
         }
     })
 
+export const addCommentToTimeline = createAsyncThunk(
+    'timelines/comment',
+    async (args:CreateCommentFromData, { rejectWithValue }) => {
+        try {
+            const res = await FServices.addCommentToTimeline(args)
+            return res.data;
+
+        } catch (err: any) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    })
 export const updateTimeline = createAsyncThunk(
     'timelines/update',
     async (timeline: ITimeline, { rejectWithValue }) => {
@@ -83,13 +98,16 @@ interface FacilteResponse {
     links: {
         next: string,
         previous: string,
-        current:string
+        current: string
     },
+}
+interface IQuery {
+    [key: string]: string | number | Array<any>,
 }
 
 interface FacilitiesState {
-    selectedDate?:number,
-    query?:string,
+    selectedDate?: number,
+    query: IQuery,
     facilities?: FacilteResponse,
     count?: number,
     pages?: number,
@@ -110,7 +128,7 @@ function isEmpty(obj: Record<string, any>): boolean {
 
 const initialState: FacilitiesState = {
     facilities: undefined,
-    query:'',
+    query: {},
     count: 0,
     pages: 1,
     isError: false,
@@ -123,14 +141,19 @@ const initialState: FacilitiesState = {
 export const facilitiesSlice = createSlice({
     name: 'facilities',
     initialState,
-    
+
     reducers: {
         setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: number }>) => {
-            state.selectedDate = date            
-        },        
-        setQuery: (state, { payload: { query } }: PayloadAction<{ query: string }>) => {
-            state.query = query            
-        },        
+            state.selectedDate = date
+        },
+        setQuery: (state, { payload: {key, query } }: PayloadAction<{ key:String,query: string }>) => {
+            if(key==='init'){
+                state.query = {}
+            } else{
+                state.query[`${key}`] = query
+            }
+            // state.test['matricule'] = 'test'
+        },
     },
     extraReducers: (builder) => {
 
@@ -140,7 +163,7 @@ export const facilitiesSlice = createSlice({
         builder.addCase(getFacilities.fulfilled, (state, action) => {
             state.isLoading = true;
             state.isError = false
-            state.facilities = action.payload           
+            state.facilities = action.payload
         })
         builder.addCase(getFacilities.rejected, (state, action) => {
             state.isLoading = false;
@@ -171,14 +194,15 @@ export const facilitiesSlice = createSlice({
             state.isLoading = true;
             // state.postID = action.meta.arg.post
         })
+
         builder.addCase(createTimeline.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isError = false
-            // state.isSuccess = true
-            // state.postID = null;    
             state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
-                    return facilite.timelines.push(action.payload)
+                    facilite.timelines.push(action.payload)
+                    facilite.solde = Number(facilite.solde) + Number(action.payload.somme)
+                    return facilite
                 }
                 return facilite
             })
@@ -203,8 +227,15 @@ export const facilitiesSlice = createSlice({
             // state.postID = null;    
             state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
-                    facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => timeline.id !== action.payload.id)
+                    facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => {
+                        if(timeline.id === action.payload.id ){
+                                facilite.solde = Number(facilite.solde) - Number(timeline.somme)
+                        }else{
+                            return timeline
+                        }
+                    })
                     facilite.timelines.push(action.payload)
+                    facilite.solde = Number(facilite.solde) + Number(action.payload.somme)
                     return facilite
                 }
                 return facilite
@@ -227,7 +258,14 @@ export const facilitiesSlice = createSlice({
         builder.addCase(deleteTimeline.fulfilled, (state, action) => {
             state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
-                    facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => timeline.id !== action.payload.id)
+                    facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => {
+                        if(timeline.id === action.payload.id ){
+                                facilite.solde = Number(facilite.solde) - Number(timeline.somme)
+                        }else{
+                            return timeline
+                        }
+                    })
+                    // facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => timeline.id !== action.payload.id)
                     return facilite
                 }
                 return facilite

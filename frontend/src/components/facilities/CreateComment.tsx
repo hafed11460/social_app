@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Alert, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { Alert, Card, Form, Modal, Row } from "react-bootstrap";
 
+import { useAppDispatch } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
-import { useGetEmployeesQuery } from "features/employees/employeeAPI";
-import { DATE_DE_FETE, DUREE, MONTANT, OBSERVATION } from "headers/headers";
+import { updateTimeline } from "features/facilities/facilitiesSlice";
+import { OBSERVATION } from "headers/headers";
 import { useEffect } from "react";
-import { useController, useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { IEmployee } from "types/types.employees";
+import { useForm } from "react-hook-form";
+import { ITimeline } from "types/types.facilities";
 
 
 export interface CreateCommentFromData {
@@ -16,61 +16,42 @@ export interface CreateCommentFromData {
     [key: string]: string | number | boolean | Array<any>,
 }
 
-const initState = {
-    observation: 'This test',
-}
+
 
 interface CreateCommentProps {
     show:boolean,
+    timeline:ITimeline
     setShow:(val:boolean)=>void
 }
 
 
-
-
-const CreateComment = ({show,setShow}:CreateCommentProps) => {
-    const dispatch = useDispatch()
-    const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
-    const { data: employees } = useGetEmployeesQuery({})
-    const [employeesList, setEmployeesList] = useState([])
+const CreateComment = ({timeline,show,setShow}:CreateCommentProps) => {
+    const dispatch = useAppDispatch()
+    const [newTLine, setNewTLine] = useState<ITimeline>(timeline)
     const [error, setError] = useState()
 
-    useEffect(()=>{
-        if(show){
-            
-        }
-    },[show])
     const {
         register,
         handleSubmit,
         getValues,
         control,
         formState: { errors }
-    } = useForm<CreateCommentFromData>({
+    } = useForm<ITimeline>({
         mode: 'onBlur',
-        defaultValues: initState
+        defaultValues: newTLine
     })
 
-    const onSubmitData = async (values: CreateCommentFromData) => {
-        // dispatch(CreateComment(values))
+    const onSubmitData = async (values: ITimeline) => {
+        console.log(values)
+        dispatch(updateTimeline(values))
+        .unwrap()
+        .then(()=>{
+            setShow(false)
+        })
     };
-
-    useEffect(() => {
-        if (employees) {
-
-            const e = employees.map((emp: IEmployee) => { return { 'value': emp.id, 'label': `${emp.nom} ${emp.prenom}` } })
-            // console.log(e)
-            setEmployeesList(e)
-        }
-    }, [employees])
-
-
-    
 
     return (
         <>
-            
-
             <Modal
                 className="p-0 m-0"
                 show={show}
@@ -94,7 +75,6 @@ const CreateComment = ({show,setShow}:CreateCommentProps) => {
                                     <h4 className="alert-heading">Warning</h4>
                                     <ErrorText name='error' error={error} variant="dark" />
                                 </Alert>
-                                <Form.Check {...register('is_know')} type="checkbox" name="is_know" label="yes I know " />
                             </Card.Header>
                         }
                         <Card.Body>
@@ -104,7 +84,7 @@ const CreateComment = ({show,setShow}:CreateCommentProps) => {
                                     <Form.Control
                                         as={'textarea'}
                                         rows={5}
-                                        {...register("observation", { required: "This Feild Is required" })}
+                                        {...register("observation")}
                                     />
                                     <ErrorText name='observation' error={error} />
                                     {errors.observation && (
@@ -117,12 +97,7 @@ const CreateComment = ({show,setShow}:CreateCommentProps) => {
                             <div className="col-12 d-flex justify-content-end">
                                 <button type="submit" className="btn btn-primary me-1 mb-1">Submit</button>
                             </div>
-                        </Card.Body>
-                        {/* <Card.Footer>                            
-                            <div className="col-12 d-flex justify-content-end">
-                                <button type="submit" className="btn btn-primary me-1 mb-1">Submit</button>
-                            </div>
-                        </Card.Footer> */}
+                        </Card.Body>                        
                     </Card>
 
                 </Modal.Body>

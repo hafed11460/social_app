@@ -1,11 +1,11 @@
-import { RootState } from "app/store";
 import { createTimeline } from "features/facilities/facilitiesSlice";
 // import { useCreateTimelineMutation, useUpdateTimelineMutation } from "features/facilities/facilitiesAPI";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useAppDispatch } from "app/hooks";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Alert, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ITimeline } from "types/types.facilities";
 import ErrorCell from "./ErrorCell";
+
 
 interface NewCellProps {
     timeline: ITimeline,
@@ -29,11 +29,11 @@ const CustomTooltip = ({ error }: CustomTooltipProps) => {
 }
 
 const NewCell = ({ timeline, month, year }: NewCellProps) => {
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const [showMenu, setShowMenu] = useState(false);
     // const inputRef = useRef(Number(timeline ? timeline.somme : 0));
     const [isEdit, setIsEdit] = useState(false)
-    const [value, setValue] = useState<number>(Number(timeline ? timeline.somme : 0))
+    const [value, setValue] = useState<number>(Number(timeline ? timeline.somme : ''))
     const [newTLine, setNewTLine] = useState<ITimeline>(timeline)
     const [bg, setBg] = useState('white')
     const [error, setError] = useState<string>('')
@@ -65,7 +65,6 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const re = /([0-9]*[.])?[0-9]+/;
         if (e.target.value === '' || re.test(e.target.value)) {
-
             setValue(Number(e.target.value))
         }
     }
@@ -131,7 +130,8 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
                             // ref={inputRef}
                             onBlur={onBlur}
                             onChange={onChange}
-                            type='number' style={{ width: '100%', height: '100%' }}
+                            type='number' 
+                            style={{ width: '100%', height: '100%' }}
                         />
                     }
                 </div>
@@ -156,8 +156,10 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
                 </div> :
                 <input
                     // disabled={isFacCompleted}
+                    // onInput={onChange}
                     onKeyUp={onKeyUp}
-                    value={value}
+                    value={value === 0 ? '' : value}
+                    // value={value}
                     autoFocus
                     // ref={inputRef}
                     onBlur={onBlur}

@@ -12,6 +12,7 @@ export interface ITimeline{
     month:number,
     mois:string,
     somme:number ,
+    observation:string,
     is_commited:boolean
 }
 
@@ -24,4 +25,10 @@ export interface IFacilite{
     date_achat:string,
     is_completed:boolean,
     timelines:ITimeline[], 
+}
+
+export interface FaciliteFilterData {
+    matricule?: number,
+    nom: string,
+    prenom: string
 }

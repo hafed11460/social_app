@@ -14,7 +14,8 @@ from .serializers import (
     CreateFaciliteSerializer,
     CreateTimelineSerializer,
     UpdateTimelineSerializer,
-    TimelineSerialiser
+    TimelineSerialiser,
+    AddCommentTimelineSerializer
 )
 
 
@@ -59,10 +60,15 @@ class CreateTimelineAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class AddCommentToTimelineAPIView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AddCommentTimelineSerializer
+    queryset = Timeline.objects.all()
+    
+
 class UpdateTimelineAPIView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UpdateTimelineSerializer
-    # parser_classes = (MultiPartParser, FormParser)
     queryset = Timeline.objects.all()
     
     # def update(self, request, *args, **kwargs):
@@ -98,6 +104,8 @@ class FaciliteListAPIView(generics.ListAPIView):
     queryset = Facilite.objects.all()
     filterset_fields = {
         'employee__matricule':['exact'],           
+        'employee__nom':['icontains'],           
+        'employee__prenom':['icontains'],           
     }
     
     # pagination_class = PropertiesPaginations

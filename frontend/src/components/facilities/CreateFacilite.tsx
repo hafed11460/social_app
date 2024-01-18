@@ -97,7 +97,7 @@ const CreateFacilite = () => {
 
     return (
         <>
-            <Button  onClick={() => setShow(!show)}>
+            <Button size="sm"  onClick={() => setShow(!show)}>
                 <FaPlusCircle /> Prime
             </Button>
 

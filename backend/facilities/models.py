@@ -45,6 +45,7 @@ class Timeline(WithTimestamp, models.Model):
     somme = models.DecimalField(_("Somme"), max_digits=12, decimal_places=2)
     is_commited = models.BooleanField(_("is commit"), default=False)
     color = models.CharField(_("Color"),null=True, blank=True, max_length=10)
+    observation = models.TextField(_("Observation"), null=True, blank=True)
     
     class Meta:
         # unique_together = ["facilite", "mois"]
