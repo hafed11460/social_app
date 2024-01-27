@@ -1,15 +1,14 @@
 import { Route, Routes } from 'react-router-dom'
 
 import Login from 'components/auth/Login'
-import AuthLayout from 'layouts/AuthLayout'
-import { PrivateRoute } from 'layouts/PrivateRoute'
-import MainLayout from 'layouts/MainLayout'
 import Dashboard from 'components/dashbord/Dashboard'
-import EmployeesList from 'components/employees/EmployeesList'
 import EmployeeDetail from 'components/employees/EmployeeDetail'
-import { PrimesList } from 'components/primes/PrimesList'
-import { ToastContainer } from 'react-toastify'
+import EmployeesList from 'components/employees/EmployeesList'
 import FaciliteApp from 'components/facilities/FaciliteApp'
+import PrimesApp from 'components/primes/PrimesApp'
+import AuthLayout from 'layouts/AuthLayout'
+import MainLayout from 'layouts/MainLayout'
+import { PrivateRoute } from 'layouts/PrivateRoute'
 
 
 const SocialRouter = () => {
@@ -26,9 +25,9 @@ const SocialRouter = () => {
                         {/* <Route path="/" element={<FaciliteApp />} /> */}
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/employees" element={<EmployeesList />} />
-                        <Route path="/employees/:eid/" element={<EmployeeDetail />} />                    
-                        <Route path="/employees/primes/" element={<PrimesList />} />
+                        <Route path="/employees/:matricule/" element={<EmployeeDetail />} />  
 
+                        <Route path="/primes/" element={<PrimesApp />} />
                         <Route path="/facilities" element={<FaciliteApp />} />
                 </Route>
             </Route>

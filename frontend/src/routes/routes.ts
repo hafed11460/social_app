@@ -17,6 +17,7 @@ const dashRoutes:DashRoute[] = [
         to: '/employees',
         labelDisable: true,
         icon: 'bi bi-router-fill',
+        
         children: [
             // {
             //     name: 'All Switchs',
@@ -34,7 +35,7 @@ const dashRoutes:DashRoute[] = [
     },
     {
         label: 'Primes',
-        to: '/employees/primes',
+        to: '/primes/',
         labelDisable: true,
         icon: 'bi bi-stack',
         children: [

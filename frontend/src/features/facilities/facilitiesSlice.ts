@@ -12,6 +12,36 @@ export const getFacilities = createAsyncThunk(
         return res.data;
     })
 
+export const updateFacilite = createAsyncThunk(
+    'facilities/update',
+    async ({date,facilite}:{date:any,facilite: any}, { rejectWithValue }) => {
+        try {
+            console.log(facilite)
+            const res = await FServices.updateFacilite(date,facilite)
+            return res.data;
+
+        } catch (err: any) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    })
+/** get all emplyee facilite  */
+export const getEmployeeFacilities = createAsyncThunk(
+    'facilities/employee',
+    async (eid: number, { rejectWithValue }) => {
+        try {
+            const res = await FServices.employeeFacilities(eid)
+            return res.data;
+
+        } catch (err: any) {
+            if (!err.response) {
+                throw err
+            }
+            return rejectWithValue(err.response.data)
+        }
+    })
 
 export const createFacilite = createAsyncThunk(
     'facilities/create',
@@ -27,7 +57,6 @@ export const createFacilite = createAsyncThunk(
             return rejectWithValue(err.response.data)
         }
     })
-
 
 export const createTimeline = createAsyncThunk(
     'timelines/create',
@@ -62,7 +91,7 @@ export const deleteTimeline = createAsyncThunk(
 
 export const addCommentToTimeline = createAsyncThunk(
     'timelines/comment',
-    async (args:CreateCommentFromData, { rejectWithValue }) => {
+    async (args: CreateCommentFromData, { rejectWithValue }) => {
         try {
             const res = await FServices.addCommentToTimeline(args)
             return res.data;
@@ -74,6 +103,7 @@ export const addCommentToTimeline = createAsyncThunk(
             return rejectWithValue(err.response.data)
         }
     })
+
 export const updateTimeline = createAsyncThunk(
     'timelines/update',
     async (timeline: ITimeline, { rejectWithValue }) => {
@@ -109,6 +139,7 @@ interface FacilitiesState {
     selectedDate?: number,
     query: IQuery,
     facilities?: FacilteResponse,
+    employeeFacilities?: FacilteResponse,
     count?: number,
     pages?: number,
     isLoading?: boolean,
@@ -128,6 +159,7 @@ function isEmpty(obj: Record<string, any>): boolean {
 
 const initialState: FacilitiesState = {
     facilities: undefined,
+    employeeFacilities: undefined,
     query: {},
     count: 0,
     pages: 1,
@@ -146,10 +178,10 @@ export const facilitiesSlice = createSlice({
         setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: number }>) => {
             state.selectedDate = date
         },
-        setQuery: (state, { payload: {key, query } }: PayloadAction<{ key:String,query: string }>) => {
-            if(key==='init'){
+        setQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
+            if (key === 'init') {
                 state.query = {}
-            } else{
+            } else {
                 state.query[`${key}`] = query
             }
             // state.test['matricule'] = 'test'
@@ -172,6 +204,37 @@ export const facilitiesSlice = createSlice({
         })
 
 
+        //*****  Update Facilite  */        
+        builder.addCase(updateFacilite.pending, (state, action) => {
+            state.isLoading = true;
+        })
+        builder.addCase(updateFacilite.fulfilled, (state, action) => {            
+            console.log("action",action.payload)   
+            state.facilities.results = state.facilities?.results.filter((facilite: IFacilite) => facilite.id !== action.payload.id)
+            state.facilities?.results.push(action.payload)
+        })
+        builder.addCase(updateFacilite.rejected, (state, action) => {
+            state.isLoading = false;
+            state.isSuccess = false
+            state.isError = true            
+        })
+
+
+
+        builder.addCase(getEmployeeFacilities.pending, (state, action) => {
+            state.isLoading = true;
+        })
+        builder.addCase(getEmployeeFacilities.fulfilled, (state, action) => {
+            state.isLoading = true;
+            state.isError = false
+            state.employeeFacilities = action.payload
+        })
+        builder.addCase(getEmployeeFacilities.rejected, (state, action) => {
+            state.isLoading = false;
+            state.isError = true
+        })
+
+
         //*****  create facilite  */        
         builder.addCase(createFacilite.pending, (state, action) => {
             state.isLoading = true;
@@ -188,7 +251,7 @@ export const facilitiesSlice = createSlice({
             // state.errors = action.payload;
         })
 
-
+        /************************************************************************************************************************** */
         //*****  create timeline  */        
         builder.addCase(createTimeline.pending, (state, action) => {
             state.isLoading = true;
@@ -228,9 +291,9 @@ export const facilitiesSlice = createSlice({
             state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
                     facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => {
-                        if(timeline.id === action.payload.id ){
-                                facilite.solde = Number(facilite.solde) - Number(timeline.somme)
-                        }else{
+                        if (timeline.id === action.payload.id) {
+                            facilite.solde = Number(facilite.solde) - Number(timeline.somme)
+                        } else {
                             return timeline
                         }
                     })
@@ -259,9 +322,9 @@ export const facilitiesSlice = createSlice({
             state.facilities?.results.filter((facilite: IFacilite) => {
                 if (facilite.id === action.payload.facilite) {
                     facilite.timelines = facilite.timelines.filter((timeline: ITimeline) => {
-                        if(timeline.id === action.payload.id ){
-                                facilite.solde = Number(facilite.solde) - Number(timeline.somme)
-                        }else{
+                        if (timeline.id === action.payload.id) {
+                            facilite.solde = Number(facilite.solde) - Number(timeline.somme)
+                        } else {
                             return timeline
                         }
                     })
@@ -299,4 +362,5 @@ export const selectQuery = (state: RootState) => state.facilities.query
 // export const selectAccessToken = state => state.auth.token
 
 export const selectFacilities = (state: RootState) => state.facilities.facilities
+export const selectemployeeFacilities = (state: RootState) => state.facilities.employeeFacilities
 // export const selectAccessToken = (state:RootState) => state.auth.token

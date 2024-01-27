@@ -1,5 +1,5 @@
 from django.contrib import admin
-from employees.models import Direction, Employee, Prime,Primetype
+from employees.models import Direction, Employee
 from import_export import resources,fields
 from import_export.widgets import ForeignKeyWidget
 from import_export.admin import ImportExportModelAdmin
@@ -53,14 +53,7 @@ class EmployeeAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     resource_class = EmployeeResource
 
 
-class PrimetypeAdmin(admin.ModelAdmin):
-    list_display=['name']
-    
 
-class PrimeAdmin(admin.ModelAdmin):
-    list_display = ['employee','prime_type','date_f','date_r','montant','observation']
 
 admin.site.register(Direction, DirectionAdmin)
 admin.site.register(Employee, EmployeeAdmin)
-admin.site.register(Prime, PrimeAdmin)
-admin.site.register(Primetype, PrimetypeAdmin)

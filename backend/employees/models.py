@@ -50,35 +50,35 @@ class Employee(WithTimestamp, models.Model):
         return f"{self.nom} {self.prenom}"
 
 
-class Primetype(models.Model):
-    name = models.CharField(_("Name"), max_length=50)
+# class Primetype(models.Model):
+#     name = models.CharField(_("Name"), max_length=50)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
-class Prime(WithTimestamp, models.Model):
-    employee = models.ForeignKey(
-        Employee,
-        related_name="primes",
-        verbose_name=_("Employee"),
-        on_delete=models.DO_NOTHING,
-    )
-    prime_type = models.ForeignKey(
-        Primetype, verbose_name=_("Prime Type"), on_delete=models.DO_NOTHING
-    )
-    date_f = models.DateField(
-        _("date de fete"), auto_now=False, auto_now_add=False, null=True, blank=True
-    )
-    date_r = models.DateField(
-        _("date de reception"),
-        auto_now=False,
-        auto_now_add=False,
-        null=True,
-        blank=True,
-    )
-    montant = models.DecimalField(_("Montant"), max_digits=12, decimal_places=2)
-    observation = models.TextField(_("Observation"), null=True, blank=True)
+# class Prime(WithTimestamp, models.Model):
+#     employee = models.ForeignKey(
+#         Employee,
+#         related_name="primes",
+#         verbose_name=_("Employee"),
+#         on_delete=models.DO_NOTHING,
+#     )
+#     prime_type = models.ForeignKey(
+#         Primetype, verbose_name=_("Prime Type"), on_delete=models.DO_NOTHING
+#     )
+#     date_f = models.DateField(
+#         _("date de fete"), auto_now=False, auto_now_add=False, null=True, blank=True
+#     )
+#     date_r = models.DateField(
+#         _("date de reception"),
+#         auto_now=False,
+#         auto_now_add=False,
+#         null=True,
+#         blank=True,
+#     )
+#     montant = models.DecimalField(_("Montant"), max_digits=12, decimal_places=2)
+#     observation = models.TextField(_("Observation"), null=True, blank=True)
 
-    def __str__(self) -> str:
-        return f"{self.employee.nom} {self.employee.prenom}"
+#     def __str__(self) -> str:
+#         return f"{self.employee.nom} {self.employee.prenom}"

@@ -1,10 +1,13 @@
 
 import { IFFilterArgs, IFacilite, ITimeline } from 'types/types.facilities'
-import http, { api } from './http-common'
 import { CreateFaciliteFromData } from 'components/facilities/CreateFacilite'
 import { CreateCommentFromData } from 'components/facilities/CreateComment'
+import http from 'features/http-common'
 
 class FaciliteDataService {
+    employeeFacilities(eid:number) {
+        return http.get(`/facilities/employees/${eid}/`)
+    }
     getFacilities(args: IFFilterArgs) {
         return http.get(`/facilities/?date=${args.date ? args.date : ''}&page=${args.page ? args.page : 1}&${args?.query ? args.query : ''}`)
     }
@@ -13,6 +16,11 @@ class FaciliteDataService {
         return http.post(`/facilities/create/`, facilite)
     }
 
+    updateFacilite(date:number,facilite:any) {       
+        return http.put(`/facilities/${facilite.id}/update/?date=${date}`, facilite)
+    }
+
+/************************************************************************************************ */
     createTimeline(timeline: ITimeline) {
         return http.post(`/facilities/timelines/create/`, timeline)
     }

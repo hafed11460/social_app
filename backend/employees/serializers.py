@@ -1,19 +1,30 @@
 from rest_framework import serializers
-from .models import Employee, Direction,Prime,Primetype
+from .models import Employee, Direction
+# from primes.serializers import PrimeSerialiser
 
-
-class PrimetypeSerialiser(serializers.ModelSerializer):
+class LiteEmployeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Primetype
-        fields= '__all__'
+        model = Employee
+        fields = [
+            "id",
+            "matricule",
+            "nom",
+            "prenom"                       
+        ]
+
+# class PrimetypeSerialiser(serializers.ModelSerializer):
+#     class Meta:
+#         model = Primetype
+#         fields= '__all__'
 
 
-class PrimeSerialiser(serializers.ModelSerializer):
-    prime_type = PrimetypeSerialiser(many=False, read_only=True)    
-    class Meta:
-        model = Prime
-        # fields= '__all__'
-        fields= ['id','employee','prime_type','date_f','date_r','montant','observation']
+# class PrimeSerialiser(serializers.ModelSerializer):
+#     prime_type = PrimetypeSerialiser(many=False, read_only=True) 
+#     employee =  LiteEmployeeSerializer()  
+#     class Meta:
+#         model = Prime
+#         # fields= '__all__'
+#         fields= ['id','employee','prime_type','date_f','date_r','montant','observation']
     
 
 
@@ -23,15 +34,15 @@ class DirectionSerializer(serializers.ModelSerializer):
         fields = ["id", "name"]
 
 
-class CreatePrimeSerializer(serializers.ModelSerializer):       
-    class Meta:
-        model = Prime
-        fields = ['employee','prime_type','date_f','date_r','montant','observation']
+# class CreatePrimeSerializer(serializers.ModelSerializer):       
+#     class Meta:
+#         model = Prime
+#         fields = ['employee','prime_type','date_f','date_r','montant','observation']
 
 class EmployeeDetailSerializer(serializers.ModelSerializer):
     direction = DirectionSerializer()
     # prime = serializers.PrimaryKeyRelatedField(queryset=Prime.objects.all(),many=True) 
-    primes = PrimeSerialiser(many=True,read_only=True)
+    # primes = PrimeSerialiser(many=True,read_only=True)
     class Meta:
         model = Employee
         fields = [
@@ -46,23 +57,24 @@ class EmployeeDetailSerializer(serializers.ModelSerializer):
             "fin_contrat",
             "type_contrat",
             "created_at",
-            'primes'
+            # 'primes'
         ]
 
 
-class LiteEmployeeSerializer(serializers.ModelSerializer):
 
+        
+class EmployeeForSelectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = [
             "id",
             "matricule",
             "nom",
-            "prenom",                       
+            "prenom",            
         ]
+
 class EmployeeSerializer(serializers.ModelSerializer):
     direction = DirectionSerializer()
-
     class Meta:
         model = Employee
         fields = [
@@ -80,9 +92,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
         ]
 
 
-class UpdatePrimeSerializer(serializers.ModelSerializer):
-    prime_type = serializers.PrimaryKeyRelatedField(queryset=Primetype.objects.all(),many=False)
-    employee = EmployeeSerializer(read_only=True,many=False)
-    class Meta:
-        model = Prime                          
-        fields = ['id','employee','prime_type','date_f','date_r','montant','observation']
+# class UpdatePrimeSerializer(serializers.ModelSerializer):
+#     prime_type = serializers.PrimaryKeyRelatedField(queryset=Primetype.objects.all(),many=False)
+#     employee = EmployeeSerializer(read_only=True,many=False)
+#     class Meta:
+#         model = Prime                          
+#         fields = ['id','employee','prime_type','date_f','date_r','montant','observation']

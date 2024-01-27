@@ -110,7 +110,7 @@ const CreatePrime = ({ employee }: CreatePrimeProps) => {
                                     <Form.Control
                                         disabled
                                         type="text"
-                                        value={employee.nom}
+                                        value={employee.nom + ' ' +employee.prenom}
                                     >
                                     </Form.Control>
                                     <Form.Control

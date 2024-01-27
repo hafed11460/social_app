@@ -3,7 +3,6 @@ import { Alert, Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 
 import { useAppDispatch } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
-import { useGetEmployeesQuery } from "features/employees/employeeAPI";
 import { createFacilite } from "features/facilities/facilitiesSlice";
 import { DATE_DE_FETE, DUREE, EMPLOYEE, MONTANT, OBSERVATION } from "headers/headers";
 import { useEffect } from "react";
@@ -11,6 +10,7 @@ import { useController, useForm } from "react-hook-form";
 import { FaPlusCircle } from "react-icons/fa";
 import Select from 'react-select';
 import { IEmployee } from "types/types.employees";
+import { useGetEmployeesMutation, useGetLiteEmployeesMutation } from "features/employees/employeeAPI";
 
 
 export interface CreateFaciliteFromData {
@@ -47,15 +47,14 @@ const CreateFacilite = () => {
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     const [show, setShow] = useState(false);
     // const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
-    const { data: employees } = useGetEmployeesQuery({})
+    const [getLiteEmployees, { data: employees }] = useGetLiteEmployeesMutation({})
     const [employeesList, setEmployeesList] = useState([])
     const [error, setError] = useState()
-
     useEffect(()=>{
-        if(show){
-            
-        }
-    },[show])
+        getLiteEmployees({})
+    },[])
+    
+
     const {
         register,
         handleSubmit,
@@ -78,9 +77,7 @@ const CreateFacilite = () => {
 
     useEffect(() => {
         if (employees) {
-
             const e = employees.map((emp: IEmployee) => { return { 'value': emp.id, 'label': `${emp.nom} ${emp.prenom}` } })
-            // console.log(e)
             setEmployeesList(e)
         }
     }, [employees])

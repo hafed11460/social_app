@@ -1,114 +1,134 @@
-import { useGetPrimesMutation, useGetPrimetypesMutation } from 'features/primes/primesAPI';
-import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, OBSERVATION, PRIME_TYPE } from 'headers/headers';
-import React, { useEffect, useState } from 'react'
-import { IPrime, IPrimetypes, months } from 'types/types.employees';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { useGetPrimetypesMutation } from 'features/primes/primesAPI';
+import { getPrimes, selectPrimes, selectPrimesQuery, setSelectedDate } from 'features/primes/primesSlice';
+import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, NOM, OBSERVATION, PRENOM, PRIME_TYPE } from 'headers/headers';
+import { useEffect, useState } from 'react';
+import { Button, Card } from 'react-bootstrap';
+import { IPrime, IPrimetypes } from 'types/types.primes';
 import EditPrime from './EditPrime';
-import { Button, Col, Form, InputGroup, Navbar, Row } from 'react-bootstrap';
-import { BsFileEarmarkSpreadsheet } from 'react-icons/bs';
-import axios from 'axios';
-import { BASE_URL } from 'features/BASE_URL';
 
+interface PimesListProps{
+    procesId:number
+}
 
-export const PrimesList = () => {
+const PrimesList = ({procesId}:PimesListProps) => {
+
+    const dispatch = useAppDispatch()
+    const primes = useAppSelector(selectPrimes)
+    const query = useAppSelector(selectPrimesQuery)
+    const [isLoding, setLoading] = useState(false)
+    const [page, setPage] = useState(1)
+    // const [date, setDate] = useState(new Date('2023'))
+    const [date, setDate] = useState<Date>()
     const [show, setShow] = useState(false);
     const [pid, setPid] = useState<number>()
-    const [getPrimes,{ data }] = useGetPrimesMutation({})
     const [getPrimetypes, { data: primetypes }] = useGetPrimetypesMutation()
     const [total, setTotal] = useState<number>(0)
-    const [dateSelected,setDateSelected] = useState<string>('')
+    const [dateSelected, setDateSelected] = useState<string>('')
+    
 
-    const handleEdit = () => {
+    const handleNexYear = () => {
+        if (date) {
+            const newdate = date.setFullYear(date.getFullYear() + 1)
+            setDate(new Date(newdate))
+        }
+    }
 
+    const handlePrevYear = () => {
+        if (date) {
+            const newdate = date?.setFullYear(date.getFullYear() - 1)
+            setDate(new Date(newdate))
+        }
     }
-    const handleDateSelected =(e:React.ChangeEvent<HTMLInputElement>)=>{
-            setDateSelected(e.target.value)
-    }
-    const handleExportToExcel = async () => {
-        await axios({
-            url:`${BASE_URL}employees/primes/excel/?date=${dateSelected}`,
-            method:'GET',
-            responseType:'blob'
-        })
-            .then((res) => {
-                const url = window.URL.createObjectURL(res.data);
 
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'primes.xlsx');
-                document.body.appendChild(link);
-                link.click();
-            })
-    }
     useEffect(() => {
-        getPrimes(dateSelected)
-    }, [dateSelected])
+        if (date)
+            dispatch(setSelectedDate({ date: date?.getFullYear() }))
+    }, [date])
 
+    useEffect(() => {
+        setPage(1)
+    }, [query])
+
+
+
+    useEffect(() => {
+        if (date) {
+            setLoading(true)
+            console.log(typeof(query))
+            let q = ''
+           
+            for (let key in query) {
+                q += '&' +query[key];
+            }
+
+            dispatch(getPrimes(
+                {   procesId:procesId,
+                    date: date.getFullYear(),
+                    page: page,
+                    query: q
+                }
+            )).then(() => {
+                setLoading(false)
+            }).catch((err:any) => {
+                setLoading(false)
+            })
+        }
+    }, [procesId,date, page, query])
+
+
+    /**  For the first rendering  */
+    useEffect(() => {
+        setDate(new Date())
+    }, [])
     useEffect(() => {
         getPrimetypes({})
     }, [])
 
-    useEffect(() => {
-        if (data) {
+    // 
 
-            let t = 0
-            for (let index = 0; index < data.length; index++) {
-                const element = data[index];
-                console.log(element)
-                t += Number(element.montant)
-            }
-            setTotal(t)
-        }
-    }, [data])
+    if (!primes?.results) return <div> No results</div>
+
+
+    
+
+    
+    
+    
+    
     const PrimeRows = (prime_t: IPrimetypes) => {
-        if (!data) return
-        const primes = data.filter((prime: IPrime) => prime.prime_type.id == prime_t.id)
+        if (!primes) return
+        const data = primes.results.filter((prime: IPrime) => prime.prime_type.id == prime_t.id)
         return (
             <>
 
                 {
-                    primes.map((prime: IPrime, index: number) => (
+                    data.map((prime: IPrime, index: number) => (
                         <tr key={prime.id}>
                             {/* {index == 0 ? <th rowSpan={primes.length}> {prime_t.name}</th> : ''} */}
                             <td>{prime.prime_type.name}</td>
+                            <td>{prime.employee.nom}</td>
+                            <td>{prime.employee.prenom}</td>
                             <td>{prime.date_f}</td>
                             <td>{prime.date_r}</td>
                             <td>{prime.montant}</td>
                             <td>{prime.observation}</td>
-                            <td><Button onClick={() => { setShow(!show); setPid(prime.id) }}>Edit</Button></td>
+                            <td><Button size='sm' onClick={() => { setShow(!show); setPid(prime.id) }}>Edit</Button></td>
                         </tr>
                     ))
                 }
             </>
         )
     }
-    
+
     return (
-        <div className="card px-2">
-            <div className="card-header">
+        <Card>
+            <Card.Header>
+                {/* <HeaderNavbar /> */}
                 <EditPrime pid={pid} show={show} setShow={setShow} />
-                <Navbar className="bg-body-tertiary justify-content-between">
-                    <Form >
-                        <Form.Group>
-                            <Form.Control onChange={handleDateSelected}  type='date'></Form.Control>
-                        </Form.Group>                        
-                    </Form>
-                        <Row>
-                            <Col xs="auto">
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Search"
-                                    className=" mr-sm-2"
-                                />
-                            </Col>
-                            <Col xs="auto">
-                                <Button onClick={handleExportToExcel}><BsFileEarmarkSpreadsheet /></Button>
-                            </Col>
-                        </Row>
-                </Navbar>
-            </div>
-            <div className="card-content">
+            </Card.Header>
 
-
+            <Card.Body>
 
                 <div className="table-responsive">
                     <table className="table table-striped mb-0">
@@ -116,6 +136,8 @@ export const PrimesList = () => {
                             <tr>
                                 {/* <th>{PRIME_TYPE}</th> */}
                                 <th>{PRIME_TYPE}</th>
+                                <th>{NOM}</th>
+                                <th>{PRENOM}</th>
                                 <th>{DATE_DE_FETE}</th>
                                 <th>{DATE_DE_RECEPTION}</th>
                                 <th>{MONTANT}</th>
@@ -134,7 +156,7 @@ export const PrimesList = () => {
                                 ))
                             }
                             <tr>
-                                <td colSpan={3}>Total</td>
+                                <td colSpan={5}>Total</td>
                                 <td >{total}</td>
                                 {/* <td >Total</td>
                                 <td >Total</td> */}
@@ -142,7 +164,9 @@ export const PrimesList = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </Card.Body>            
+        </Card>
     )
 }
+
+export default PrimesList

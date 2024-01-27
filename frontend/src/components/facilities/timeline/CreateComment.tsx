@@ -8,6 +8,7 @@ import { OBSERVATION } from "headers/headers";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ITimeline } from "types/types.facilities";
+import ErrorCell from "./ErrorCell";
 
 
 export interface CreateCommentFromData {
@@ -47,6 +48,9 @@ const CreateComment = ({timeline,show,setShow}:CreateCommentProps) => {
         .unwrap()
         .then(()=>{
             setShow(false)
+        }).catch((err:any)=>{
+            console.log(err)
+            setError(err['error'])
         })
     };
 
@@ -63,7 +67,6 @@ const CreateComment = ({timeline,show,setShow}:CreateCommentProps) => {
               
                 <Modal.Body
                     className="p-0"
-                // className=" mb-4 mt-3 px-5 pt-5"
                 >
 
                     <Card as={Form} className="form-vertical"
@@ -72,8 +75,7 @@ const CreateComment = ({timeline,show,setShow}:CreateCommentProps) => {
                         {error &&
                             <Card.Header>
                                 <Alert variant="warning">
-                                    <h4 className="alert-heading">Warning</h4>
-                                    <ErrorText name='error' error={error} variant="dark" />
+                                    <ErrorCell  error={error} variant="dark" />
                                 </Alert>
                             </Card.Header>
                         }

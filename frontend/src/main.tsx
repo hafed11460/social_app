@@ -12,6 +12,15 @@ import "assets/global.css"
 // import 'assets/base.css'
 
 
+export interface RowSetting {
+  matricule?: boolean,
+  employee?: boolean,
+  duree?: boolean,
+  date_achat?: boolean,
+  montant?: boolean,
+  solde?: boolean,
+}
+
 export interface AppAction {
   type: string;
   payload: any
@@ -24,15 +33,23 @@ interface AppSettings {
   isHide: boolean,
   suFix?: boolean,
   config?: any,
-
+  row?: RowSetting,
 }
 
 export const settings: AppSettings = {
-  isOverflow:false,
+  isOverflow: false,
   isDark: true,
   isSidebar: false,
   isHide: false,
-  suFix: false
+  suFix: false,
+  row: {
+    matricule: true,
+    employee: true,
+    duree: true,
+    date_achat: true,
+    montant: true,
+    solde: true,
+  }
 }
 
 
@@ -75,12 +92,12 @@ export const configReducer = (state: AppSettings, action: AppAction) => {
 }
 
 export const MainContext = ({ children }: { children: ReactNode }) => {
-  
   const configState = {
     isOverflow: getItemFromStore('isOverflow', settings.isOverflow),
     isDark: getItemFromStore('isDark', settings.isDark),
     isHide: getItemFromStore('isHide', settings.isHide),
     isSidebar: getItemFromStore('isHide', settings.isSidebar),
+    row: getItemFromStore('isHide', settings.row),
   };
 
   const [config, dispatch] = useReducer(configReducer, configState);
@@ -103,12 +120,13 @@ export const MainContext = ({ children }: { children: ReactNode }) => {
           'isDark',
           'isHide',
           'isSidebar',
+          'row'
         ].includes(key)
       }
     });
   };
-  
-  
+
+
   // if (!isLoaded) {
   //       return (
   //         <div

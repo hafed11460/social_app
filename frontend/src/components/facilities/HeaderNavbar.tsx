@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Col, Form, Navbar, Row } from "react-bootstrap"
 import CreateFacilite from "./CreateFacilite"
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
 import { BsChevronLeft, BsChevronRight, BsFilterSquareFill, BsFunnelFill } from 'react-icons/bs'
 import { useAppDispatch, useAppSelector } from "app/hooks"
 import { selectQuery, setQuery } from "features/facilities/facilitiesSlice"
@@ -16,6 +16,23 @@ interface HeaderNavbarProps {
 const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbarProps) => {
     const dispatch = useAppDispatch()
     const query = useAppSelector(selectQuery)
+    const [checked, setChecked] = useState(false);
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked(event.target.checked);
+    };
+    useEffect(() => {
+        if(checked){
+            let query = `is_completed=${checked}`
+            dispatch(setQuery({ key: 'is_completed', query: query }))
+        }else{
+            dispatch(setQuery({ key: 'is_completed', query: '' }))
+        }
+    }, [checked])
+
+    useEffect(() => {
+        if (Object.keys(query).length === 0)
+            setChecked(false)
+    },[query])
 
     return (
         <Navbar className='justify-content-between p-0 px-2 rounded mb-2 ' style={{ height: '50px', backgroundColor: "#eeeeee" }}>
@@ -33,13 +50,22 @@ const HeaderNavbar = memo(({ date, handlePrevYear, handleNexYear }: HeaderNavbar
                             <BsFunnelFill />
                         </Button>
                     </Col>
-                    <Col xs="auto">
-                        <Form.Control
+                    <Col xs="auto" className="d-flex  align-items-center">
+                        <Form.Group>
+                                <Form.Check
+                                    checked={checked}
+                                    onChange={handleCheckboxChange}
+                                    label="Completed"
+                                // className="mx-1"
+                                />
+                        </Form.Group>
+
+                        {/* <Form.Control
                             size="sm"
                             type="text"
                             placeholder="Search"
                             className=" mr-sm-2"
-                        />
+                        /> */}
                     </Col>
 
                 </Row>

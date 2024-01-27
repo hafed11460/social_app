@@ -18,19 +18,6 @@ export interface IEmployee {
     created_at: string,
 }
 
-export interface IPrime {
-    id: number,
-    employee: number,
-    prime_type: IPrimetypes,
-    date_f: string,
-    date_r: string,
-    montant: number,
-    observation: string
-}
-export interface IPrimetypes {
-    id: number,
-    name: string
-}
 
 export const months = {
     1:'janvier',

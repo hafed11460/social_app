@@ -25,6 +25,7 @@ export interface IFacilite{
     date_achat:string,
     is_completed:boolean,
     timelines:ITimeline[], 
+    observation:string
 }
 
 export interface FaciliteFilterData {

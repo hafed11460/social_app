@@ -2,7 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from 'features/AxiosBaseQuery'
 
-const primes_root = '/employees/primes'
+const primes_root = '/primes'
 
 export const primesAPI = createApi({
   reducerPath: 'primesAPI',
@@ -20,6 +20,19 @@ export const primesAPI = createApi({
       },
     }),
 
+    getEmployeePrimes: builder.query({
+      query: (eid:number) => {
+        return {
+          // url: `${primes_root}/`,
+          url: `employees/${eid}/primes/`,
+          method: 'GET',
+          data: {},
+        }
+      },
+
+      // providesTags: (data) =>
+      //   data ? data.map(({ id }: { id: number }) => ({ type: 'Primes', id })) : ['Primes'],
+    }),
     getPrimes: builder.mutation({
       query: (params = null) => {
         return {
@@ -71,6 +84,7 @@ export const primesAPI = createApi({
 })
 
 export const {
+  useGetEmployeePrimesQuery,
   useGetPrimetypesMutation,
   useAddPrimeMutation,
   useGetPrimesMutation,

@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import PropertiesService from "./propertiesServices";
+import { IEmployee } from "types/types.employees";
+
+interface IQuery {
+    [key: string]: string | number | Array<any>,
+}
 
 export const getAgencyProperties = createAsyncThunk(
     'properties/agency',
@@ -38,13 +43,37 @@ export const deleteProperty = createAsyncThunk(
         return postId;
     })
 
-const initialState = {
-    properties: [],
-    error: null,
-    listingID: null,
+interface EmployeeResponse {
+    results: IEmployee[],
+    pages: number,
+    count: number,
+    links: {
+        next: string,
+        previous: string,
+        current: string
+    },
+}
 
+interface EmployeesState {
+    selectedDate?: number,
+    query: IQuery,
+    facilities?: EmployeeResponse,
+    employeeFacilities?: EmployeeResponse,
+    count?: number,
+    pages?: number,
+}
+
+
+const initialState: EmployeesState = {
+    facilities: undefined,
+    employeeFacilities: undefined,
+    query: {},
+    count: 0,
+    pages: 1,
+    isError: false,
     isLoading: false,
-    isSuccess: false,
+    error: null,
+    isSuccess: false
 }
 
 export const propertiesSlice = createSlice({
@@ -54,8 +83,16 @@ export const propertiesSlice = createSlice({
         setInitialiseState(state) {
             state.properties = []
         },
+        setEmployeeQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
+            if (key === 'init') {
+                state.query = {}
+            } else {
+                state.query[`${key}`] = query
+            }
+            // state.test['matricule'] = 'test'
+        },
     },
-    extraReducers: (builder)=>{
+    extraReducers: (builder) => {
         builder.addCase(getAgencyProperties.pending, (state, action) => {
             state.isLoading = true;
         })
@@ -196,10 +233,10 @@ export const propertiesSlice = createSlice({
         builder.addCase(deleteProperty.rejected, (state, action) => {
             state.isLoading = false;
             state.isSuccess = false
-        //     state.isError = true
-        //     state.error = action.payload;
+            //     state.isError = true
+            //     state.error = action.payload;
         })
-        
+
         // [deleteProperty.pending]: (state, action) => {
         //     state.isLoading = true;
         // },

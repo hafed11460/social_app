@@ -2,7 +2,7 @@ import "assets/compiled/css/auth.css";
 import { useLoginUserMutation } from "features/auth/authApi";
 import { setLoginUser } from "features/auth/authSlice";
 import { useEffect, useState } from "react";
-import { Button, Col, Form } from "react-bootstrap";
+import { Button, Card, Col, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -48,15 +48,17 @@ const Login = () => {
     }
   }, [isSuccess])
   return (
+    
     <div id="auth">
       <div className="row h-100 border align-items-center ">
 
-        <Col className="border shadow-sm"
+        <Col 
+        // className="border shadow-sm"
           xs={{ span: 12 }}
           md={{ offset: 2, span: 8 }}
           lg={{ offset: 4, span: 4 }}
         >
-          <div id="auth-left">
+          <Card id="auth-left" className="border shadow-sm">
             <h4 className="auth-title">Log in.</h4>
             <Form onSubmit={handleSubmit(onSubmit)}>
               <Form.Group
@@ -93,7 +95,7 @@ const Login = () => {
               </Form.Group>
               <Button type="submit" className="btn btn-primary btn-block btn-lg shadow-lg mt-5">Login</Button>
             </Form>
-          </div>
+          </Card>
         </Col>
         {/* <div className="col-lg-7 d-none d-lg-block">
           <div id="auth-right"></div>

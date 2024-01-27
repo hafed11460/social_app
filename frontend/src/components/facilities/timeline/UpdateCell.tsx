@@ -1,12 +1,10 @@
+import { useAppDispatch } from "app/hooks";
 import { deleteTimeline, updateTimeline } from "features/facilities/facilitiesSlice";
-import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState, useSignal } from "react";
+import { KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { BsFillPenFill, BsTrash } from "react-icons/bs";
 import { ITimeline } from "types/types.facilities";
 import CreateComment from "./CreateComment";
-import ErrorCell from "./ErrorCell";
-import { useAppDispatch } from "app/hooks";
-import { BsFillPenFill, BsTrash } from "react-icons/bs";
 
 interface UpdateCellProps {
     timeline: ITimeline,
@@ -228,15 +226,16 @@ const UpdateCell = memo(({ timeline, isExist, isFacCompleted }: UpdateCellProps)
                 ref={menuRef}
                 show={showMenu}
                 className=" dropdown-menu-card rounded-0 shadow dropdown-menu-end mt-2 p-0">
-                <div className="position-absolute " style={
-                    {
+                <div style={
+                    {   
+                        position:'absolute',
+                        width:"0px",
+                        height:"0px",
                         right: '0px',
-                        top:'-20px',
-                        border: '10px solid',
-                        borderTop: '10px solid transparent !important',
-                        borderRight: '10px solid transparent !important',
-                        borderBottom: '10px solid orange',
-                        borderLeft: '10px solid transparent !important',
+                        top:'-8px',
+                        borderRight: '8px solid transparent',
+                        borderLeft: '8px solid transparent',
+                        borderBottom: '10px solid white',
                     }
                 }></div>
                 <Dropdown.Item className="border-bottom" onClick={handleDelete}><BsTrash /> Remove </Dropdown.Item>

@@ -10,11 +10,24 @@ export const employeeAPI = createApi({
   tagTypes: ['Employees'],
   endpoints: (builder) => ({
 
-    getEmployees: builder.query({
+    getEmployees: builder.mutation({
       query: (params = null) => {
         return {
-          url: `${employees_root}/`,
-          // url: `${employees_root}/${params != null ? params : ''}`,
+          // url: `${employees_root}/`,
+          url: `${employees_root}/?page=${params.page ? params.page : ''}`,
+          method: 'GET',
+          data: {},
+        }
+      },
+
+      // providesTags: (data) =>
+      //   data ? data.results.map(({ id }: { id: number }) => ({ type: 'Employees', id })) : ['Employees'],
+    }),
+    getLiteEmployees: builder.mutation({
+      query: (params = null) => {
+        return {
+          // url: `${employees_root}/`,
+          url: `${employees_root}/lite/`,
           method: 'GET',
           data: {},
         }
@@ -38,7 +51,7 @@ export const employeeAPI = createApi({
 
 
     getEmployeeById: builder.query({
-      query: (eid:any) => {
+      query: (eid:string) => {
         return {
           url: `${employees_root}/${eid}/`,
           method: 'GET',
@@ -114,7 +127,9 @@ export const employeeAPI = createApi({
 })
 
 export const {
-  useGetEmployeesQuery,
+  useGetEmployeesMutation,
+  useGetLiteEmployeesMutation,
+  // useGetEmployeesQuery,
   useGetEmployeeByIdQuery
 } = employeeAPI
 

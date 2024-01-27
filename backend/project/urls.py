@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/auth/',include('users.urls')),
     path('api/employees/',include('employees.urls')),
     path('api/facilities/',include('facilities.urls')),
+    path('api/primes/',include('primes.urls')),
 ]
 
 if settings.DEBUG:

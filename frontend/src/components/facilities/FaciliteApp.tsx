@@ -1,28 +1,16 @@
-// import { facilities } from 'data/facilities'
-// import { useGetFaciliteQuery, useGetFacilitesQuery, useGetFacilitiesMutation } from 'features/facilities/facilitiesAPI'
 import { getFacilities, selectFacilities, selectQuery, setSelectedDate } from 'features/facilities/facilitiesSlice'
-import { memo, useEffect, useRef, useState } from 'react'
-import { Button, ButtonGroup, Card, Col, Form, Navbar, Pagination, Row, Spinner } from 'react-bootstrap'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { IFacilite } from 'types/types.facilities'
-import CellsRow from './CellsRow'
-import HeaderRow from './HeaderRow'
-import CreateFacilite from './CreateFacilite'
-import HeaderNavbar from './HeaderNavbar'
+import { useEffect, useRef, useState } from 'react'
+import { Card, Pagination, Spinner } from 'react-bootstrap'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-
-
-
-
-
+import { IFacilite } from 'types/types.facilities'
+import HeaderNavbar from './HeaderNavbar'
+import HeaderRow from './timeline/HeaderRow'
+import CellsRow from './timeline/CellsRow'
 
 const LodingSpiner = ({ isLoding }: { isLoding: boolean }) => {
     if (isLoding) return <Spinner animation="border" variant="primary" />
     return null
 }
-
-
 
 const FaciliteApp = () => {
     const dispatch = useAppDispatch()
@@ -32,7 +20,7 @@ const FaciliteApp = () => {
     const [page, setPage] = useState(1)
     // const [date, setDate] = useState(new Date('2023'))
     const [date, setDate] = useState<Date>()
-    const dateRef = useRef(date)
+    
 
     const handleNexYear = () => {
         if (date) {
@@ -46,10 +34,16 @@ const FaciliteApp = () => {
             setDate(new Date(newdate))
         }
     }
+
     useEffect(() => {
         if (date)
             dispatch(setSelectedDate({ date: date?.getFullYear() }))
     }, [date])
+
+    useEffect(() => {
+        setPage(1)
+    }, [query])
+
 
 
     useEffect(() => {
@@ -79,7 +73,7 @@ const FaciliteApp = () => {
 
     /**  For the first rendering  */
     useEffect(() => {
-        setDate(new Date('2023'))
+        setDate(new Date())
     }, [])
 
     // 

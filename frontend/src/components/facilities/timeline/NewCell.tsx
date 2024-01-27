@@ -11,6 +11,7 @@ interface NewCellProps {
     timeline: ITimeline,
     month: number,
     year: number,
+    isFacCompleted: boolean,
 }
 
 interface CustomTooltipProps {
@@ -28,7 +29,7 @@ const CustomTooltip = ({ error }: CustomTooltipProps) => {
     )
 }
 
-const NewCell = ({ timeline, month, year }: NewCellProps) => {
+const NewCell = ({ timeline, month, year,isFacCompleted }: NewCellProps) => {
     const dispatch = useAppDispatch()
     const [showMenu, setShowMenu] = useState(false);
     // const inputRef = useRef(Number(timeline ? timeline.somme : 0));
@@ -155,7 +156,7 @@ const NewCell = ({ timeline, month, year }: NewCellProps) => {
                     {value == 0 ? '-' : value}
                 </div> :
                 <input
-                    // disabled={isFacCompleted}
+                    disabled={isFacCompleted}
                     // onInput={onChange}
                     onKeyUp={onKeyUp}
                     value={value === 0 ? '' : value}

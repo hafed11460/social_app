@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'users', 
     'employees', 
     'facilities', 
+    'primes', 
 ]
 
 MIDDLEWARE = [

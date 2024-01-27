@@ -1,85 +1,87 @@
-import { useGetEmployeesQuery } from 'features/employees/employeeAPI'
-import React from 'react'
-import { Button, Card, Table } from 'react-bootstrap'
-import { IEmployee } from 'types/types.employees'
 import "assets/compiled/css/table-datatable.css"
-import DataTable from 'react-data-table-component'
-import { BsPencilFill } from 'react-icons/bs'
-import { Link } from 'react-router-dom'
 import CreatePrime from 'components/primes/CreatePrime'
+import { useGetEmployeesMutation } from 'features/employees/employeeAPI'
+import { DATE_ENTREE, DATE_NAISSANCE, DIRECTION, MATRICULE, NOM, POSTE, PRENOM } from 'headers/headers'
+import { useEffect, useState } from 'react'
+import { Card } from 'react-bootstrap'
+import DataTable from 'react-data-table-component'
+import { Link } from 'react-router-dom'
+import { IEmployee } from 'types/types.employees'
+import EmployeeNavbar from './EmployeeNavbar'
+import MatriculeFilter from "./filters/MatriculeFilter"
 
 
 
 
 const EmployeesList = () => {
-  const { data, isSuccess, isLoading } = useGetEmployeesQuery({})
+
+  const [getEmployees, { data, isSuccess, isLoading }] = useGetEmployeesMutation({})
+  const [currentPage, setcurrentPage] = useState(1)
   const handleEdit = (row: IEmployee) => {
     alert(row.nom)
   }
-  const columns = [
-    {
-      name: 'Id',
-      selector: (row: IEmployee) => row.id,
-      sortable: true,
-      width: '70px'
-    },
-    {
-      name: 'Matricule',
-      selector: (row: IEmployee) => row.matricule,
-      sortable: true,
-      width: '100px'
-    },
-    {
-      name: 'Nom',
-      selector: (row: IEmployee) => row.nom,
-      sortable: true,
-    },
-    {
-      name: 'Prenom',
-      selector: (row: IEmployee) => row.prenom,
-      sortable: true,
-    },
-    {
-      name: 'Date N',
-      selector: (row: IEmployee) => row.date_n,
-      sortable: true,
-      width: '100px'
-    },
-    {
-      name: 'Date Entrer',
-      selector: (row: IEmployee) => row.date_e,
-      sortable: true,
-      width: '100px'
-    },
-    {
-      name: 'Poste',
-      selector: (row: IEmployee) => row.poste,
-      sortable: true,
-    },
-    {
-      name: 'Direction',
-      selector: (row: IEmployee) => row.direction.name,
-      // sortable: true,
-    },
-    {
-      name: 'Action',
-      cell: (row: IEmployee) =>
-        <div className='buttons'>
-          <CreatePrime employee={row} />
-          <Link className='btn btn-success btn-sm' to={`/employees/${row.id}`}>View</Link>
-        </div>,
-      // cell: (row:IEmployee) => <Button onClick={()=>handleEdit(row)} ><BsPencilFill /></Button>,
 
-      // sortable: true,
-    },
-  ];
+
+  useEffect(() => {
+    getEmployees({ page: currentPage })
+  }, [currentPage])
+
   if (isLoading) return <>Loding ...</>
+  if (!data) return null
   return (
     <Card>
       <Card.Body>
+        <EmployeeNavbar pages={data.pages} currentPage={currentPage} setcurrentPage={setcurrentPage} />
+        <div className="table-responsive">
+          <table className="table table-striped table-bordered mb-0">
+            <thead>
+              <tr>
+                {/* <th>{PRIME_TYPE}</th> */}
+                <th>
+                  <MatriculeFilter />
+                  {MATRICULE}
+                </th>
+                <th>{NOM}</th>
+                <th>{PRENOM}</th>
+                <th>{DATE_NAISSANCE}</th>
+                <th>{DATE_ENTREE}</th>
+                <th>{POSTE}</th>
+                <th>{DIRECTION}</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                data.results && data.results.map((employee: IEmployee, index: number) => (
+                  <tr key={employee.id}>
+                    {/* {index == 0 ? <th rowSpan={primes.length}> {prime_t.name}</th> : ''} */}
+                    <td>{employee.matricule}</td>
+                    <td>{employee.nom}</td>
+                    <td>{employee.prenom}</td>
+                    <td>{employee.date_n}</td>
+                    <td>{employee.date_e}</td>
+                    <td>{employee.poste}</td>
+                    <td>{employee.direction.name}</td>
+                    <td><div className='buttons'>
+                      <CreatePrime employee={employee} />
+                      <Link className='btn btn-success btn-sm' to={`/employees/${employee.matricule}/`}>View</Link>
+                    </div></td>
+                  </tr>
+                ))
+              }
+
+            </tbody>
+          </table>
+        </div>
+      </Card.Body>
+    </Card>
+  )
+  return (
+    <Card className='shadow-sm'>
+      <Card.Body>
         <DataTable
           columns={columns}
-          data={data}
+          data={data.results}
           pagination
         />
         {/* <Table>
