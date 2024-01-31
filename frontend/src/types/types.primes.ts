@@ -12,6 +12,7 @@ export interface IPFilterArgs{
 export interface IPrime {
     id: number,
     employee: number,
+    proces_v: number,
     prime_type: IPrimetypes,
     date_f: string,
     date_r: string,
@@ -25,7 +26,9 @@ export interface IPrimetypes {
 
 export interface IProcesVerbal {
     id: number,
-    name: string
+    name: string,
+    observation?:string
+    is_open:boolean
 }
 
 

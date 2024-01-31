@@ -5,7 +5,7 @@ from .models import ProcesVerbal,Prime,Primetype
 
 
 class ProcesVerbalAdmin(admin.ModelAdmin):
-    list_display=['name']
+    list_display=['id','name','is_open']
 
 class PrimetypeAdmin(admin.ModelAdmin):
     list_display=['name']

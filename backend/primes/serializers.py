@@ -44,7 +44,7 @@ class PrimeSerialiser(serializers.ModelSerializer):
 class CreatePrimeSerializer(serializers.ModelSerializer):       
     class Meta:
         model = Prime
-        fields = ['employee','prime_type','date_f','date_r','montant','observation']
+        fields = ['proces_v','employee','prime_type','date_f','date_r','montant','observation']
 
 
 
@@ -54,7 +54,7 @@ class CreatePrimeSerializer(serializers.ModelSerializer):
 
 class UpdatePrimeSerializer(serializers.ModelSerializer):
     prime_type = serializers.PrimaryKeyRelatedField(queryset=Primetype.objects.all(),many=False)
-    employee = EmployeeSerializer(read_only=True,many=False)
+    employee = LiteEmployeeSerializer(read_only=True,many=False)
     class Meta:
         model = Prime                          
-        fields = ['id','employee','prime_type','date_f','date_r','montant','observation']
+        fields = ['id','employee','proces_v','prime_type','date_f','date_r','montant','observation']

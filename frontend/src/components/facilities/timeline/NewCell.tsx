@@ -51,6 +51,7 @@ const NewCell = ({ timeline, month, year,isFacCompleted }: NewCellProps) => {
         setIsEdit(false)
         if (newTLine.somme <= 0) return;
         if (!newTLine.id && newTLine.somme) {
+            console.log(newTLine)
             dispatch(createTimeline(newTLine))
                 .unwrap()
                 .then(() => {

@@ -91,8 +91,8 @@ const FaciliteApp = () => {
                     <div className="container-div flex-sheet">
                         <HeaderRow />
                         {
-                            facilities.results && facilities.results.map((facilite: IFacilite) =>
-                                <CellsRow key={facilite.id} facilite={facilite} year={date ? date.getFullYear() : 0} />
+                            (facilities.results && date)  && facilities.results.map((facilite: IFacilite) =>
+                                <CellsRow key={facilite.id} facilite={facilite} year={ date.getFullYear()} />
                             )
                         }
                     </div>

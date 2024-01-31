@@ -13,14 +13,15 @@ class Primetype(models.Model):
 
 class ProcesVerbal(WithTimestamp, models.Model):
     name = models.CharField(_("Name"), max_length=50)
-    is_open = models.BooleanField(_("State"),default=True)
+    is_open = models.BooleanField(_("Is Open"),default=True)
+    observation = models.TextField(_("Observation"), null=True, blank=True)
 
     def __str__(self):
         return f'{self.name}'
     
     
 class Prime(WithTimestamp, models.Model):
-    proces_v = models.ForeignKey(ProcesVerbal, verbose_name=_("Proces Verbal"), on_delete=models.DO_NOTHING)
+    proces_v = models.ForeignKey(ProcesVerbal, verbose_name=_("Proces Verbal"), on_delete=models.CASCADE)
     employee = models.ForeignKey(
         Employee,
         related_name="primes",

@@ -63,7 +63,7 @@ const EmployeesList = () => {
                     <td>{employee.poste}</td>
                     <td>{employee.direction.name}</td>
                     <td><div className='buttons'>
-                      <CreatePrime employee={employee} />
+                      {/* <CreatePrime employee={employee} /> */}
                       <Link className='btn btn-success btn-sm' to={`/employees/${employee.matricule}/`}>View</Link>
                     </div></td>
                   </tr>

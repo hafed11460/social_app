@@ -14,20 +14,7 @@ interface NewCellProps {
     year: number,
 }
 
-const NewCell___ = ({ facilite, month, year }: NewCellProps) => {
-    const cell = {
-        facilite: facilite.id,
-        month: month,
-        mois: `${year}-${month}-01`,
-        somme: 0,
-        is_commited: false,
-        observation: ""
-    }
-    return (
-        <UpdateCell timeline={cell} isExist={true} isFacCompleted={false} />
-    )
 
-}
 
 
 
@@ -35,7 +22,8 @@ const NewCell___ = ({ facilite, month, year }: NewCellProps) => {
 const Cells = ({ facilite, month, year }: EditCellProps) => {
     let item: ITimeline | undefined = facilite.timelines.find((item: ITimeline) => item.month == month)
 
-    if (item === undefined)
+    if (item === undefined){
+        console.log('year',year)
         return <NewCell timeline={{
             id: 0,
             facilite: facilite.id,
@@ -45,7 +33,8 @@ const Cells = ({ facilite, month, year }: EditCellProps) => {
             is_commited: false,
             observation: ""
         }} month={month} year={year} isFacCompleted={facilite.is_completed} />
-
+    }
+        
     return <UpdateCell timeline={item} isExist={true} isFacCompleted={facilite.is_completed} />
 
 }

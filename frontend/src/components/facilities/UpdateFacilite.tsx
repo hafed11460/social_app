@@ -226,10 +226,10 @@ const UpdateFacilite = ({ facilite, show, setShow }: UpdateFaciliteProps) => {
                                         type="date"
                                         {...register("date_achat", { required: "This Feild Is required" })}
                                     /> */}
-                                    <ErrorText name='date_achat' error={error} />
-                                    {errors.date_f && (
+                                    <ErrorText name='is_completed' error={error} />
+                                    {errors.is_completed && (
                                         <Form.Text className="text-danger">
-                                            {errors.date_f.message}
+                                            {errors.is_completed.message}
                                         </Form.Text>
                                     )}
                                 </Form.Group>

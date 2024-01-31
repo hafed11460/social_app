@@ -2,19 +2,24 @@
 import { useState } from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 
+import { useAppDispatch, useAppSelector } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
+import { useGetLiteEmployeesMutation } from "features/employees/employeeAPI";
+import { useGetPrimetypesMutation } from "features/primes/primesAPI";
+import { createPrime, selectCurrentProcesV } from "features/primes/primesSlice";
+import { DATE_DE_FETE, DATE_DE_RECEPTION, EMPLOYEE, MONTANT, OBSERVATION, PRIME_TYPE } from "headers/headers";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { FaPlusCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
-import { IEmployee, IPrimetypes } from "types/types.employees";
-import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, OBSERVATION, PRIME_TYPE } from "headers/headers";
-import { useAddPrimeMutation, useGetPrimetypesMutation } from "features/primes/primesAPI";
+import ReactSelect from "react-select";
+import { IEmployee } from "types/types.employees";
+import { IPrime, IPrimetypes } from "types/types.primes";
 
 
 
 export interface CreatePrimeFromData {
     employee: number,
+    proces_v: number,
     prime_type: string,
     date_f: string,
     date_r: string,
@@ -23,43 +28,79 @@ export interface CreatePrimeFromData {
     [key: string]: string | number | Array<any>,
 }
 
-const initState = {
-    // employee: 0,
-    prime_type: '1',
-    date_f: '12/08/2023',
-    date_r: '12/08/2023',
-    montant: 15000,
-    observation: 'This test',
-}
+
 
 
 
 
 interface CreatePrimeProps {
-    employee: IEmployee
+    // employee: IEmployee,
+    is_open:boolean,
+    procesId: number
 }
 
 
-const CreatePrime = ({ employee }: CreatePrimeProps) => {
-
-
+const CreatePrime = () => {
+    const proces_v = useAppSelector(selectCurrentProcesV)
+    const dispatch = useAppDispatch()
     const [show, setShow] = useState(false);
     const [getPrimetypes, { data: primetypes, isLoading }] = useGetPrimetypesMutation()
-    const [addProperty, { isSuccess, error }] = useAddPrimeMutation()
-
+    const [getLiteEmployees, { data: employees }] = useGetLiteEmployeesMutation({})
+    const [employeesList, setEmployeesList] = useState([])
+    const [error, setError] = useState()
+    const initState = {
+        // proces_v: proces_v.id,
+        prime_type: '1',
+        date_f: '12/08/2023',
+        date_r: '12/08/2023',
+        montant: 15000,
+        observation: 'This test',
+    }
     const {
         register,
         handleSubmit,
         getValues,
+        setValue,
+        control,
         formState: { errors }
-    } = useForm<CreatePrimeFromData>({
+    } = useForm<IPrime>({
         mode: 'onBlur',
-        defaultValues: initState
+        // defaultValues: initState
     })
 
-    const onSubmitData = async (values: CreatePrimeFromData) => {
-        addProperty(values)
+    const { field: { value: employeeValue, onChange: employeeChange, ...employeeField } } = useController({ name: 'employee', control });
+
+
+    const onSubmitData = async (values: IPrime) => {
+        // addProperty(values)
+        // dispatch(createPrime(values))
+        dispatch(createPrime(values))
+            .unwrap()
+            .then(() => {
+                setShow(false)
+            }).catch((err: any) => {
+                console.log(err)
+                setShow(false)
+                setError(err['error'])
+            })
     };
+    useEffect(() => {
+        if (proces_v)
+            setValue('proces_v', proces_v.id)
+
+    }, [proces_v])
+
+
+    useEffect(() => {
+        getLiteEmployees({})
+    }, [])
+
+    useEffect(() => {
+        if (employees) {
+            const e = employees.map((emp: IEmployee) => { return { 'value': emp.id, 'label': `${emp.nom} ${emp.prenom}` } })
+            setEmployeesList(e)
+        }
+    }, [employees])
 
     useEffect(() => {
         if (show) {
@@ -67,19 +108,10 @@ const CreatePrime = ({ employee }: CreatePrimeProps) => {
         }
     }, [show])
 
-    useEffect(() => {
-        if (isSuccess) {
-            // setInitialValues(initState)
-            setShow(false)
-            toast.success('Property add Successfully')
-        }
-    }, [isSuccess])
-
-    if (isLoading) return <>Loading </>
-
+    if(!proces_v) return null
     return (
         <>
-            <Button size="sm" onClick={() => setShow(!show)}>
+            <Button disabled={!proces_v.is_open} size="sm" onClick={() => setShow(!show)}>
                 <FaPlusCircle /> Prime
             </Button>
 
@@ -91,6 +123,9 @@ const CreatePrime = ({ employee }: CreatePrimeProps) => {
                 centered
                 aria-labelledby="contained-modal-title-vcenter"
             >
+                <Modal.Header className="text-danger" >
+                    {error}
+                </Modal.Header>
                 <Modal.Body
                     className="p-0"
                 // className=" mb-4 mt-3 px-5 pt-5"
@@ -99,28 +134,53 @@ const CreatePrime = ({ employee }: CreatePrimeProps) => {
                     <Card as={Form} className="form-vertical"
                         onSubmit={handleSubmit(onSubmitData)}
                         style={{ minHeight: "550px", minWidth: '650px' }}>
-                        <Card.Header>
+                        {/* <Card.Header>
                             <h4 className="card-title"> Create Prime For {employee.nom} {employee.prenom}</h4>
 
-                        </Card.Header>
+                        </Card.Header> */}
                         <Card.Body>
                             <Row>
-                                <Form.Group className="mb-3 " >
-                                    <Form.Label>Employee</Form.Label>
+                                <Form.Group>
                                     <Form.Control
-                                        disabled
                                         type="text"
-                                        value={employee.nom + ' ' +employee.prenom}
-                                    >
-                                    </Form.Control>
-                                    <Form.Control
-                                        type="hidden"
-                                        value={employee.id}
-                                        {...register("employee", { required: "This Feild Is required" })}
-                                    >
+                                        // value={procesId}
+                                        {...register("proces_v", { required: "This Feild Is required" })}
+                                    />
+                                    <ErrorText name='proces_v' error={error} />
+                                    {errors.proces_v && (
+                                        <Form.Text className="text-danger">
+                                            {errors.proces_v.message}
+                                        </Form.Text>
+                                    )}
 
-                                    </Form.Control>
                                 </Form.Group>
+                                <Form.Group className="mb-3 " >
+                                    <Form.Label>{EMPLOYEE}</Form.Label>
+                                    <ReactSelect
+                                        className="basic-single"
+                                        classNamePrefix="select"
+                                        // defaultValue={colourOptions[0]}
+                                        // isDisabled={isDisabled}
+                                        // isLoading={isLoading}
+                                        // isClearable={isClearable}
+                                        // isRtl={isRtl}
+                                        isSearchable={true}
+                                        // name="color"
+                                        value={employeeValue ? employeesList.find((x: IEmployee) => x.id === employeeValue) : employeeValue}
+                                        onChange={option => employeeChange(option ? option.value : option)}
+                                        {...employeeField}
+                                        // {...register("employee", { required: "This Feild Is required" })}
+                                        options={employeesList}
+                                    />
+
+                                    {/* <ErrorText name='city' error={error} /> */}
+                                    {errors.employee && (
+                                        <Form.Text className="text-danger">
+                                            {errors.employee.message}
+                                        </Form.Text>
+                                    )}
+                                </Form.Group>
+
 
 
                                 <Form.Group as={Col} md={6} className="mb-3 " >
@@ -193,7 +253,7 @@ const CreatePrime = ({ employee }: CreatePrimeProps) => {
                                     <Form.Control
                                         as={'textarea'}
                                         rows={3}
-                                        {...register("observation", { required: "This Feild Is required" })}
+                                        {...register("observation")}
                                     />
                                     <ErrorText name='observation' error={error} />
                                     {errors.observation && (
@@ -204,15 +264,7 @@ const CreatePrime = ({ employee }: CreatePrimeProps) => {
                                 </Form.Group>
                             </Row>
                         </Card.Body>
-                        <Card.Footer>
-
-                            {/* <div className="d-flex justify-content-between mt-3 ">
-                                <div>
-                                    <Button type="submit" variant="primary" >
-                                        Next<FaAngleRight size={20} />
-                                    </Button>
-                                </div>
-                            </div> */}
+                        <Card.Footer>                          
                             <div className="col-12 d-flex justify-content-end">
                                 <button type="submit" className="btn btn-primary me-1 mb-1">Submit</button>
                             </div>

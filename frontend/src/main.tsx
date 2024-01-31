@@ -91,7 +91,11 @@ export const configReducer = (state: AppSettings, action: AppAction) => {
   }
 }
 
-export const MainContext = ({ children }: { children: ReactNode }) => {
+interface MainContextProps{
+  children:ReactNode
+}
+
+export const MainContext = ({ children }: MainContextProps) => {
   const configState = {
     isOverflow: getItemFromStore('isOverflow', settings.isOverflow),
     isDark: getItemFromStore('isDark', settings.isDark),

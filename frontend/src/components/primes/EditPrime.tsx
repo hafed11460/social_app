@@ -2,12 +2,14 @@
 import { Card, Col, Form, Modal, Row } from "react-bootstrap";
 
 import ErrorText from "components/common/ErrorText";
-import { useAddPrimeMutation, useGetPrimeByIdMutation, useGetPrimetypesMutation, useUpdatePrimeMutation } from "features/primes/primesAPI";
+import { useGetPrimeByIdMutation, useGetPrimetypesMutation } from "features/primes/primesAPI";
 import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, OBSERVATION, PRIME_TYPE } from "headers/headers";
-import { ChangeEvent, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { IPrimetypes } from "types/types.employees";
+import { IPrime, IPrimetypes } from "types/types.primes";
+import { useAppDispatch } from "app/hooks";
+import { updatePrime } from "features/primes/primesSlice";
 
 
 
@@ -22,58 +24,68 @@ export interface EditPrimeFromData {
 }
 
 const initState = {
-    
+
 }
 
 
 
 
 interface EditPrimeProps {
-    pid?: number,
+    primeId?: number,
     show: boolean,
     setShow: (show: boolean) => void
 }
 
 
-const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
+const EditPrime = ({ primeId, show, setShow }: EditPrimeProps) => {
     console.log('render edit Prime')
+    const dispatch = useAppDispatch()
 
-    const [getPrimeById, { data: prime,isSuccess:success }] = useGetPrimeByIdMutation()
+    const [getPrimeById, { data: prime, isSuccess: success }] = useGetPrimeByIdMutation()
     const [getPrimetypes, { data: primetypes, isLoading }] = useGetPrimetypesMutation()
-    const [updatePrime, { isSuccess, error }] = useUpdatePrimeMutation()
+    const [error, setError] = useState()
 
     useEffect(() => {
         if (show)
-            getPrimeById(pid)
-    }, [pid])
+            getPrimeById(primeId)
+    }, [primeId])
 
     useEffect(() => {
         if (prime) {
             reset({
-                employee:prime.employee.nom,
-                id:prime.id,
-                prime_type:prime.prime_type,
+                id: prime.id,
+                employee: prime.employee.nom,
+                proces_v: prime.proces_v,
+                prime_type: prime.prime_type,
                 date_f: prime.date_f,
                 date_r: prime.date_r,
                 montant: prime.montant,
-                observation:prime.observation
+                observation: prime.observation
             })
         }
-    }, [success,prime])
-    
+    }, [success, prime])
+
     const {
         register,
         handleSubmit,
         getValues,
         reset,
         formState: { errors }
-    } = useForm<EditPrimeFromData>({
+    } = useForm<IPrime>({
         mode: 'onBlur',
         defaultValues: initState
     })
 
-    const onSubmitData = async (values: EditPrimeFromData) => {
-        updatePrime(values)
+    const onSubmitData = async (values: IPrime) => {
+
+        dispatch(updatePrime(values))
+            .unwrap()
+            .then(() => {
+                setShow(false)
+            }).catch((err: any) => {
+                console.log(err)
+                setError(err['error'])
+            })
     };
 
     useEffect(() => {
@@ -82,14 +94,6 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
         }
     }, [show])
 
-    useEffect(() => {
-        if (isSuccess) {
-            setShow(false)
-            toast.success('Prime updated Successfully')
-        }
-    }, [isSuccess])
-
-    if (isLoading) return <>Loading </>
 
     return (
         <>
@@ -121,7 +125,7 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
                                     <Form.Control
                                         disabled
                                         type="text"
-                                        value={prime ? prime.employee.nom + ' ' +prime.employee.prenom:''}                                     
+                                        value={prime ? prime.employee.nom + ' ' + prime.employee.prenom : ''}
                                     >
                                     </Form.Control>
                                     {/* <Form.Control
@@ -139,7 +143,7 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
                                     <Form.Select
 
                                         {...register("prime_type", { required: "This Feild Is required" })}
-                                    >                                        
+                                    >
                                         {primetypes && primetypes.map((pt: IPrimetypes) => (
                                             <option selected={getValues('prime_type') == `${pt.id}`} key={pt.id} value={pt.id}>{pt.name}</option>
                                         ))}
@@ -203,7 +207,7 @@ const EditPrime = ({ pid, show, setShow }: EditPrimeProps) => {
                                     <Form.Control
                                         as={'textarea'}
                                         rows={3}
-                                        {...register("observation", { required: "This Feild Is required" })}
+                                        {...register("observation")}
                                     />
                                     <ErrorText name='observation' error={error} />
                                     {errors.observation && (

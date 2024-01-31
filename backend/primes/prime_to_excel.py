@@ -10,8 +10,9 @@ from xlsxwriter.utility import xl_rowcol_to_cell
 
 
 class PrimeToExcel:
-    def __init__(self, date):
+    def __init__(self, date,proces_id):
         self.date = date
+        self.proces_id = proces_id
         self.filename = "primes.xlsx"
         self.output = io.BytesIO()
         self.workbook = xlsxwriter.Workbook(self.output)
@@ -131,12 +132,14 @@ class PrimeToExcel:
     def start(self):
         # get primes with date selected 
         print(self.date)
+        print(self.proces_id)
         # primes = Prime.objects.all()
         primes = Prime.objects.filter(
-            date_f__year__gte=self.date.year,
-            date_f__month__gte=self.date.month,
-            date_f__year__lte=self.date.year,
-            date_f__month__lte=self.date.month,
+            proces_v__id=self.proces_id,
+            # date_f__year__gte=self.date.year,
+            # date_f__month__gte=self.date.month,
+            # date_f__year__lte=self.date.year,
+            # date_f__month__lte=self.date.month,
         )
         prime_types = Primetype.objects.all()
         for ptype in prime_types:

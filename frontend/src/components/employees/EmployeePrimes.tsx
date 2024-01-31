@@ -1,7 +1,7 @@
 import { useGetEmployeePrimesQuery } from 'features/primes/primesAPI'
 import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, OBSERVATION, PRIME_TYPE } from 'headers/headers'
-import { Button, Card } from 'react-bootstrap'
-import { IPrime } from 'types/types.employees'
+import { Button, Card, Spinner } from 'react-bootstrap'
+import { IPrime } from 'types/types.primes'
 
 
 interface EmployeePrimesProps {
@@ -9,7 +9,8 @@ interface EmployeePrimesProps {
 }
 
 const EmployeePrimes = ({ matricule }: EmployeePrimesProps) => {
-    const { data } = useGetEmployeePrimesQuery(matricule)
+    const { data,isLoading } = useGetEmployeePrimesQuery(matricule)
+    if(isLoading) return <Spinner/>
     if (!data) return null
     return (
         <Card>

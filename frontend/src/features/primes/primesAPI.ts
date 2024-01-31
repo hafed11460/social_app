@@ -23,8 +23,8 @@ export const primesAPI = createApi({
     getEmployeePrimes: builder.query({
       query: (eid:number) => {
         return {
-          // url: `${primes_root}/`,
-          url: `employees/${eid}/primes/`,
+          url: `${primes_root}/employees/${eid}/`,
+          // url: `employees/${eid}/`,
           method: 'GET',
           data: {},
         }

@@ -17,7 +17,9 @@ interface YearRowProps {
 }
 
 const CellsRow = ({ facilite, year }: YearRowProps) => {
-    // console.log('render CellsRow Componente')
+    console.log('render CellsRow Componente')
+    console.log(year)
+
     const dispatch = useAppDispatch()
     const [editFacilite, setEditFacilite] = useState(false);
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
@@ -86,8 +88,6 @@ const CellsRow = ({ facilite, year }: YearRowProps) => {
                     <UpdateFacilite facilite={facilite} show={show} setShow={setShow}/>
                 </div>
             </div>
-
-
         </>
     )
 }

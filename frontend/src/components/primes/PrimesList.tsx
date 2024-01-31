@@ -1,131 +1,83 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { useGetPrimetypesMutation } from 'features/primes/primesAPI';
-import { getPrimes, selectPrimes, selectPrimesQuery, setSelectedDate } from 'features/primes/primesSlice';
+import { deletePrime, getPrimes, selectCurrentProcesV, selectPrimes, selectPrimesQuery, setSelectedDate } from 'features/primes/primesSlice';
 import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, NOM, OBSERVATION, PRENOM, PRIME_TYPE } from 'headers/headers';
-import { useEffect, useState } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Card, Spinner } from 'react-bootstrap';
 import { IPrime, IPrimetypes } from 'types/types.primes';
 import EditPrime from './EditPrime';
+import { BsFillPencilFill, BsPencilSquare, BsTrash } from 'react-icons/bs';
+import DeletePrime from './DeletePrime';
 
-interface PimesListProps{
-    procesId:number
+interface PimesListProps {
+    procesId: number
 }
 
-const PrimesList = ({procesId}:PimesListProps) => {
+const PrimesList = () => {
 
     const dispatch = useAppDispatch()
     const primes = useAppSelector(selectPrimes)
-    const query = useAppSelector(selectPrimesQuery)
+    const proces_v = useAppSelector(selectCurrentProcesV)
     const [isLoding, setLoading] = useState(false)
-    const [page, setPage] = useState(1)
     // const [date, setDate] = useState(new Date('2023'))
-    const [date, setDate] = useState<Date>()
     const [show, setShow] = useState(false);
-    const [pid, setPid] = useState<number>()
+    const [modalDel, setModalDel] = useState(false);
+    const [primeId, setPrimeId] = useState<number>()
     const [getPrimetypes, { data: primetypes }] = useGetPrimetypesMutation()
-    const [total, setTotal] = useState<number>(0)
-    const [dateSelected, setDateSelected] = useState<string>('')
-    
 
-    const handleNexYear = () => {
-        if (date) {
-            const newdate = date.setFullYear(date.getFullYear() + 1)
-            setDate(new Date(newdate))
+    const handleDeletePrime = (id:number)=>{
+        if (proces_v) {
+            dispatch(deletePrime(id))
+            .then(() => {
+                // setLoading(false)
+            }).catch((err: any) => {
+                // setLoading(false)
+            })
         }
     }
-
-    const handlePrevYear = () => {
-        if (date) {
-            const newdate = date?.setFullYear(date.getFullYear() - 1)
-            setDate(new Date(newdate))
-        }
-    }
+   
 
     useEffect(() => {
-        if (date)
-            dispatch(setSelectedDate({ date: date?.getFullYear() }))
-    }, [date])
-
-    useEffect(() => {
-        setPage(1)
-    }, [query])
-
-
-
-    useEffect(() => {
-        if (date) {
-            setLoading(true)
-            console.log(typeof(query))
-            let q = ''
-           
-            for (let key in query) {
-                q += '&' +query[key];
-            }
-
+        if (proces_v) {
             dispatch(getPrimes(
-                {   procesId:procesId,
-                    date: date.getFullYear(),
-                    page: page,
-                    query: q
+                {
+                    procesId: proces_v.id,
+                    // date: date.getFullYear(),
+                    // page: page,
+                    // query: q
                 }
             )).then(() => {
                 setLoading(false)
-            }).catch((err:any) => {
+            }).catch((err: any) => {
                 setLoading(false)
             })
         }
-    }, [procesId,date, page, query])
+    }, [proces_v])
 
 
-    /**  For the first rendering  */
-    useEffect(() => {
-        setDate(new Date())
-    }, [])
     useEffect(() => {
         getPrimetypes({})
     }, [])
 
     // 
+    if (isLoding) return <Spinner />
 
-    if (!primes?.results) return <div> No results</div>
+    if (!primes.results) return <div> No results</div>
 
-
-    
-
-    
-    
-    
-    
-    const PrimeRows = (prime_t: IPrimetypes) => {
-        if (!primes) return
-        const data = primes.results.filter((prime: IPrime) => prime.prime_type.id == prime_t.id)
-        return (
-            <>
-
-                {
-                    data.map((prime: IPrime, index: number) => (
-                        <tr key={prime.id}>
-                            {/* {index == 0 ? <th rowSpan={primes.length}> {prime_t.name}</th> : ''} */}
-                            <td>{prime.prime_type.name}</td>
-                            <td>{prime.employee.nom}</td>
-                            <td>{prime.employee.prenom}</td>
-                            <td>{prime.date_f}</td>
-                            <td>{prime.date_r}</td>
-                            <td>{prime.montant}</td>
-                            <td>{prime.observation}</td>
-                            <td><Button size='sm' onClick={() => { setShow(!show); setPid(prime.id) }}>Edit</Button></td>
-                        </tr>
-                    ))
-                }
-            </>
-        )
-    }
+    const total = useMemo(() => {
+        var sum = primes.results.reduce((accumulator, currentValue) => {
+            return Number(accumulator) + Number(currentValue.montant)
+        }, 0)
+        return sum
+    }, [primes])
+   
 
     return (
         <Card>
             <Card.Header>
                 {/* <HeaderNavbar /> */}
-                <EditPrime pid={pid} show={show} setShow={setShow} />
+                <EditPrime primeId={primeId} show={show} setShow={setShow} />
+                <DeletePrime primeId={primeId} modalDel={modalDel} setModalDel={setModalDel} />
             </Card.Header>
 
             <Card.Body>
@@ -146,25 +98,38 @@ const PrimesList = ({procesId}:PimesListProps) => {
                             </tr>
                         </thead>
                         <tbody>
-
-
                             {
-                                primetypes && primetypes.map((prime_t: IPrimetypes) => (
-                                    <>
-                                        {PrimeRows(prime_t)}
-                                    </>
+                                primes.results && primes.results.map((prime: IPrime, index: number) => (
+                                    <tr key={prime.id}>
+                                        {/* {index == 0 ? <th rowSpan={primes.length}> {prime_t.name}</th> : ''} */}
+                                        <td>{prime.prime_type.name}</td>
+                                        <td>{prime.employee.nom}</td>
+                                        <td>{prime.employee.prenom}</td>
+                                        <td>{prime.date_f}</td>
+                                        <td>{prime.date_r}</td>
+                                        <td>{prime.montant}</td>
+                                        <td>{prime.observation}</td>
+                                        <td>
+                                            <Button  size='sm' onClick={() => { setPrimeId(prime.id);setShow(!show);  }}><BsPencilSquare /></Button>
+                                            <Button className='mx-1' size='sm' variant='danger' onClick={() => { setPrimeId(prime.id);setModalDel(!modalDel);  }}><BsTrash /></Button>
+                                            </td>
+                                    </tr>
                                 ))
                             }
                             <tr>
                                 <td colSpan={5}>Total</td>
-                                <td >{total}</td>
+                                <td  >
+                                    <span className='badge bg-light-success'>
+                                        {total.toFixed(2)}
+                                    </span>
+                                </td>
                                 {/* <td >Total</td>
                                 <td >Total</td> */}
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </Card.Body>            
+            </Card.Body>
         </Card>
     )
 }

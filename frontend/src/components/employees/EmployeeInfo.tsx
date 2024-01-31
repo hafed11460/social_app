@@ -1,12 +1,12 @@
 import { useGetEmployeeByIdQuery } from 'features/employees/employeeAPI'
-import React from 'react'
+import React, { memo } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 
 interface EmployeeInfoProps {
     matricule: string
 }
 
-const EmployeeInfo = ({ matricule }: EmployeeInfoProps) => {
+const EmployeeInfo = memo(({ matricule }: EmployeeInfoProps) => {
     const { data } = useGetEmployeeByIdQuery(matricule)
 
     if (!data) return null
@@ -27,6 +27,6 @@ const EmployeeInfo = ({ matricule }: EmployeeInfoProps) => {
             </Card.Body>
         </Card>
     )
-}
+})
 
 export default EmployeeInfo
