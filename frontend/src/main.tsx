@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, ReactNode, createContext, useReducer } from "react"
+import React, { Dispatch, FC, ReactNode, Suspense, createContext, useReducer } from "react"
 import ReactDOM from "react-dom/client"
 import { Provider } from "react-redux"
 import { store } from "./app/store"
@@ -9,6 +9,8 @@ import useToggleStylesheet from "hooks/useToggleStyle"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./assets/compiled/css/app.css"
 import "assets/global.css"
+import { Spinner } from "react-bootstrap"
+import LoadingPage from "components/loadinPage"
 // import 'assets/base.css'
 
 
@@ -91,8 +93,8 @@ export const configReducer = (state: AppSettings, action: AppAction) => {
   }
 }
 
-interface MainContextProps{
-  children:ReactNode
+interface MainContextProps {
+  children: ReactNode
 }
 
 export const MainContext = ({ children }: MainContextProps) => {
@@ -157,9 +159,11 @@ export const MainContext = ({ children }: MainContextProps) => {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <MainContext>
-        <App />
-      </MainContext>
+      <Suspense fallback={<LoadingPage/>}>
+        <MainContext>
+          <App />
+        </MainContext>
+      </Suspense>
     </Provider>
   </React.StrictMode>,
 )

@@ -11,7 +11,7 @@ export interface IPFilterArgs{
 
 export interface IPrime {
     id: number,
-    employee: number,
+    employee: IEmployee,
     proces_v: number,
     prime_type: IPrimetypes,
     date_f: string,

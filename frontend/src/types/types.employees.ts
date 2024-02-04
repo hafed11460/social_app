@@ -1,4 +1,9 @@
 
+export interface IEFilterArgs{
+    date?:number,
+    query?:string,
+    page?:number
+}
 export interface IDirection {
     id: number,
     name: string

@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { Button, ButtonToolbar, Dropdown, ListGroup, OverlayTrigger, Popover, Tooltip } from "react-bootstrap"
-import NavBar from "./Navbar"
-import { BsFillFilterSquareFill } from "react-icons/bs"
+import EmployeeSelect from "components/employees/EmployeeSelect"
+import { useState } from "react"
 
 
 
@@ -10,6 +8,7 @@ const Dashboard = () => {
     const [montCells] = useState<number[]>(Array.from({ length: 3 }, (value, index) => index + 1))
     return (
         <div className="page-content container">
+            <EmployeeSelect/>
             <section className="row">
                 <div className="col-12 col-lg-12">
                     <div className="row">

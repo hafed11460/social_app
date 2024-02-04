@@ -1,13 +1,14 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { useGetPrimetypesMutation } from 'features/primes/primesAPI';
-import { deletePrime, getPrimes, selectCurrentProcesV, selectPrimes, selectPrimesQuery, setSelectedDate } from 'features/primes/primesSlice';
-import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, NOM, OBSERVATION, PRENOM, PRIME_TYPE } from 'headers/headers';
+import { deletePrime, getPrimes, selectCurrentProcesV, selectPrimes } from 'features/primes/primesSlice';
+import { DATE_DE_FETE, DATE_DE_RECEPTION, MATRICULE, MONTANT, NOM, OBSERVATION, PRENOM, PRIME_TYPE } from 'headers/headers';
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Spinner } from 'react-bootstrap';
-import { IPrime, IPrimetypes } from 'types/types.primes';
+import { BsPencilSquare, BsTrash } from 'react-icons/bs';
+import { IPrime } from 'types/types.primes';
+import DeleteModal from './DeleteModal';
 import EditPrime from './EditPrime';
-import { BsFillPencilFill, BsPencilSquare, BsTrash } from 'react-icons/bs';
-import DeletePrime from './DeletePrime';
+import { Link } from 'react-router-dom';
 
 interface PimesListProps {
     procesId: number
@@ -24,18 +25,9 @@ const PrimesList = () => {
     const [modalDel, setModalDel] = useState(false);
     const [primeId, setPrimeId] = useState<number>()
     const [getPrimetypes, { data: primetypes }] = useGetPrimetypesMutation()
+    const [error, setError] = useState()
 
-    const handleDeletePrime = (id:number)=>{
-        if (proces_v) {
-            dispatch(deletePrime(id))
-            .then(() => {
-                // setLoading(false)
-            }).catch((err: any) => {
-                // setLoading(false)
-            })
-        }
-    }
-   
+
 
     useEffect(() => {
         if (proces_v) {
@@ -70,14 +62,31 @@ const PrimesList = () => {
         }, 0)
         return sum
     }, [primes])
-   
+
+    const handleDeletePrime = () => {
+        if (primeId) {
+            dispatch(deletePrime(primeId))
+                .then(() => {
+                    setModalDel(false)
+                }).catch((err: any) => {
+                    setError(err['error'])
+                })
+        }
+    }
 
     return (
         <Card>
             <Card.Header>
-                {/* <HeaderNavbar /> */}
                 <EditPrime primeId={primeId} show={show} setShow={setShow} />
-                <DeletePrime primeId={primeId} modalDel={modalDel} setModalDel={setModalDel} />
+                <DeleteModal
+                    id={primeId}
+                    show={modalDel}
+                    setShow={setModalDel}
+                    deleteAction={handleDeletePrime}
+                    error={error}
+                    headertext='Delete Prime'
+                    message='Are you sure to delete this Prime'
+                />
             </Card.Header>
 
             <Card.Body>
@@ -86,10 +95,10 @@ const PrimesList = () => {
                     <table className="table table-striped mb-0">
                         <thead>
                             <tr>
-                                {/* <th>{PRIME_TYPE}</th> */}
-                                <th>{PRIME_TYPE}</th>
+                                <th>{MATRICULE}</th>
                                 <th>{NOM}</th>
                                 <th>{PRENOM}</th>
+                                <th>{PRIME_TYPE}</th>
                                 <th>{DATE_DE_FETE}</th>
                                 <th>{DATE_DE_RECEPTION}</th>
                                 <th>{MONTANT}</th>
@@ -102,17 +111,30 @@ const PrimesList = () => {
                                 primes.results && primes.results.map((prime: IPrime, index: number) => (
                                     <tr key={prime.id}>
                                         {/* {index == 0 ? <th rowSpan={primes.length}> {prime_t.name}</th> : ''} */}
-                                        <td>{prime.prime_type.name}</td>
+                                        <td> <Link target="blank" to={`/employees/${prime.employee.matricule}/`}>
+                                            <small>{prime.employee.matricule}</small>
+                                        </Link></td>
                                         <td>{prime.employee.nom}</td>
                                         <td>{prime.employee.prenom}</td>
+                                        <td>{prime.prime_type.name}</td>
                                         <td>{prime.date_f}</td>
                                         <td>{prime.date_r}</td>
                                         <td>{prime.montant}</td>
                                         <td>{prime.observation}</td>
                                         <td>
-                                            <Button  size='sm' onClick={() => { setPrimeId(prime.id);setShow(!show);  }}><BsPencilSquare /></Button>
-                                            <Button className='mx-1' size='sm' variant='danger' onClick={() => { setPrimeId(prime.id);setModalDel(!modalDel);  }}><BsTrash /></Button>
-                                            </td>
+                                            <Button
+                                                disabled={!proces_v?.is_open}
+                                                size='sm'
+                                                onClick={() => { setPrimeId(prime.id); setShow(!show); }}>
+                                                <BsPencilSquare />
+                                            </Button>
+                                            <Button
+                                                disabled={!proces_v?.is_open}
+                                                className='mx-1' size='sm' variant='danger'
+                                                onClick={() => { setPrimeId(prime.id); setModalDel(!modalDel); }}>
+                                                <BsTrash />
+                                            </Button>
+                                        </td>
                                     </tr>
                                 ))
                             }

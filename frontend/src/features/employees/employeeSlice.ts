@@ -1,47 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import PropertiesService from "./propertiesServices";
-import { IEmployee } from "types/types.employees";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { RootState } from "app/store"
+import EServices from "./employeeServices"
+import { IEFilterArgs, IEmployee } from "types/types.employees"
 
-interface IQuery {
-    [key: string]: string | number | Array<any>,
-}
-
-export const getAgencyProperties = createAsyncThunk(
-    'properties/agency',
-    async () => {
-        const res = await PropertiesService.getAgencyProperties()
+export const getEmployees = createAsyncThunk(
+    'employees/',
+    async (args: IEFilterArgs) => {
+        const res = await EServices.getEmployees(args)
         return res.data;
     })
 
-
-export const getProperties = createAsyncThunk(
-    'properties/',
-    async () => {
-        const res = await PropertiesService.getProperties()
-        return res.data;
-    })
-
-
-export const createProperty = createAsyncThunk(
-    'properties/create',
-    async (data) => {
-        const res = await PropertiesService.createProperty(data)
-        return res.data;
-    })
-
-export const updateProperty = createAsyncThunk(
-    'properties/update',
-    async (post) => {
-        const res = await PropertiesService.updateProperty(post)
-        return res.data;
-    })
-
-export const deleteProperty = createAsyncThunk(
-    'properties/delete',
-    async (postId) => {
-        await PropertiesService.deleteProperty(postId)
-        return postId;
-    })
 
 interface EmployeeResponse {
     results: IEmployee[],
@@ -54,209 +22,68 @@ interface EmployeeResponse {
     },
 }
 
+interface IQuery {
+    [key: string]: string | number | Array<any>,
+}
+
 interface EmployeesState {
     selectedDate?: number,
     query: IQuery,
-    facilities?: EmployeeResponse,
-    employeeFacilities?: EmployeeResponse,
+    employees?: EmployeeResponse,
     count?: number,
     pages?: number,
+    currentPage:number
 }
 
-
 const initialState: EmployeesState = {
-    facilities: undefined,
-    employeeFacilities: undefined,
+    employees:undefined,
     query: {},
     count: 0,
     pages: 1,
-    isError: false,
-    isLoading: false,
-    error: null,
-    isSuccess: false
+    currentPage:1
 }
 
-export const propertiesSlice = createSlice({
-    name: 'properties',
+
+export const employeesSlice = createSlice({
+    name: 'employees',
     initialState,
+
     reducers: {
-        setInitialiseState(state) {
-            state.properties = []
+        setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: number }>) => {
+            state.selectedDate = date
         },
+        setCurrentPage: (state, { payload: { page } }: PayloadAction<{ page: number }>) => {
+            state.currentPage = page
+        },
+        
+
         setEmployeeQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
             if (key === 'init') {
                 state.query = {}
             } else {
                 state.query[`${key}`] = query
+                state.currentPage=1
             }
-            // state.test['matricule'] = 'test'
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(getAgencyProperties.pending, (state, action) => {
-            state.isLoading = true;
+        /** Get Employees  */
+        builder.addCase(getEmployees.fulfilled, (state, action) => {
+            state.employees = action.payload
         })
-        builder.addCase(getAgencyProperties.fulfilled, (state, action) => {
-            state.isLoading = true;
-        })
-        builder.addCase(getAgencyProperties.rejected, (state, action) => {
-            state.isLoading = false;
-            // state.error = action.payload;
-        })
-        //  Get Agency Properties
-        // [getAgencyProperties.pending]: (state, action) => {
-        //     state.isLoading = true;
-        // },
-        // [getAgencyProperties.fulfilled]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.properties = action.payload
-        // },
-        // [getAgencyProperties.rejected]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.error = action.payload;
-        // },
-
-        //  get Properties
-        builder.addCase(getProperties.pending, (state, action) => {
-            state.isLoading = true;
-        })
-        builder.addCase(getProperties.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.properties = action.payload
-        })
-        builder.addCase(getProperties.rejected, (state, action) => {
-            state.isLoading = false;
-            // state.error = action.payload;
-        })
-        // [getProperties.pending]: (state, action) => {
-        //     state.isLoading = true;
-        // },
-        // [getProperties.fulfilled]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.properties = action.payload
-        // },
-        // [getProperties.rejected]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.error = action.payload;
-        // },
-
-        //  Create Property
-        builder.addCase(createProperty.pending, (state, action) => {
-            state.isLoading = true;
-            state.isSuccess = false
-        })
-        builder.addCase(createProperty.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = true
-            // state.posts.unshift(action.payload)
-            // state.properties.push(action.payload)
-        })
-        builder.addCase(createProperty.rejected, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = false
-            // state.error = action.payload;
-        })
-
-        // [createProperty.pending]: (state, action) => {
-        //     state.isLoading = true;
-        //     state.isSuccess = false
-        // },
-
-        // [createProperty.fulfilled]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.isSuccess = true
-        //     // state.posts.unshift(action.payload)
-        //     state.properties.push(action.payload)
-        // },
-        // [createProperty.rejected]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.isSuccess = false
-        //     state.error = action.payload;
-        // },
-
-        /****** Update  Property ******/
-
-        builder.addCase(updateProperty.pending, (state, action) => {
-            state.isLoading = true;
-            state.isSuccess = false
-        })
-        builder.addCase(updateProperty.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = true
-            // state.properties.map(post => {
-            //     if (post.id === action.payload.id) {
-            //         return action.payload
-            //     }
-            //     return post;
-            // });
-        })
-        builder.addCase(updateProperty.rejected, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = false
-            // state.isError = true
-            // state.error = action.payload;
-        })
-
-        // [updateProperty.pending]: (state, action) => {
-        //     state.isLoading = true;
-        //     state.isSuccess = false
-        // },
-        // [updateProperty.fulfilled]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.isSuccess = true
-        //     state.properties.map(post => {
-        //         if (post.id === action.payload.id) {
-        //             return action.payload
-        //         }
-        //         return post;
-        //     });
-        // },
-        // [updateProperty.rejected]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.isSuccess = false
-        //     state.isError = true
-        //     state.error = action.payload;
-        // },
-
-
-        //*****  Delete Property */
-        builder.addCase(deleteProperty.pending, (state, action) => {
-            state.isLoading = true;
-            state.isSuccess = false
-        })
-        builder.addCase(deleteProperty.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = true
-            // state.posts = state.posts.filter(post => post.id !== action.payload)
-            // state.properties = state.properties.filter(post => post.id !== action.payload)
-        })
-        builder.addCase(deleteProperty.rejected, (state, action) => {
-            state.isLoading = false;
-            state.isSuccess = false
-            //     state.isError = true
-            //     state.error = action.payload;
-        })
-
-        // [deleteProperty.pending]: (state, action) => {
-        //     state.isLoading = true;
-        // },
-        // [deleteProperty.fulfilled]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.isSuccess = true
-        //     // state.posts = state.posts.filter(post => post.id !== action.payload)
-        //     state.properties = state.properties.filter(post => post.id !== action.payload)
-        // },
-        // [deleteProperty.rejected]: (state, action) => {
-        //     state.isLoading = false;
-        //     state.isSuccess = false
-        //     state.isError = true
-        //     state.error = action.payload;
-        // },
     }
 })
 
 export const {
-    setInitialiseState,
-} = propertiesSlice.actions
+    setSelectedDate,
+    setEmployeeQuery,
+    setCurrentPage,
+} = employeesSlice.actions
 
-export default propertiesSlice.reducer
+export default employeesSlice.reducer
+
+
+export const selectPrimesCurrentDate = (state: RootState) => state.primes.selectedDate
+export const selectEmployeesQuery = (state: RootState) => state.employees.query
+export const selectEmployees = (state: RootState) => state.employees.employees
+export const selectCurrentPage = (state: RootState) => state.employees.currentPage

@@ -10,77 +10,19 @@ from .models import Employee
 from io import BytesIO
 from django.http import HttpResponse
 import pandas as pd
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from rest_framework.response import Response
-from .paginations import EmployeesPaginations
+from .paginations import EmployeesPaginations, LiteEmployeesPaginations
+from django_filters import rest_framework as filters
+from django.db.models import Q
+
+import django_filters
 
 from .serializers import (
     EmployeeSerializer,
-    # PrimetypeSerialiser,
-    # CreatePrimeSerializer,
     EmployeeDetailSerializer,
-    # PrimeSerialiser,
-    # UpdatePrimeSerializer,
-    EmployeeForSelectSerializer
+    EmployeeForSelectSerializer,
 )
-
-
-
-# class PrimeDetailAPIView(generics.RetrieveAPIView):
-#     # permission_classes = [IsAuthenticated]
-#     serializer_class = UpdatePrimeSerializer
-#     queryset = Prime.objects.all()
-
-# class UpdatePrimeAPIView(generics.UpdateAPIView):
-#     # permission_classes = [IsAuthenticated]
-#     serializer_class = UpdatePrimeSerializer
-#     parser_classes = (MultiPartParser, FormParser)
-#     queryset = Prime.objects.all()
-
-# class PrimetypesListAPI(generics.ListAPIView):
-#     serializer_class = PrimetypeSerialiser
-#     queryset = Primetype.objects.all()
-
-
-
-# class PrimeListAPIView(generics.ListAPIView):
-#     serializer_class = PrimeSerialiser
-    # pagination_class = PropertiesPaginations
-    # filterset_fields = {
-    #     'matricule':['exact'],
-    #     'nom':['icontains'],
-    #     'prenom':['icontains'],        
-    # }
-    # queryset = Prime.objects.all()
-    # def get_queryset(self):
-    #     date = self.request.GET.get('date', '')
-    #     if not date:
-    #         date =datetime.today().strftime('%Y-%m-%d')
-    #     date = datetime.strptime(date, '%Y-%m-%d')
-
-    #     results = Prime.objects.filter( 
-    #                         # date_f=date                           
-    #                         date_f__year__gte=date.year,
-    #                         date_f__month__gte=date.month,
-    #                         date_f__year__lte=date.year,
-    #                         date_f__month__lte=date.month
-    #                         )        
-    #     return results
-
-
-
-
-# class CreatePrimeAPIView(GenericAPIView):
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = CreatePrimeSerializer
-#     parser_classes = (MultiPartParser, FormParser)
-#     queryset = Prime.objects.all()
-
-#     def post(self,request):               
-#         serializer = CreatePrimeSerializer(data=request.data,context={'request':request})
-#         serializer.is_valid(raise_exception=True)  
-#         serializer.save()                                  
-#         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 # class EmployeePrimesAPIView(generics.ListAPIView):
@@ -88,39 +30,89 @@ from .serializers import (
 #     # permission_classes = [IsAuthenticated]
 #     serializer_class = PrimeSerialiser
 #     lookup_url_kwarg = "matricule"
-    
-   
+
+
 #     def get_queryset(self):
-#         eid = self.kwargs.get(self.lookup_url_kwarg)       
+#         eid = self.kwargs.get(self.lookup_url_kwarg)
 #         facilites = Prime.objects.filter(employee__matricule__exact=eid).order_by('-date_r')
 #         return facilites
+
 
 class EmployeeDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = EmployeeDetailSerializer
     queryset = Employee.objects.all()
-    lookup_field = 'matricule'
+    lookup_field = "matricule"
 
     # def get_queryset(self):
     #     matricule = self.kwargs.get(self.lookup_field)
     #     return Employee.objects.filter(matricule=matricule)
 
 
+class EmployeeFilter(django_filters.FilterSet):
+    # nom = django_filters.CharFilter(method="nom_filter")
+    # prenom = django_filters.CharFilter(method="prenom_filter")
+    query = django_filters.CharFilter(method="query_filter")
+
+    class Meta:
+        model = Employee
+        fields = ['matricule',"nom", "prenom"]
+
+    def query_filter(self, queryset, name, value):
+        return Employee.objects.filter(
+            Q(nom__icontains=value) | Q(prenom__icontains=value) | Q(matricule__icontains=value)
+        )
+    # def prenom_filter(self, queryset, name, value):
+    #     return Employee.objects.filter(
+    #         Q(nom__icontains=value) | Q(prenom__icontains=value) | Q(matricule__icontains=value)
+    #     )
+
 class EmployeeListAPIView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = EmployeeSerializer
     pagination_class = EmployeesPaginations
-    filterset_fields = {
-        'matricule':['exact'],
-        'nom':['icontains'],
-        'prenom':['icontains'],        
-    }
+    filterset_class = EmployeeFilter
+    # filterset_fields = {
+    #     "matricule": ["exact"],
+    #     "nom": ["icontains"],
+    #     "prenom": ["icontains"],
+    # }
+
     def get_queryset(self):
         return Employee.objects.all()
+
+
+
+
+
+class EmployeeLiteFilter(django_filters.FilterSet):
+    nom = django_filters.CharFilter(method="nom_filter")
+    prenom = django_filters.CharFilter(method="prenom_filter")
+
+    class Meta:
+        model = Employee
+        fields = ["nom", "prenom"]
+
+    def nom_filter(self, queryset, name, value):
+        return Employee.objects.filter(
+            Q(nom__icontains=value) | Q(prenom__icontains=value) | Q(matricule__icontains=value)
+        )
+    def prenom_filter(self, queryset, name, value):
+        return Employee.objects.filter(
+            Q(nom__icontains=value) | Q(prenom__icontains=value) | Q(matricule__icontains=value)
+        )
+
     
 
 class EmployeeForSelectListAPIView(generics.ListAPIView):
     # permission_classes = [IsAuthenticated]
     serializer_class = EmployeeForSelectSerializer
+    pagination_class = LiteEmployeesPaginations
+    filterset_class = EmployeeLiteFilter
     queryset = Employee.objects.all()
-    
+
+    # filterset_fields = {
+    #     'matricule':['exact'],
+    #     'nom':['icontains'],
+    #     'prenom':['icontains'],
+    # }

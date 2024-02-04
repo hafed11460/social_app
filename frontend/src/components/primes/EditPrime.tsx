@@ -1,9 +1,9 @@
 
-import { Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 
 import ErrorText from "components/common/ErrorText";
 import { useGetPrimeByIdMutation, useGetPrimetypesMutation } from "features/primes/primesAPI";
-import { DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, OBSERVATION, PRIME_TYPE } from "headers/headers";
+import { BTN_CLOSE, BTN_SUBMIT, DATE_DE_FETE, DATE_DE_RECEPTION, MONTANT, OBSERVATION, PRIME_TYPE } from "headers/headers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -99,141 +99,126 @@ const EditPrime = ({ primeId, show, setShow }: EditPrimeProps) => {
         <>
 
             <Modal
-                className="p-0 m-0"
                 show={show}
                 size="lg"
                 onHide={() => setShow(false)}
                 centered
                 aria-labelledby="contained-modal-title-vcenter"
             >
-                <Modal.Body
-                    className="p-0"
-                // className=" mb-4 mt-3 px-5 pt-5"
-                >
+                <Form onSubmit={handleSubmit(onSubmitData)}>
 
-                    <Card as={Form} className="form-vertical"
-                        onSubmit={handleSubmit(onSubmitData)}
-                        style={{ minHeight: "550px", minWidth: '650px' }}>
-                        <Card.Header>
-                            {/* <h4 className="card-title"> Create Prime For {employee.nom} {employee.prenom}</h4> */}
 
-                        </Card.Header>
-                        <Card.Body>
-                            <Row>
-                                <Form.Group className="mb-3 " >
-                                    <Form.Label>Employee</Form.Label>
-                                    <Form.Control
-                                        disabled
-                                        type="text"
-                                        value={prime ? prime.employee.nom + ' ' + prime.employee.prenom : ''}
-                                    >
-                                    </Form.Control>
-                                    {/* <Form.Control
+
+
+                    <Modal.Header>
+                        {/* <h4 className="card-title"> Create Prime For {employee.nom} {employee.prenom}</h4> */}
+
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row>
+                            <Form.Group className="mb-3 " >
+                                <Form.Label>Employee</Form.Label>
+                                <Form.Control
+                                    disabled
+                                    type="text"
+                                    value={prime ? prime.employee.nom + ' ' + prime.employee.prenom : ''}
+                                >
+                                </Form.Control>
+                                {/* <Form.Control
                                         type="hidden"
                                         // value={employee.id}
                                         {...register("employee", { required: "This Feild Is required" })}
                                     >
 
                                     </Form.Control> */}
-                                </Form.Group>
+                            </Form.Group>
 
 
-                                <Form.Group as={Col} md={6} className="mb-3 " >
-                                    <Form.Label>{PRIME_TYPE}</Form.Label>
-                                    <Form.Select
-
-                                        {...register("prime_type", { required: "This Feild Is required" })}
-                                    >
-                                        {primetypes && primetypes.map((pt: IPrimetypes) => (
-                                            <option selected={getValues('prime_type') == `${pt.id}`} key={pt.id} value={pt.id}>{pt.name}</option>
-                                        ))}
-                                    </Form.Select>
-                                    {/* <ErrorText name='city' error={error} /> */}
-                                    {errors.prime_type && (
-                                        <Form.Text className="text-danger">
-                                            {errors.prime_type.message}
-                                        </Form.Text>
-                                    )}
-                                </Form.Group>
-
-
-                                <Form.Group as={Col} md={6} className="mb-3" >
-                                    <Form.Label>{MONTANT}</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        {...register("montant", { required: "This Feild Is required" })}
-                                    />
-                                    <ErrorText name='montant' error={error} />
-                                    {errors.montant && (
-                                        <Form.Text className="text-danger">
-                                            {errors.montant.message}
-                                        </Form.Text>
-                                    )}
-                                </Form.Group>
+                            <Form.Group as={Col} md={6} className="mb-3 " >
+                                <Form.Label>{PRIME_TYPE}</Form.Label>
+                                <Form.Select
+                                    {...register("prime_type", { required: "This Feild Is required" })}
+                                >
+                                    {primetypes && primetypes.map((pt: IPrimetypes) => (
+                                        <option selected={getValues('prime_type') == `${pt.id}`} key={pt.id} value={pt.id}>{pt.name}</option>
+                                    ))}
+                                </Form.Select>
+                                {/* <ErrorText name='city' error={error} /> */}
+                                {errors.prime_type && (
+                                    <Form.Text className="text-danger">
+                                        {errors.prime_type.message}
+                                    </Form.Text>
+                                )}
+                            </Form.Group>
 
 
-                                <Form.Group as={Col} md={6} className="mb-3" >
-                                    <Form.Label>{DATE_DE_FETE}</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        {...register("date_f", { required: "This Feild Is required" })}
-                                    />
-                                    <ErrorText name='date_f' error={error} />
-                                    {errors.date_f && (
-                                        <Form.Text className="text-danger">
-                                            {errors.date_f.message}
-                                        </Form.Text>
-                                    )}
-                                </Form.Group>
+                            <Form.Group as={Col} md={6} className="mb-3" >
+                                <Form.Label>{MONTANT}</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    {...register("montant", { required: "This Feild Is required" })}
+                                />
+                                <ErrorText name='montant' error={error} />
+                                {errors.montant && (
+                                    <Form.Text className="text-danger">
+                                        {errors.montant.message}
+                                    </Form.Text>
+                                )}
+                            </Form.Group>
 
 
-                                <Form.Group as={Col} md={6} className="mb-3" >
-                                    <Form.Label>{DATE_DE_RECEPTION}</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        {...register("date_r", { required: "This Feild Is required" })}
-                                    />
-                                    <ErrorText name='date_r' error={error} />
-                                    {errors.date_r && (
-                                        <Form.Text className="text-danger">
-                                            {errors.date_r.message}
-                                        </Form.Text>
-                                    )}
-                                </Form.Group>
+                            <Form.Group as={Col} md={6} className="mb-3" >
+                                <Form.Label>{DATE_DE_FETE}</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    {...register("date_f", { required: "This Feild Is required" })}
+                                />
+                                <ErrorText name='date_f' error={error} />
+                                {errors.date_f && (
+                                    <Form.Text className="text-danger">
+                                        {errors.date_f.message}
+                                    </Form.Text>
+                                )}
+                            </Form.Group>
 
 
-                                <Form.Group className="mb-3" >
-                                    <Form.Label>{OBSERVATION}</Form.Label>
-                                    <Form.Control
-                                        as={'textarea'}
-                                        rows={3}
-                                        {...register("observation")}
-                                    />
-                                    <ErrorText name='observation' error={error} />
-                                    {errors.observation && (
-                                        <Form.Text className="text-danger">
-                                            {errors.observation.message}
-                                        </Form.Text>
-                                    )}
-                                </Form.Group>
-                            </Row>
-                        </Card.Body>
-                        <Card.Footer>
+                            <Form.Group as={Col} md={6} className="mb-3" >
+                                <Form.Label>{DATE_DE_RECEPTION}</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    {...register("date_r", { required: "This Feild Is required" })}
+                                />
+                                <ErrorText name='date_r' error={error} />
+                                {errors.date_r && (
+                                    <Form.Text className="text-danger">
+                                        {errors.date_r.message}
+                                    </Form.Text>
+                                )}
+                            </Form.Group>
 
-                            {/* <div className="d-flex justify-content-between mt-3 ">
-                                <div>
-                                    <Button type="submit" variant="primary" >
-                                        Next<FaAngleRight size={20} />
-                                    </Button>
-                                </div>
-                            </div> */}
-                            <div className="col-12 d-flex justify-content-end">
-                                <button type="submit" className="btn btn-primary me-1 mb-1">Submit</button>
-                            </div>
-                        </Card.Footer>
-                    </Card>
 
-                </Modal.Body>
+                            <Form.Group className="mb-3" >
+                                <Form.Label>{OBSERVATION}</Form.Label>
+                                <Form.Control
+                                    as={'textarea'}
+                                    rows={3}
+                                    {...register("observation")}
+                                />
+                                <ErrorText name='observation' error={error} />
+                                {errors.observation && (
+                                    <Form.Text className="text-danger">
+                                        {errors.observation.message}
+                                    </Form.Text>
+                                )}
+                            </Form.Group>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="light" onClick={() => setShow(!show)} >{BTN_CLOSE}</Button>
+                        <Button type="submit" >{BTN_SUBMIT}</Button>
+                    </Modal.Footer>
+
+                </Form>
             </Modal>
         </>
     )

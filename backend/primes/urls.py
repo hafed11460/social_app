@@ -19,7 +19,6 @@ from .views import (
 
 urlpatterns = [
     
-    path('', PrimeListAPIView.as_view(),name='prime-types'),
     path('<int:proces_id>/proces-verbal/', ProcesVerbalDetailAPIView.as_view(),name='prime-list'),
     path('proces-verbal/', ProcesVerbalListAPIView.as_view(),name='proces-verbal'),
     path('proces-verbal/create/', CreateProcesVerbalAPIView.as_view(),name='create-proces-verbal'),
@@ -28,6 +27,9 @@ urlpatterns = [
     path('employees/<int:matricule>/', EmployeePrimesAPIView.as_view(), name='employee-primes'),
     path('<int:pk>/', PrimeDetailAPIView.as_view(), name='prime-detail'),
     path('types/', PrimetypesListAPI.as_view(),name='prime-types'),
+
+
+    path('', PrimeListAPIView.as_view(),name='prime-types'),
     path('create/', CreatePrimeAPIView.as_view(), name='prime-create'),
     path('<int:pk>/update/', UpdatePrimeAPIView.as_view(), name='prime-update'),
     path('<int:pk>/delete/', DeletePrimeAPIView.as_view(), name='prime-update'),

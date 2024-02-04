@@ -1,8 +1,10 @@
 import { Button, ButtonGroup, Col, Form, Navbar, Pagination, Row } from "react-bootstrap"
-import { memo } from "react"
+import { ChangeEvent, memo } from "react"
 import { BsChevronLeft, BsChevronRight, BsFilterSquareFill, BsFunnelFill } from 'react-icons/bs'
 import { useAppDispatch, useAppSelector } from "app/hooks"
 import { selectQuery, setQuery } from "features/facilities/facilitiesSlice"
+import { useGetEmployeesMutation } from "features/employees/employeeAPI"
+import { selectCurrentPage, selectEmployees, selectEmployeesQuery, setCurrentPage, setEmployeeQuery } from "features/employees/employeeSlice"
 
 
 interface HeaderNavbarProps {
@@ -13,10 +15,20 @@ interface HeaderNavbarProps {
 
 }
 
-const EmployeeNavbar = memo(({ pages, currentPage, setcurrentPage }: HeaderNavbarProps) => {
+const EmployeeNavbar = memo(() => {
     const dispatch = useAppDispatch()
-    const query = useAppSelector(selectQuery)
+    const query = useAppSelector(selectEmployeesQuery)
+    const employees = useAppSelector(selectEmployees)
+    const currentPage = useAppSelector(selectCurrentPage)
 
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value.length > 0){
+
+            const q ='query='+event.target.value
+            dispatch(setEmployeeQuery({ key: 'query', query: q }))
+        }
+    }
+    
     return (
         <Navbar className='justify-content-between p-0 px-2 rounded mb-2 ' style={{ height: '50px', backgroundColor: "#eeeeee" }}>
             <Form >
@@ -24,7 +36,7 @@ const EmployeeNavbar = memo(({ pages, currentPage, setcurrentPage }: HeaderNavba
                     <Col xs="auto">
 
                         <Button
-                            onClick={() => dispatch(setQuery({ key: 'init', query: '' }))}
+                            onClick={() => dispatch(setEmployeeQuery({ key: 'init', query: '' }))}
                             disabled={Object.keys(query).length === 0 ? true : false}
                             variant="danger"
                             size="sm"
@@ -35,6 +47,7 @@ const EmployeeNavbar = memo(({ pages, currentPage, setcurrentPage }: HeaderNavba
                     </Col>
                     <Col xs="auto">
                         <Form.Control
+                            onChange={handleSearch}
                             size="sm"
                             type="text"
                             placeholder="Search"
@@ -51,12 +64,12 @@ const EmployeeNavbar = memo(({ pages, currentPage, setcurrentPage }: HeaderNavba
             <div className=" border">
                 <Pagination className=''>
                     {
-                        pages && Array.from({ length: pages }, (value, index) => index + 1).map((page, index) => {
+                        employees?.pages && Array.from({ length: employees?.pages }, (value, index) => index + 1).map((page, index) => {
 
                             if (page == 1 && currentPage > 1) {
                                 return <Pagination.Item className='mx-1'
                                     active={page == currentPage}
-                                    key={index} onClick={() => setcurrentPage(page)}>First</Pagination.Item>
+                                    key={index} onClick={() => dispatch(setCurrentPage({page:page}))}>First</Pagination.Item>
                             }
                             if (page == currentPage) {
                                 return (
@@ -69,19 +82,18 @@ const EmployeeNavbar = memo(({ pages, currentPage, setcurrentPage }: HeaderNavba
                                 return <Pagination.Item
                                     className='mx-1'
                                     key={index}
-                                    onClick={() => setcurrentPage(page)}>{page}</Pagination.Item>
+                                    onClick={() => dispatch(setCurrentPage({page:page}))}>{page}</Pagination.Item>
                             }
 
-                            console.log(pages)
-                            if (page  == pages) {
+                            if (page == employees?.pages) {
                                 return <Pagination.Item
                                     className='mx-1'
                                     key={index}
-                                    onClick={() => setcurrentPage(pages)}>last</Pagination.Item>
+                                    onClick={() => dispatch(setCurrentPage({page:page}))}>last</Pagination.Item>
                             }
                         })
                     }
-                </Pagination>               
+                </Pagination>
             </div>
         </Navbar>
     )

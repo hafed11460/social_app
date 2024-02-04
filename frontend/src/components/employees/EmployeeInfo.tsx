@@ -11,19 +11,18 @@ const EmployeeInfo = memo(({ matricule }: EmployeeInfoProps) => {
 
     if (!data) return null
     return (
-        <Card className='shadow-sm'>
+        <Card className='shadow-sm border border-primary rounded-0'>
             <Card.Body>
-                <p>Matricule: {data.matricule}</p>
-                <p>Nom: {data.nom}</p>
-                <p>Prenom: {data.prenom}</p>
-
-                <p>Date N: {data.date_n}</p>
-                <p>Date Entrer: {data.date_e}</p>
-                <p>Poste: {data.poste}</p>
-
-                <p>fin de contract : {data.fin_contrat}</p>
-                <p>Type Contract: {data.type_contrat}</p>
-                <p>Direction : {data.direction.name}</p>
+                <p><span className='fw-bold'>Matricule:</span> {data.matricule}</p>
+                <p><span className='fw-bold'>Nom:</span> {data.nom}</p>
+                <p><span className='fw-bold'>Prenom:</span> {data.prenom}</p>
+                <p><span className='fw-bold'>Date N:</span> {data.date_n}</p>
+                <p><span className='fw-bold'>Date Entrer:</span> {data.date_e}</p>
+                <p><span className='fw-bold'>Poste:</span> {data.poste}</p>
+                <p><span className='fw-bold'>fin de contract:</span> {data.fin_contrat}</p>
+                <p><span className='fw-bold'>Type Contract:</span> {data.type_contrat}</p>
+                <p><span className='fw-bold'>Direction:</span> {data.direction.name}</p>
+                
             </Card.Body>
         </Card>
     )

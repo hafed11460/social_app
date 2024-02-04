@@ -14,7 +14,7 @@ export const employeeAPI = createApi({
       query: (params = null) => {
         return {
           // url: `${employees_root}/`,
-          url: `${employees_root}/?page=${params.page ? params.page : ''}`,
+          url: `${employees_root}/?${params.page ?'page='+ params.page : ''}${params.query ?'&query='+ params.query : ''}`,
           method: 'GET',
           data: {},
         }
@@ -24,10 +24,11 @@ export const employeeAPI = createApi({
       //   data ? data.results.map(({ id }: { id: number }) => ({ type: 'Employees', id })) : ['Employees'],
     }),
     getLiteEmployees: builder.mutation({
-      query: (params = null) => {
+      query: (query:string) => {
+        console.log(query)
         return {
           // url: `${employees_root}/`,
-          url: `${employees_root}/lite/`,
+          url: `${employees_root}/lite/?${query != null ? query : ''}`,
           method: 'GET',
           data: {},
         }

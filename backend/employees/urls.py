@@ -16,7 +16,7 @@ from .views import (
 
 urlpatterns = [
     path('', EmployeeListAPIView.as_view(), name='employees-list'),
-    path('lite/', EmployeeForSelectListAPIView.as_view(), name='employees-list'),
+    path('lite/', EmployeeForSelectListAPIView.as_view(), name='employees-lite'),
     path('<int:matricule>/', EmployeeDetailAPIView.as_view(), name='employee-detail'),
     # path('<int:matricule>/primes/', EmployeePrimesAPIView.as_view(), name='employee-detail'),
     

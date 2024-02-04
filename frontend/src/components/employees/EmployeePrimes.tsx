@@ -11,7 +11,8 @@ interface EmployeePrimesProps {
 const EmployeePrimes = ({ matricule }: EmployeePrimesProps) => {
     const { data,isLoading } = useGetEmployeePrimesQuery(matricule)
     if(isLoading) return <Spinner/>
-    if (!data) return null
+    console.log(data)
+    // if (!data) return null
     return (
         <Card>
             <Card.Body>

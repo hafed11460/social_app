@@ -9,6 +9,7 @@ import CreatePrime from "./CreatePrime"
 import { deleteProcesVerbal, selectCurrentProcesV } from "features/primes/primesSlice"
 import { IProcesVerbal } from "types/types.primes"
 import EditProcesVerbal from "./EditProces"
+import DeleteModal from "./DeleteModal"
 
 
 interface PrimeNavbarProps {
@@ -27,6 +28,8 @@ const PrimeNavbar = memo(() => {
     const query = useAppSelector(selectQuery)
     const [checked, setChecked] = useState(false);
     const [dateSelected, setDateSelected] = useState<string>('')
+    const [modalDel, setModalDel] = useState(false);
+    const [error, setError] = useState()
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChecked(event.target.checked);
@@ -37,6 +40,11 @@ const PrimeNavbar = memo(() => {
     const handleDeleteProceVerbal = () => {
         if (proces_v)
             dispatch(deleteProcesVerbal(proces_v.id))
+                .then(() => {
+                    setModalDel(false)
+                }).catch((err: any) => {
+                    setError(err['error'])
+                })
     }
 
 
@@ -80,12 +88,20 @@ const PrimeNavbar = memo(() => {
                         <EditProcesVerbal />
                         {/* <Button title="Supprimer Cette Proces" className="mx-1" size="sm" variant="warning" onClick={handleStateProceVerbal}><BsTrash /></Button> */}
                         <CreatePrime />
+                        <DeleteModal
+                            show={modalDel}
+                            setShow={setModalDel}
+                            error={error}
+                            deleteAction={handleDeleteProceVerbal}
+                            message="Are you sure to delete this proces"
+                            headertext="Delete Proces"
+                        />
                         <Button disabled={!proces_v.is_open}
                             title="Supprimer Cette Proces"
                             className="mx-1"
                             size="sm"
                             variant="danger"
-                            onClick={handleDeleteProceVerbal}>
+                            onClick={()=>setModalDel(!modalDel)}>
                             <BsTrash /> Suppr
                         </Button>
                         {/* <Button
@@ -115,11 +131,11 @@ const PrimeNavbar = memo(() => {
             </Form>
 
             <div>
-                <ButtonGroup className='border me-1'>
+                {/* <ButtonGroup className='border me-1'>
                     <Button size='sm' variant="secondary" ><BsChevronLeft /> Prev</Button>
                     <Button size='sm' variant=""></Button>
                     <Button size='sm' variant="primary" >Nex <BsChevronRight /></Button>
-                </ButtonGroup>
+                </ButtonGroup> */}
                 <Button variant="success" size='sm' onClick={handleExportToExcel}><BsFileEarmarkSpreadsheet /> Excel</Button>
             </div>
 

@@ -6,10 +6,12 @@ import { facilitiesAPI } from "features/facilities/facilitiesAPI"
 import facilitiesReducer from 'features/facilities/facilitiesSlice'
 import { primesAPI } from "features/primes/primesAPI"
 import primesReducer from 'features/primes/primesSlice'
+import employeesReducer from 'features/employees/employeeSlice'
 
 export const store = configureStore({
   reducer: {
     auth:authReducer,
+    employees: employeesReducer, 
     facilities: facilitiesReducer, 
     primes: primesReducer, 
     [authApi.reducerPath]: authApi.reducer,
