@@ -24,7 +24,7 @@ class Facilite(WithTimestamp, models.Model):
         unique_together = ["employee", "date_achat","is_completed"]
 
     def __str__(self):
-        return self.employee.nom
+        return f'{self.employee.nom} {self.employee.prenom}'
 
 
 def MONTH_TYPES():

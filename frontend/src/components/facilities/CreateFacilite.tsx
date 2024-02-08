@@ -1,17 +1,14 @@
 import { useState } from "react";
-import { Alert, Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { Alert, Button, Card, Col, Form, Modal, Row, Spinner } from "react-bootstrap";
 
 import { useAppDispatch } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
+import EmployeeSelect from "components/employees/EmployeeSelect";
 import { createFacilite } from "features/facilities/facilitiesSlice";
 import { BTN_CLOSE, BTN_SUBMIT, DATE_DE_FETE, DUREE, EMPLOYEE, MONTANT, OBSERVATION } from "headers/headers";
-import { useEffect } from "react";
-import { useController, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { FaPlusCircle } from "react-icons/fa";
-import Select from 'react-select';
 import { IEmployee } from "types/types.employees";
-import { useGetEmployeesMutation, useGetLiteEmployeesMutation } from "features/employees/employeeAPI";
-import EmployeeSelect from "components/employees/EmployeeSelect";
 
 
 export interface CreateFaciliteFromData {
@@ -47,8 +44,9 @@ const CreateFacilite = () => {
     const dispatch = useAppDispatch()
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     const [show, setShow] = useState(false);
-    // const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
+    const [isLoding, setLoading] = useState(false)
     const [error, setError] = useState()
+    // const [createFacilite, { isSuccess, isError, error }] = useCreateFaciliteMutation()
 
 
 
@@ -64,10 +62,18 @@ const CreateFacilite = () => {
     })
 
     const onSubmitData = async (values: CreateFaciliteFromData) => {
+        setLoading(true)
         dispatch(createFacilite(values))
             .unwrap()
             .then(() => {
+                setLoading(false)
                 setShow(false)
+                
+            }).catch((err: any) => {
+                console.log(err)
+                setLoading(false)
+                // setShow(false)
+                setError(err['error'])
             })
     };
 
@@ -90,10 +96,11 @@ const CreateFacilite = () => {
                 <Form onSubmit={handleSubmit(onSubmitData)}>
                     <Modal.Header>
                         <h4> Create new facilite</h4>
+                        {isLoding && <Spinner/>}
                     </Modal.Header>
                     <Modal.Body
                     >
-
+                        {error && <p className="text-danger">{error}</p>}
 
                         {error &&
                             <Card.Header>
@@ -120,14 +127,18 @@ const CreateFacilite = () => {
 
                             <Form.Group as={Col} md={6} className="mb-3 " >
                                 <Form.Label>{DUREE}</Form.Label>
-                                <Form.Select
+                                <Form.Control
+                                    type="number"
+                                    {...register("duree", { required: "This Feild Is required" })}
+                                />
+                                {/* <Form.Select
                                     {...register("duree", { required: "This Feild Is required" })}
                                 >
                                     <option>Mois</option>
                                     {montCells && montCells.map((month: number) => (
                                         <option selected={getValues('duree') == month} key={month} value={month}>{month}</option>
                                     ))}
-                                </Form.Select>
+                                </Form.Select> */}
                                 {/* <ErrorText name='city' error={error} /> */}
                                 {errors.duree && (
                                     <Form.Text className="text-danger">

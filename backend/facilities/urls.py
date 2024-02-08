@@ -11,10 +11,14 @@ from .views import (
     CreateFaciliteAPIView,
     EmployeefacilitiesAPIView,
     UpdateFaciliteAPIView,
+    FaciliteExportExcelAPIView,
+    YearFaciliteExportExcelAPIView
 )
 
 urlpatterns = [
     path("", FaciliteListAPIView.as_view(), name="facilite-list"),
+    path('excel/',FaciliteExportExcelAPIView.as_view(), name='facilite-excel') ,
+    path('<int:year>/excel/',YearFaciliteExportExcelAPIView.as_view(), name='year-facilite-excel') ,
     path("create/", CreateFaciliteAPIView.as_view(), name="timeline-create"),
     path("<int:pk>/", FaciliteDetailAPIView.as_view(), name="facilite-detail"),
     path("<int:pk>/update/", UpdateFaciliteAPIView.as_view(), name="facilite-update"),

@@ -6,9 +6,9 @@ import { BsPencilSquare, BsThreeDots, BsTrash } from "react-icons/bs"
 import { Link } from "react-router-dom"
 import { IFacilite } from "types/types.facilities"
 import { iconSize_sm } from "value"
-import Cells from "./Cells"
-import '../facilities.css'
 import UpdateFacilite from "../UpdateFacilite"
+import '../facilities.css'
+import Cells from "./Cells"
 
 
 interface YearRowProps {
@@ -17,8 +17,8 @@ interface YearRowProps {
 }
 
 const CellsRow = ({ facilite, year }: YearRowProps) => {
-    console.log('render CellsRow Componente')
-    console.log(year)
+    // console.log('render CellsRow Componente')
+    // console.log(year)
 
     const dispatch = useAppDispatch()
     const [editFacilite, setEditFacilite] = useState(false);
@@ -34,7 +34,7 @@ const CellsRow = ({ facilite, year }: YearRowProps) => {
         <>
             <div className={`d-flex`} >
                 <div
-                    className={`cell-border  text-center cell flex-cell ${facilite.montant == facilite.solde ? 'facilite-completed' : ''}`}
+                    className={`cell-border  text-center cell flex-cell ${facilite.montant <= facilite?.solde ? 'facilite-completed' : ''}`}
                     // className={`cell-border  text-center cell flex-cell`}
                     style={{ borderLeft: '1px solid #e6e6e6' }}
                 >
@@ -68,7 +68,7 @@ const CellsRow = ({ facilite, year }: YearRowProps) => {
                     )
                 }
                 <div className={`cell-border text-center cell flex-cell`} >
-                    <small className={`badge ${facilite.is_completed ? 'bg-light-success' : 'bg-light-primary'}`}>{facilite.is_completed ? 'Closed':''}</small>
+                    <small className={`badge ${facilite.is_completed ? 'bg-light-success' : 'bg-light-primary'}`}>{facilite.is_completed ? 'Closed':'open'}</small>
                 </div>
                 <div className={`cell-border text-center cell flex-cell`} >
                     <div className="buttons p-0 d-flex justify-content-center">

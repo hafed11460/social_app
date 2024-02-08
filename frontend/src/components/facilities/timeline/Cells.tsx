@@ -23,7 +23,6 @@ const Cells = ({ facilite, month, year }: EditCellProps) => {
     let item: ITimeline | undefined = facilite.timelines.find((item: ITimeline) => item.month == month)
 
     if (item === undefined){
-        console.log('year',year)
         return <NewCell timeline={{
             id: 0,
             facilite: facilite.id,

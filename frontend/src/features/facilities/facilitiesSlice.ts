@@ -136,7 +136,7 @@ interface IQuery {
 }
 
 interface FacilitiesState {
-    selectedDate?: number,
+    selectedDate?: Date,
     query: IQuery,
     facilities?: FacilteResponse,
     employeeFacilities?: FacilteResponse,
@@ -158,6 +158,7 @@ function isEmpty(obj: Record<string, any>): boolean {
 
 
 const initialState: FacilitiesState = {
+    selectedDate:new Date(),
     facilities: undefined,
     employeeFacilities: undefined,
     query: {},
@@ -175,7 +176,7 @@ export const facilitiesSlice = createSlice({
     initialState,
 
     reducers: {
-        setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: number }>) => {
+        setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: Date }>) => {
             state.selectedDate = date
         },
         setQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
@@ -357,7 +358,7 @@ export const {
 export default facilitiesSlice.reducer
 
 
-export const selectCurrentDate = (state: RootState) => state.facilities.selectedDate
+export const selectFaciliteCurrentDate = (state: RootState) => state.facilities.selectedDate
 export const selectQuery = (state: RootState) => state.facilities.query
 // export const selectAccessToken = state => state.auth.token
 

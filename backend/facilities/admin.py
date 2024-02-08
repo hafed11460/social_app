@@ -7,7 +7,7 @@ class FaciliteAdmin(admin.ModelAdmin):
 
 
 class TimelineAdmin(admin.ModelAdmin):
-    list_display = ['facilite','mois','somme','is_commited']
+    list_display = ['facilite','month','mois','somme','is_commited']
 
 
 admin.site.register(Facilite,FaciliteAdmin)

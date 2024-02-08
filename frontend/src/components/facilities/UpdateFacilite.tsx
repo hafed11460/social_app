@@ -4,7 +4,7 @@ import { Alert, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
 import { useGetLiteEmployeesMutation } from "features/employees/employeeAPI";
-import { selectCurrentDate, updateFacilite } from "features/facilities/facilitiesSlice";
+import { selectFaciliteCurrentDate, updateFacilite } from "features/facilities/facilitiesSlice";
 import { DATE_DE_FETE, DUREE, EMPLOYEE, MONTANT, OBSERVATION } from "headers/headers";
 import { useEffect } from "react";
 import { useController, useForm } from "react-hook-form";
@@ -42,7 +42,7 @@ interface UpdateFaciliteProps {
 }
 const UpdateFacilite = ({ facilite, show, setShow }: UpdateFaciliteProps) => {
     // console.log("render CreateFacilite")
-    const date = useAppSelector(selectCurrentDate)
+    const date = useAppSelector(selectFaciliteCurrentDate)
     const dispatch = useAppDispatch()
     const [montCells] = useState<number[]>(Array.from({ length: 12 }, (value, index) => index + 1))
     // const [show, setShow] = useState(false);

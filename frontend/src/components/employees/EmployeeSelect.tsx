@@ -28,7 +28,7 @@ const EmployeeSelect = ({setValue}:EmployeeSelectProps) => {
   };
   const options = useMemo(() => {
     try {
-      return employees.map((emp: IEmployee) => { return { 'value': emp.id, 'label': `${emp.nom} ${emp.prenom}` } })
+      return employees.map((emp: IEmployee) => { return { 'value': emp.id, 'label': `${emp.matricule} - ${emp.nom} ${emp.prenom}` } })
     } catch (error) {
       return []
     }

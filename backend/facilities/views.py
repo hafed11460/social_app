@@ -8,6 +8,11 @@ from rest_framework.views import APIView
 from .models import Facilite, Timeline
 from employees.models import Employee
 from .paginations import FacilitiesPaginations
+from rest_framework.generics import GenericAPIView
+from datetime import datetime, timedelta
+from django.http import HttpResponse
+from facilities.facilite_to_excel import FaciliteToExcel
+from facilities.year_facilite_to_excel import YearFaciliteToExcel
 
 from .serializers import (
     FaciliteSerializer,
@@ -18,6 +23,41 @@ from .serializers import (
 
 
 
+class FaciliteExportExcelAPIView(GenericAPIView):
+    def get(self, request,format=None):
+        try:            
+            date = request.GET.get("date", "")
+            if not date:
+                date = datetime.today().strftime("%Y-%m-%d")
+            
+            date = datetime.strptime(date, "%Y-%m-%d")
+            response = HttpResponse(content_type="application/octet-stream")
+            response[
+                "Content-Disposition"
+            ] = "attachment; filename=your_template_name.xlsx"
+            excelgen = FaciliteToExcel(date=date)
+            response.write(excelgen.start())
+            return response
+        except Exception as e:
+            return Response({"error"}, status=status.HTTP_200_OK)
+        
+class YearFaciliteExportExcelAPIView(GenericAPIView):
+    def get(self, request,year,format=None):
+        try:            
+            # date = request.GET.get("date", "")
+            # if not date:
+            #     date = datetime.today().strftime("%Y-%m-%d")
+            
+            # date = datetime.strptime(date, "%Y-%m-%d")
+            response = HttpResponse(content_type="application/octet-stream")
+            response[
+                "Content-Disposition"
+            ] = "attachment; filename=your_template_name.xlsx"
+            excelgen = YearFaciliteToExcel(year=year)
+            response.write(excelgen.start())
+            return response
+        except Exception as e:
+            return Response({"error"}, status=status.HTTP_200_OK)
 
 
 class EmployeefacilitiesAPIView(generics.ListAPIView):
@@ -81,6 +121,37 @@ class CreateFaciliteAPIView(generics.CreateAPIView):
             employee=serializer.validated_data.get("employee"), is_completed=False
         ).exists():
             instance = serializer.save()
+            somme = instance.montant / instance.duree
+
+            start_date_str = serializer.validated_data.get('date_achat')
+
+            # Convert the string date to a datetime object
+            start_date = datetime.strptime(str(start_date_str), "%Y-%m-%d")
+
+            # Set the day of the start date to 1
+            start_date = start_date.replace(day=1)
+
+            for i in range(instance.duree):
+                month = (start_date.month + i - 1) % 12 + 1
+
+                # change year ()
+                if (i !=0)  and  (month == 1):
+                    start_date = start_date.replace(year=start_date.year + 1)
+
+                
+                mois = start_date.replace(month=month)
+                
+                Timeline.objects.create(
+                        month= month,
+                        facilite=instance,
+                        mois=mois.strftime("%Y-%m-%d"),
+                        somme=somme,
+                        is_commited= False,
+                        observation=""
+                )
+                print(mois.strftime("%Y-%m-%d"))
+
+            
             new_serializer = FaciliteSerializer(instance,context={"request": request})
             return Response(new_serializer.data, status=status.HTTP_200_OK)
 

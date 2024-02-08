@@ -1,11 +1,11 @@
-import { getFacilities, selectFacilities, selectQuery, setSelectedDate } from 'features/facilities/facilitiesSlice'
-import { useEffect, useRef, useState } from 'react'
-import { Card, Pagination, Spinner } from 'react-bootstrap'
 import { useAppDispatch, useAppSelector } from 'app/hooks'
+import { getFacilities, selectFaciliteCurrentDate, selectFacilities, selectQuery, setSelectedDate } from 'features/facilities/facilitiesSlice'
+import { useEffect, useState } from 'react'
+import { Card, Pagination, Spinner } from 'react-bootstrap'
 import { IFacilite } from 'types/types.facilities'
-import HeaderNavbar from './HeaderNavbar'
-import HeaderRow from './timeline/HeaderRow'
+import FaciliteNavbar from './FaciliteNavbar'
 import CellsRow from './timeline/CellsRow'
+import HeaderRow from './timeline/HeaderRow'
 
 const LodingSpiner = ({ isLoding }: { isLoding: boolean }) => {
     if (isLoding) return <Spinner animation="border" variant="primary" />
@@ -15,39 +15,17 @@ const LodingSpiner = ({ isLoding }: { isLoding: boolean }) => {
 const FaciliteApp = () => {
     const dispatch = useAppDispatch()
     const facilities = useAppSelector(selectFacilities)
+    const currentDate = useAppSelector(selectFaciliteCurrentDate)
     const query = useAppSelector(selectQuery)
     const [isLoding, setLoading] = useState(false)
     const [page, setPage] = useState(1)
-    // const [date, setDate] = useState(new Date('2023'))
-    const [date, setDate] = useState<Date>()
     
-
-    const handleNexYear = () => {
-        if (date) {
-            const newdate = date.setFullYear(date.getFullYear() + 1)
-            setDate(new Date(newdate))
-        }
-    }
-    const handlePrevYear = () => {
-        if (date) {
-            const newdate = date?.setFullYear(date.getFullYear() - 1)
-            setDate(new Date(newdate))
-        }
-    }
-
-    useEffect(() => {
-        if (date)
-            dispatch(setSelectedDate({ date: date?.getFullYear() }))
-    }, [date])
-
     useEffect(() => {
         setPage(1)
     }, [query])
 
-
-
     useEffect(() => {
-        if (date) {
+        if (currentDate) {
             setLoading(true)
             console.log(typeof(query))
             let q = ''
@@ -58,7 +36,7 @@ const FaciliteApp = () => {
 
             dispatch(getFacilities(
                 {
-                    date: date.getFullYear(),
+                    date: currentDate.getFullYear(),
                     page: page,
                     query: q
                 }
@@ -68,12 +46,13 @@ const FaciliteApp = () => {
                 setLoading(false)
             })
         }
-    }, [date, page, query])
+    }, [currentDate, page, query])
 
 
     /**  For the first rendering  */
     useEffect(() => {
-        setDate(new Date())
+        // setDate(new Date())
+        dispatch(setSelectedDate({ date: new Date() }))
     }, [])
 
     // 
@@ -84,15 +63,15 @@ const FaciliteApp = () => {
         <>
             <Card>
                 <Card.Body>
-                    {date &&
-                        <HeaderNavbar date={date} handleNexYear={handleNexYear} handlePrevYear={handlePrevYear} />
+                    {currentDate &&
+                        <FaciliteNavbar />
                     }
                     <LodingSpiner isLoding={isLoding} />
                     <div className="container-div flex-sheet">
                         <HeaderRow />
                         {
-                            (facilities.results && date)  && facilities.results.map((facilite: IFacilite) =>
-                                <CellsRow key={facilite.id} facilite={facilite} year={ date.getFullYear()} />
+                            (facilities.results && currentDate)  && facilities.results.map((facilite: IFacilite) =>
+                                <CellsRow key={facilite.id} facilite={facilite} year={ currentDate.getFullYear()} />
                             )
                         }
                     </div>
