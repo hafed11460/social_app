@@ -7,6 +7,21 @@ from datetime import datetime, timedelta
 import calendar
 from xlsxwriter.utility import xl_rowcol_to_cell
 
+month_dict = {
+    1: "janvier",
+    2: "février",
+    3: "mars",
+    4: "avril",
+    5: "mai",
+    6: "juin",
+    7: "juillet",
+    8: "août",
+    9: "septembre",
+    10: "octobre",
+    11: "novembre",
+    12: "décembre",
+}
+
 
 class YearFaciliteToExcel:
     def __init__(self, year):
@@ -16,19 +31,18 @@ class YearFaciliteToExcel:
         self.output = io.BytesIO()
         self.workbook = xlsxwriter.Workbook(self.output)
         self.worksheet = self.workbook.add_worksheet("facilite")
-        self.default_row = 2
-        self.row = 2
-        self.col = 1
-        self.worksheet.set_column(1, 10, 20)
+        self.default_row = 0
+        self.row = 0
+        self.col = 0
+        self.worksheet.set_column(1, 15, 20)
         self.headers = [
             "Matricule",
             "Nom",
             "Prénom",
             "Date D'achat",
-            "Montant",
-            "OBSERVATION",
+            # "Montant",
+            # "OBSERVATION",
         ]
-
 
     def increment_row(self, val=1):
         self.row += val
@@ -59,6 +73,14 @@ class YearFaciliteToExcel:
                 "border": 1,
             }
         )
+        total_format = self.workbook.add_format(
+            {
+                "num_format": "#,##0.00",
+                "bold": 1,
+                "border": 1,
+                "fg_color": "#48D1CC",
+            }
+        )
         sourceCell = self.workbook.add_format(
             {
                 "bold": 1,
@@ -84,12 +106,16 @@ class YearFaciliteToExcel:
         for head in self.headers:
             self.worksheet.write(self.row, self.col + index, head, header_format)
             index += 1
+        # self.increment_row()
+        # set month headers
+        for value in month_dict.values():
+            self.worksheet.write(self.row, self.col + index, value, header_format)
+            index += 1
         self.increment_row()
 
         for facilite in facilities:
             # matricule
             timelines = facilite.timelines.filter(mois__year=self.year)
-           
             self.worksheet.write(
                 self.row, self.col, facilite.employee.matricule, sourceCell
             )
@@ -104,14 +130,18 @@ class YearFaciliteToExcel:
             self.worksheet.write(
                 self.row, self.col + 3, str(facilite.date_achat), sourceCell
             )
-            for t_index,timeline in enumerate(timelines):
-                print(t_index)
-                self.worksheet.write(
-                    self.row, (self.col + 4) + t_index, int(timeline.somme), number_format
-                )
-            # self.worksheet.write(
-            #     self.row, self.col + 5, facilite.observation, sourceCell
-            # )
+
+            # write if exist cell
+            for t_index in range(12):
+                item = next((timeline for timeline in timelines if timeline.month == str(t_index+1)), None)
+                if item:
+                    self.worksheet.write(
+                        self.row, (self.col + 4) + t_index, int(item.somme), number_format
+                    )
+                else:
+                    self.worksheet.write(
+                        self.row, (self.col + 4) + t_index, '//', number_format
+                    )            
             self.increment_row()
 
         start_col = self.col + 4
@@ -119,25 +149,35 @@ class YearFaciliteToExcel:
         end_row = self.row - 1
 
         # use this formula to calculate sum of montants
-        sum_formula = "=SUM({0}:{1})".format(
-            xl_rowcol_to_cell(start_row, start_col), xl_rowcol_to_cell(end_row, end_col)
-        )
+        # sum_formula = "=SUM({0}:{1})".format(
+        #     xl_rowcol_to_cell(start_row, start_col), xl_rowcol_to_cell(end_row, end_col)
+        # )
 
+        sum_formulas = []
+        for f_index in range(12):
+            sum_formula = "=SUM({0}:{1})".format(
+                xl_rowcol_to_cell(start_row, start_col+f_index), xl_rowcol_to_cell(end_row, end_col+f_index)
+            )
+            sum_formulas.append(sum_formula)
         # write total
         self.worksheet.merge_range(
             self.row, self.col, self.row, self.col + 3, "Total", title_format
         )
 
-        self.worksheet.write_formula(self.row, self.col + 4, sum_formula, number_format)
+        for ii , f in enumerate(sum_formulas):
+            self.worksheet.write_formula(self.row, (self.col+4) + ii, f, total_format)
+        # self.worksheet.write_formula(self.row, self.col + 4, sum_formula, number_format)
+
         self.increment_row(5)
 
+
+
+    # start function 
     def start(self):
         # get primes with date selected
         print(self.year)
         # primes = Prime.objects.all()
-        facilities = Facilite.objects.filter(
-            date_achat__year=self.year            
-        )
+        facilities = Facilite.objects.filter(date_achat__year=self.year)
         # facilities = facilities.objects.filter(
         #     proces_v__id=self.proces_id,
         #     # date_f__year__gte=self.date.year,

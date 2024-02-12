@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from django.http import HttpResponse
 from facilities.facilite_to_excel import FaciliteToExcel
 from facilities.year_facilite_to_excel import YearFaciliteToExcel
+import django_filters
+from django.db.models import Q
 
 from .serializers import (
     FaciliteSerializer,
@@ -73,17 +75,33 @@ class EmployeefacilitiesAPIView(generics.ListAPIView):
     
 
 
+
+class FaciliteFilter(django_filters.FilterSet):
+    # nom = django_filters.CharFilter(method="nom_filter")
+    # prenom = django_filters.CharFilter(method="prenom_filter")
+    query = django_filters.CharFilter(method="query_filter")
+
+    class Meta:
+        model = Facilite
+        fields = ['employee']
+
+    def query_filter(self, queryset, name, value):
+        return Facilite.objects.filter(
+            Q(employee__nom__icontains=value) | Q(employee__prenom__icontains=value) | Q(employee__matricule__icontains=value)
+        )
+
 class FaciliteListAPIView(generics.ListAPIView):
     pagination_class = FacilitiesPaginations
     # permission_classes = [IsAuthenticated]
     serializer_class = FaciliteSerializer
+    filterset_class = FaciliteFilter
     queryset = Facilite.objects.all()
-    filterset_fields = {
-        'employee__matricule':['exact'],           
-        'employee__nom':['icontains'],           
-        'employee__prenom':['icontains'],           
-        'is_completed':['exact'],           
-    }
+    # filterset_fields = {
+    #     'employee__matricule':['exact'],           
+    #     'employee__nom':['icontains'],           
+    #     'employee__prenom':['icontains'],           
+    #     'is_completed':['exact'],           
+    # }
     
     # pagination_class = PropertiesPaginations
     # filterset_fields = {

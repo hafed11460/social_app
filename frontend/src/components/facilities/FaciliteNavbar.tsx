@@ -1,8 +1,8 @@
 import { useAppDispatch, useAppSelector } from "app/hooks"
 import axios from "axios"
 import { BASE_URL } from "features/BASE_URL"
-import { selectFaciliteCurrentDate, selectQuery, setQuery, setSelectedDate } from "features/facilities/facilitiesSlice"
-import { memo, useEffect, useState } from "react"
+import { selectFaciliteCurrentDate, selectQuery, setFaciliteQuery, setSelectedDate } from "features/facilities/facilitiesSlice"
+import { ChangeEvent, memo, useEffect, useState } from "react"
 import { Button, ButtonGroup, Col, Form, InputGroup, Navbar, Row } from "react-bootstrap"
 import { BsChevronLeft, BsChevronRight, BsFileEarmarkSpreadsheet, BsFunnelFill } from 'react-icons/bs'
 import CreateFacilite from "./CreateFacilite"
@@ -43,6 +43,13 @@ const FaciliteNavbar = memo(() => {
         setExcelDate(event.target.value)
     }
 
+    const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value.length > 0){
+            const q ='query='+event.target.value
+            dispatch(setFaciliteQuery({ key: 'query', query: q }))
+        }
+    }
+
     const handleExportToExcel = async () => {
         if (excelDate)
             await axios({
@@ -78,9 +85,9 @@ const FaciliteNavbar = memo(() => {
     useEffect(() => {
         if (checked) {
             let query = `is_completed=${checked}`
-            dispatch(setQuery({ key: 'is_completed', query: query }))
+            dispatch(setFaciliteQuery({ key: 'is_completed', query: query }))
         } else {
-            dispatch(setQuery({ key: 'is_completed', query: '' }))
+            dispatch(setFaciliteQuery({ key: 'is_completed', query: '' }))
         }
     }, [checked])
 
@@ -96,7 +103,7 @@ const FaciliteNavbar = memo(() => {
                     <Col xs="auto">
                         <CreateFacilite />
                         <Button
-                            onClick={() => dispatch(setQuery({ key: 'init', query: '' }))}
+                            onClick={() => dispatch(setFaciliteQuery({ key: 'init', query: '' }))}
                             disabled={Object.keys(query).length === 0 ? true : false}
                             variant="danger"
                             size="sm"
@@ -106,14 +113,21 @@ const FaciliteNavbar = memo(() => {
                         </Button>
                     </Col>
                     <Col xs="auto" className="d-flex  align-items-center">
-                        <Form.Group>
+                        <Form.Control
+                            onChange={handleSearch}
+                            size="sm"
+                            type="text"
+                            placeholder="Search"
+                            className=" mr-sm-2"
+                        />
+                        {/* <Form.Group>
                             <Form.Check
                                 checked={checked}
                                 onChange={handleCheckboxChange}
                                 label="Completed"
                             // className="mx-1"
                             />
-                        </Form.Group>
+                        </Form.Group> */}
 
                         {/* <Form.Control
                             size="sm"
@@ -147,11 +161,11 @@ const FaciliteNavbar = memo(() => {
                     </Button>
                 </ButtonGroup>
                 <Button
-                        variant="success"
-                        size='sm'
-                        onClick={handleYearExportToExcel}>
-                        <BsFileEarmarkSpreadsheet /> Excel
-                    </Button>
+                    variant="success"
+                    size='sm'
+                    onClick={handleYearExportToExcel}>
+                    <BsFileEarmarkSpreadsheet /> Excel
+                </Button>
             </div>
             <div>
 

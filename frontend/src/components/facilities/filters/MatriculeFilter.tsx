@@ -1,6 +1,6 @@
 
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { selectQuery, setQuery } from 'features/facilities/facilitiesSlice'
+import { selectQuery, setFaciliteQuery } from 'features/facilities/facilitiesSlice'
 import { useEffect, useRef, useState } from 'react'
 import { Button, Form, OverlayTrigger, Popover } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
@@ -28,7 +28,7 @@ const MatriculeFilter = () => {
     const onSubmitData = async (values: FaciliteFilterData) => {
         let query = `employee__matricule=${values.matricule}`
         setActive(true)
-        dispatch(setQuery({ key: 'employee__matricule', query: query }))
+        dispatch(setFaciliteQuery({ key: 'employee__matricule', query: query }))
         setShow(!show)
     };
 

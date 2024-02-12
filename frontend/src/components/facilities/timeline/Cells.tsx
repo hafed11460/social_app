@@ -6,18 +6,7 @@ interface EditCellProps {
     facilite: IFacilite,
     month: number,
     year: number
-
 }
-interface NewCellProps {
-    facilite: IFacilite,
-    month: number,
-    year: number,
-}
-
-
-
-
-
 
 const Cells = ({ facilite, month, year }: EditCellProps) => {
     let item: ITimeline | undefined = facilite.timelines.find((item: ITimeline) => item.month == month)

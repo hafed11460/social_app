@@ -1,0 +1,11 @@
+th {
+    padding: 5px !important;
+    min-width: 80px !important;
+    text-align: center;
+}
+td {
+    padding: 5px 0px !important;
+    min-width: 80px !important;
+    max-width: 100px !important;
+    text-align: center;
+}

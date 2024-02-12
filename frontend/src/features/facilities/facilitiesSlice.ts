@@ -179,7 +179,7 @@ export const facilitiesSlice = createSlice({
         setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: Date }>) => {
             state.selectedDate = date
         },
-        setQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
+        setFaciliteQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
             if (key === 'init') {
                 state.query = {}
             } else {
@@ -352,7 +352,7 @@ export const facilitiesSlice = createSlice({
 
 export const {
     setSelectedDate,
-    setQuery,
+    setFaciliteQuery,
 } = facilitiesSlice.actions
 
 export default facilitiesSlice.reducer

@@ -1,3 +1,4 @@
+import FApp from 'components/app/FApp'
 import { lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 
@@ -39,6 +40,7 @@ const SocialRouter = () => {
 
                         <Route path="/primes/" element={<PrimesApp />} />
                         <Route path="/facilities" element={<FaciliteApp />} />
+                        <Route path="/app" element={<FApp />} />
                 </Route>
             </Route>
         </Routes>

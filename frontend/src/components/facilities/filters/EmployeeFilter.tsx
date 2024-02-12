@@ -1,6 +1,6 @@
 
 import { useAppDispatch, useAppSelector } from 'app/hooks'
-import { selectQuery, setQuery } from 'features/facilities/facilitiesSlice'
+import { selectQuery, setFaciliteQuery } from 'features/facilities/facilitiesSlice'
 import { useEffect, useRef, useState } from 'react'
 import { Button, Form, OverlayTrigger, Popover } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
@@ -27,7 +27,7 @@ const EmployeeFilter = () => {
     const onSubmitData = async (values: FaciliteFilterData) => {
         let query = `employee__nom__icontains=${values.nom}&employee__prenom__icontains=${values.prenom}`
         setActive(true)
-        dispatch(setQuery({ key: 'employee__nom__icontains', query: query }))
+        dispatch(setFaciliteQuery({ key: 'employee__nom__icontains', query: query }))
         setShow(!show)
     };
 

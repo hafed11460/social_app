@@ -55,9 +55,38 @@ const dashRoutes:DashRoute[] = [
             // },
         ]
     },
+    // {
+    //     label: 'Facilities',
+    //     to: '/facilities',
+    //     labelDisable: true,
+    //     icon: 'bi bi-tools',
+    //     children: [
+    //         // {
+    //         //     name: 'Tools',
+    //         //     to: '/tools/',
+    //         //     icon: 'bi bi-layer-backward',
+    //         //     exact: true,
+    //         //     active: true
+    //         // },
+    //         // {
+    //         //     name: 'Backup',
+    //         //     to: '/tools/backup/',
+    //         //     icon: 'bi bi-layer-backward',
+    //         //     exact: true,
+    //         //     active: true
+    //         // },
+    //         // {
+    //         //     name: 'NetScan',
+    //         //     to: '/tools/netscan',
+    //         //     icon: 'bi bi-upc-scan',
+    //         //     exact: true,
+    //         //     active: true
+    //         // },
+    //     ]
+    // },
     {
         label: 'Facilities',
-        to: '/facilities',
+        to: '/app',
         labelDisable: true,
         icon: 'bi bi-tools',
         children: [
