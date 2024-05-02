@@ -19,8 +19,8 @@ const Login = () => {
   const navigate = useNavigate()
   const [loginUser, { data, isSuccess }] = useLoginUserMutation()
   const initState = {
-    email: 'adm@gmail.com',
-    password: '123',
+    email: '',
+    password: '',
     remember: false
   }
 

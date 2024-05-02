@@ -5,6 +5,7 @@ from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    # path('',include('frontend.urls')),
     path('admin/', admin.site.urls),
     # path('api/',include('project.router')),
     path('api/auth/',include('users.urls')),

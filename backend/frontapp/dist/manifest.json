@@ -1,0 +1,184 @@
+{
+  "_Nav-82233784.js": {
+    "file": "assets/Nav-82233784.js",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.css": {
+    "file": "assets/index-656beea5.css",
+    "src": "index.css"
+  },
+  "index.html": {
+    "assets": [
+      "assets/bootstrap-icons-ae167342.woff2",
+      "assets/nunito-latin-300-normal-ce8a080d.woff2",
+      "assets/nunito-latin-300-normal-152a993a.woff",
+      "assets/nunito-latin-400-normal-5e2f97ea.woff2",
+      "assets/nunito-latin-400-normal-6a10fc2f.woff",
+      "assets/nunito-latin-600-normal-4e1f5eed.woff2",
+      "assets/nunito-latin-600-normal-428a6676.woff",
+      "assets/nunito-latin-700-normal-923eb1ee.woff2",
+      "assets/nunito-latin-700-normal-70134519.woff",
+      "assets/nunito-latin-800-normal-0e63ca0b.woff2",
+      "assets/nunito-latin-800-normal-44037052.woff"
+    ],
+    "css": [
+      "assets/index-656beea5.css"
+    ],
+    "dynamicImports": [
+      "src/layouts/PrivateRoute.tsx",
+      "src/layouts/MainLayout.tsx",
+      "src/layouts/AuthLayout.tsx",
+      "src/components/primes/PrimesApp.tsx",
+      "src/components/facilities/FaciliteApp.tsx",
+      "src/components/employees/EmployeesApp.tsx",
+      "src/components/employees/EmployeeDetail.tsx",
+      "src/components/dashbord/Dashboard.tsx",
+      "src/components/auth/Login.tsx"
+    ],
+    "file": "assets/index-3201afaf.js",
+    "isEntry": true,
+    "src": "index.html"
+  },
+  "src/assets/compiled/css/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-ae167342.woff2",
+    "src": "src/assets/compiled/css/fonts/bootstrap-icons.woff2"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-300-normal.woff": {
+    "file": "assets/nunito-latin-300-normal-152a993a.woff",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-300-normal.woff"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-300-normal.woff2": {
+    "file": "assets/nunito-latin-300-normal-ce8a080d.woff2",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-300-normal.woff2"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-400-normal.woff": {
+    "file": "assets/nunito-latin-400-normal-6a10fc2f.woff",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-400-normal.woff"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-400-normal.woff2": {
+    "file": "assets/nunito-latin-400-normal-5e2f97ea.woff2",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-400-normal.woff2"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-600-normal.woff": {
+    "file": "assets/nunito-latin-600-normal-428a6676.woff",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-600-normal.woff"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-600-normal.woff2": {
+    "file": "assets/nunito-latin-600-normal-4e1f5eed.woff2",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-600-normal.woff2"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-700-normal.woff": {
+    "file": "assets/nunito-latin-700-normal-70134519.woff",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-700-normal.woff"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-700-normal.woff2": {
+    "file": "assets/nunito-latin-700-normal-923eb1ee.woff2",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-700-normal.woff2"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-800-normal.woff": {
+    "file": "assets/nunito-latin-800-normal-44037052.woff",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-800-normal.woff"
+  },
+  "src/assets/compiled/css/fonts/nunito-latin-800-normal.woff2": {
+    "file": "assets/nunito-latin-800-normal-0e63ca0b.woff2",
+    "src": "src/assets/compiled/css/fonts/nunito-latin-800-normal.woff2"
+  },
+  "src/components/auth/Login.css": {
+    "file": "assets/Login-d169b140.css",
+    "src": "src/components/auth/Login.css"
+  },
+  "src/components/auth/Login.tsx": {
+    "css": [
+      "assets/Login-d169b140.css"
+    ],
+    "file": "assets/Login-df6b5229.js",
+    "imports": [
+      "index.html"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/components/auth/Login.tsx"
+  },
+  "src/components/dashbord/Dashboard.tsx": {
+    "file": "assets/Dashboard-24871315.js",
+    "imports": [
+      "index.html"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/components/dashbord/Dashboard.tsx"
+  },
+  "src/components/employees/EmployeeDetail.tsx": {
+    "file": "assets/EmployeeDetail-9be14734.js",
+    "imports": [
+      "index.html",
+      "_Nav-82233784.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/components/employees/EmployeeDetail.tsx"
+  },
+  "src/components/employees/EmployeesApp.css": {
+    "file": "assets/EmployeesApp-b01a25c0.css",
+    "src": "src/components/employees/EmployeesApp.css"
+  },
+  "src/components/employees/EmployeesApp.tsx": {
+    "css": [
+      "assets/EmployeesApp-b01a25c0.css"
+    ],
+    "file": "assets/EmployeesApp-a31d910d.js",
+    "imports": [
+      "index.html"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/components/employees/EmployeesApp.tsx"
+  },
+  "src/components/facilities/FaciliteApp.css": {
+    "file": "assets/FaciliteApp-3ad6b207.css",
+    "src": "src/components/facilities/FaciliteApp.css"
+  },
+  "src/components/facilities/FaciliteApp.tsx": {
+    "css": [
+      "assets/FaciliteApp-3ad6b207.css"
+    ],
+    "file": "assets/FaciliteApp-7348ffc8.js",
+    "imports": [
+      "index.html"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/components/facilities/FaciliteApp.tsx"
+  },
+  "src/components/primes/PrimesApp.tsx": {
+    "file": "assets/PrimesApp-90a780fb.js",
+    "imports": [
+      "index.html",
+      "_Nav-82233784.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/components/primes/PrimesApp.tsx"
+  },
+  "src/layouts/AuthLayout.tsx": {
+    "file": "assets/AuthLayout-ebb21088.js",
+    "imports": [
+      "index.html"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/layouts/AuthLayout.tsx"
+  },
+  "src/layouts/MainLayout.tsx": {
+    "file": "assets/MainLayout-6284c234.js",
+    "imports": [
+      "index.html",
+      "_Nav-82233784.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/layouts/MainLayout.tsx"
+  },
+  "src/layouts/PrivateRoute.tsx": {
+    "file": "assets/PrivateRoute-93462abe.js",
+    "imports": [
+      "index.html"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/layouts/PrivateRoute.tsx"
+  }
+}

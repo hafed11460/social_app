@@ -3,6 +3,7 @@ import { Alert, Card, Col, Form, Modal, Row } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
+import { Spinner } from "components/common/Spinner";
 import { useGetLiteEmployeesMutation } from "features/employees/employeeAPI";
 import { selectFaciliteCurrentDate, updateFacilite } from "features/facilities/facilitiesSlice";
 import { DATE_DE_FETE, DUREE, EMPLOYEE, MONTANT, OBSERVATION } from "headers/headers";
@@ -11,7 +12,6 @@ import { useController, useForm } from "react-hook-form";
 import Select from 'react-select';
 import { IEmployee } from "types/types.employees";
 import { IFacilite } from "types/types.facilities";
-import { Spinner } from "components/common/Spinner";
 
 
 export interface CreateFaciliteFromData {

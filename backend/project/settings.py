@@ -15,7 +15,8 @@ SECRET_KEY = 'django-insecure-r2n=v=_hi0s-g4mpfs3*9o6^=c^a5q=m!^%uvcj$5j)qy1)_@k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=['http://localhost:3000','http://localhost:8000','localhost','127.0.0.1']
+# ALLOWED_HOSTS=['http://localhost:3000','http://localhost:8000','localhost','127.0.0.1']
+ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:3000',      
@@ -65,7 +66,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": [os.path.join(BASE_DIR, 'frontapp/dist')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -177,17 +178,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'assets/'
 MEDIA_URL = '/media/'
 
-# STATICFILES_DIRS = [
-#     # os.path.join(BASE_DIR, "static"),
+STATICFILES_DIRS = [
+    # os.path.join(BASE_DIR, "static"),
 #     # os.path.join(BASE_DIR, "media"),
-#     os.path.join(BASE_DIR, "frontend/build/static"),
-# ]
-
+    os.path.join(BASE_DIR, 'frontapp','dist','assets')
+]
+print(os.path.join(BASE_DIR, 'frontapp/dist/assets'))
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'med  ia')
 
 
 # Default primary key field type

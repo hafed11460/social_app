@@ -1,0 +1,69 @@
+/* html,
+body {
+    background-color: rgb(247, 246, 234);
+}
+
+input:hover {
+    box-shadow: none;
+    border-color: rgb(212, 212, 212) !important;
+}
+
+input:focus {
+    box-shadow: none;
+    border-color: rgb(212, 212, 212) !important;
+}
+select:hover {
+    box-shadow: none;
+    border-color: rgb(212, 212, 212) !important;
+}
+
+select:focus {
+    box-shadow: none;
+    border-color: rgb(212, 212, 212) !important;
+}
+
+.form-control,.form-select:focus {
+    box-shadow: none !important;
+}
+.form-control,.form-select:hover {
+  box-shadow: none;
+  border-color: rgb(212, 212, 212) !important;
+}
+
+.sticky-top {
+    top: 60px !important;
+}
+
+.leaflet-container{
+    height: 100vh;
+    width: 100%;
+   
+} */
+
+
+::-webkit-scrollbar {
+    width: 3px;
+    height: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    /* box-shadow: 0 0 5px rgb(128, 128, 128);  */
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #a6b6f1; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background:  #435ebe; 
+  }
+
+/* .leaflet-popup-content{
+  margin: 20px 0px !important;
+  padding: 0px !important;
+} */

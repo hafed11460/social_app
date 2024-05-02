@@ -29,7 +29,7 @@ const CustomTooltip = ({ error }: CustomTooltipProps) => {
     )
 }
 
-const NewCell = ({ timeline, month, year,isFacCompleted }: NewCellProps) => {
+const NewCell = ({ timeline,isFacCompleted }: NewCellProps) => {
     const dispatch = useAppDispatch()
     const [showMenu, setShowMenu] = useState(false);
     // const inputRef = useRef(Number(timeline ? timeline.somme : 0));

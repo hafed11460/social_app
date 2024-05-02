@@ -1,0 +1,52 @@
+export const facilities = [
+    {
+        'matricule':558,
+        'nom':'KHALOUT',
+        'prenom':'MOHAMED FOUAD',
+        'duree':12,
+        'montant': 163000.00,
+        'date_achat':'06-04-2023',
+        timeline:[
+            {
+                'id':1,
+                'montant':12500.02,
+                'month':1
+            },
+            {
+                'id':2,
+                'montant':12500.00,
+                'month':2
+            },
+            {
+                'id':3,
+                'montant':12500.00,
+                'month':3
+            },
+            {
+                'id':4,
+                'montant':12500.00,
+                'month':4
+            },
+            {
+                'id':5,
+                'montant':12500.00,
+                'month':5
+            },
+            {
+                'id':6,
+                'montant':12500.00,
+                'month':6
+            },
+            {
+                'id':7,
+                'montant':12500.00,
+                'month':8
+            },
+            {
+                'id':8,
+                'montant':12500.00,
+                'month':10
+            },
+        ]
+    }
+]
