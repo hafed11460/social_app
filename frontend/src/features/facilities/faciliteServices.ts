@@ -1,8 +1,8 @@
 
 import { IFFilterArgs, IFacilite, ITimeline } from 'types/types.facilities'
 import { CreateFaciliteFromData } from 'components/facilities/CreateFacilite'
-import { CreateCommentFromData } from 'components/facilities/CreateComment'
 import http from 'features/http-common'
+import { CreateCommentFromData } from 'components/facilities/timeline/CreateComment'
 
 class FaciliteDataService {
     employeeFacilities(eid:number) {
@@ -17,7 +17,8 @@ class FaciliteDataService {
     }
 
     updateFacilite(date:number,facilite:any) {       
-        return http.put(`/facilities/${facilite.id}/update/?date=${date}`, facilite)
+        return http.put(`/facilities/${facilite.id}/update/`, facilite)
+        // return http.put(`/facilities/${facilite.id}/update/?date=${date}`, facilite)
     }
 
 /************************************************************************************************ */

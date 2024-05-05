@@ -85,16 +85,18 @@ const UpdateFacilite = ({ facilite, show, setShow }: UpdateFaciliteProps) => {
 
     const onSubmitData = async (values: CreateFaciliteFromData) => {
         console.log('values',values)
-        dispatch(updateFacilite({
-            date: date,
-            facilite: values
-        })) 
-            .unwrap()
-            .then(() => {
-                setShow(false)
-            }).catch((err:any)=>{
-                console.log(err)
-            })
+        console.log('values',date?.getFullYear())
+
+        // dispatch(updateFacilite({
+        //     date: date?.getFullYear(),
+        //     facilite: values
+        // })) 
+        //     .unwrap()
+        //     .then(() => {
+        //         setShow(false)
+        //     }).catch((err:any)=>{
+        //         console.log(err)
+        //     })
     };
 
     useEffect(() => {

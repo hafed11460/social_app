@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "app/hooks"
 import axios from "axios"
 import { BASE_URL } from "features/BASE_URL"
-import { selectFaciliteCurrentDate, selectQuery, setFaciliteQuery, setSelectedDate } from "features/facilities/facilitiesSlice"
+import { selectFaciliteCurrentDate, selectFQuery, setFaciliteQuery, setSelectedDate } from "features/facilities/facilitiesSlice"
 import { ChangeEvent, memo, MouseEvent, useEffect, useState } from "react"
 import { Button, ButtonGroup, Col, Form, InputGroup, Navbar, Row } from "react-bootstrap"
 import { BsChevronLeft, BsChevronRight, BsFileEarmarkSpreadsheet, BsFunnelFill, BsSearch } from 'react-icons/bs'
@@ -17,7 +17,7 @@ interface FaciliteNavbarProps {
 const FaciliteNavbar = memo(() => {
 
     const dispatch = useAppDispatch()
-    const query = useAppSelector(selectQuery)
+    const query = useAppSelector(selectFQuery)
     const currentDate = useAppSelector(selectFaciliteCurrentDate)
     const [checked, setChecked] = useState(false);
     const [excelDate, setExcelDate] = useState<string>()
@@ -29,14 +29,14 @@ const FaciliteNavbar = memo(() => {
 
     const handleNexYear = () => {
         if (currentDate) {
-            const newdate = currentDate.setFullYear(currentDate.getFullYear() + 1)
-            dispatch(setSelectedDate({ date: new Date(newdate) }))
+            const newdate = currentDate + 1
+            dispatch(setSelectedDate({ date: newdate }))
         }
     }
     const handlePrevYear = () => {
         if (currentDate) {
-            const newdate = currentDate?.setFullYear(currentDate.getFullYear() - 1)
-            dispatch(setSelectedDate({ date: new Date(newdate) }))
+            const newdate = currentDate - 1
+            dispatch(setSelectedDate({ date: newdate }))
         }
     }
 
@@ -75,7 +75,7 @@ const FaciliteNavbar = memo(() => {
     const handleYearExportToExcel = async () => {
         if (currentDate)
             await axios({
-                url: `${BASE_URL}facilities/${currentDate.getFullYear()}/excel/`,
+                url: `${BASE_URL}facilities/${currentDate}/excel/`,
                 method: 'GET',
                 responseType: 'blob'
             })
@@ -103,8 +103,8 @@ const FaciliteNavbar = memo(() => {
     }, [query])
 
     return (
-        <Navbar className='justify-content-between p-0 px-2 rounded mb-2 ' style={{ height: '50px', backgroundColor: "#eeeeee" }}>
-            <Form >
+        <Navbar className='justify-content-between p-0  rounded mb-2 ' style={{ height: '50px', backgroundColor: "transparent" }}>
+            <Form className="border p-2 bg-white rounded" >
                 <Row>
                     <Col xs="auto">
                         <CreateFacilite />
@@ -149,20 +149,20 @@ const FaciliteNavbar = memo(() => {
 
                 </Row>
             </Form>
-            <Form></Form>
+            
 
-            <div>
+            <div className="border p-2 bg-white rounded">
                 <ButtonGroup className='border me-1'>
                     <Button
                         size='sm'
-                        variant="secondary"
+                        variant="light"
                         onClick={handlePrevYear}>
                         <BsChevronLeft /> Prev
                     </Button>
                     <Button
                         size='sm'
                         variant="">
-                        {currentDate?.getFullYear()}
+                        {currentDate}
                     </Button>
                     <Button size='sm'
                         variant="primary"
@@ -177,7 +177,7 @@ const FaciliteNavbar = memo(() => {
                     <BsFileEarmarkSpreadsheet /> Excel
                 </Button>
             </div>
-            <div>
+            <div className="border p-2 bg-white rounded">
 
                 <InputGroup size="sm" className="">
                     <Form.Control

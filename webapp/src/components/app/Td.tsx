@@ -10,13 +10,15 @@ interface TextTdProps {
     url?: string,
     classname?:string
 }
-export const TextTd = ({ value, style, url, classname }: TextTdProps) => {
+const tdStyle:CSSProperties = {
+    fontSize:"13px",    
+}
+export const TextTd = ({ value, style=tdStyle, url, classname }: TextTdProps) => {
     if (url) {
         return (
             <td style={style}>
                 <Link to={url}>{value}</Link>
             </td>
-
         )
     }
     else {

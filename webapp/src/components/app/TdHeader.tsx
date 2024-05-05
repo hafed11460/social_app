@@ -4,7 +4,7 @@ interface TheadProps {
 }
 const TdHeader = ({ label,width }: TheadProps) => {
     return (
-        <th className="text-center" style={{width:`${width}px`}}>{label}</th>
+        <th className="text-center" style={{width:`${width}px` ,fontSize:"12px"}}>{label}</th>
     )
 }
 

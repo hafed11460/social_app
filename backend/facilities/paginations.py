@@ -3,11 +3,13 @@ from rest_framework.response import Response
 import math
 
 class FacilitiesPaginations(PageNumberPagination):
-    page_size = 15
+    page_size = 10
     page_size_query_param = 'page_size'
-    # max_page_size = 
+    max_page_size = 100
 
     def get_paginated_response(self, data):
+        if self.request.query_params.get('page_size'):
+            self.page_size = int(self.request.query_params.get('page_size'))
         return Response({
             'links': {
                 'next': self.get_next_link(),

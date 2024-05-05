@@ -1,15 +1,15 @@
 import { useAppDispatch, useAppSelector } from "app/hooks"
 import axios from "axios"
 import { BASE_URL } from "features/BASE_URL"
-import { selectQuery } from "features/facilities/facilitiesSlice"
+import { selectFQuery } from "features/facilities/facilitiesSlice"
 import { deleteProcesVerbal, selectCurrentProcesV } from "features/primes/primesSlice"
 import { memo, useEffect, useState } from "react"
 import { Button, Col, Form, Navbar, Row } from "react-bootstrap"
 import { BsFileEarmarkSpreadsheet, BsTrash } from 'react-icons/bs'
 import { IProcesVerbal } from "types/types.primes"
 import CreatePrime from "./CreatePrime"
-import DeleteModal from "./DeleteModal"
 import EditProcesVerbal from "./EditProces"
+import DeleteModal from "components/common/DeleteModal"
 
 
 interface PrimeNavbarProps {
@@ -25,7 +25,7 @@ const PrimeNavbar = memo(() => {
     const proces_v = useAppSelector(selectCurrentProcesV)
     const dispatch = useAppDispatch()
 
-    const query = useAppSelector(selectQuery)
+    // const query = useAppSelector(selectFQuery)
     const [checked, setChecked] = useState(false);
     const [dateSelected, setDateSelected] = useState<string>('')
     const [modalDel, setModalDel] = useState(false);
@@ -57,10 +57,10 @@ const PrimeNavbar = memo(() => {
     //     }
     // }, [checked])
 
-    useEffect(() => {
-        if (Object.keys(query).length === 0)
-            setChecked(false)
-    }, [query])
+    // useEffect(() => {
+    //     if (Object.keys(query).length === 0)
+    //         setChecked(false)
+    // }, [query])
 
     const handleExportToExcel = async () => {
         if (proces_v)

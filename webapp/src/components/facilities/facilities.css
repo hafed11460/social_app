@@ -44,6 +44,7 @@
 
 .cell-exist:hover {
   background-color: #0de756 !important;
+  color: var(--bs-table-color-state, var(--bs-table-color-type, var(--bs-table-color)));
 }
 
 
@@ -55,7 +56,7 @@
 
 .popup-error {
   display: none;
-  word-break: keep-all;
+  word-break: keep-all;  
 }
 
 .cell-error:hover .popup-error {

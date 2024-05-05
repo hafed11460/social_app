@@ -4,7 +4,7 @@ import { Alert, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useAppDispatch } from "app/hooks";
 import ErrorText from "components/common/ErrorText";
 import { updateTimeline } from "features/facilities/facilitiesSlice";
-import { OBSERVATION, SOMME } from "headers/headers";
+import { BACKGROUND, COLOR, OBSERVATION, SOMME } from "headers/headers";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ITimeline } from "types/types.facilities";
@@ -71,8 +71,6 @@ const EditTimeline = ({ timeline, show, setShow }: EditTimelineProps) => {
                 aria-labelledby="contained-modal-title-vcenter"
             >
                 <Form onSubmit={handleSubmit(onSubmitData)}>
-
-
                     <Modal.Body
                         className="p-0"
                     >
@@ -140,8 +138,8 @@ const EditTimeline = ({ timeline, show, setShow }: EditTimelineProps) => {
                                             </Form.Text>
                                         )}
                                     </Form.Group>
-                                    <Form.Group as={Col} md={6} className="mb-3" >
-                                        <Form.Label>{SOMME}</Form.Label>
+                                    <Form.Group as={Col} md={3} className="mb-3" >
+                                        <Form.Label>{COLOR} </Form.Label>
                                         <Form.Control
                                             type="color"
                                             {...register("color")}
@@ -150,6 +148,19 @@ const EditTimeline = ({ timeline, show, setShow }: EditTimelineProps) => {
                                         {errors.color && (
                                             <Form.Text className="text-danger">
                                                 {errors.color.message}
+                                            </Form.Text>
+                                        )}
+                                    </Form.Group>
+                                    <Form.Group as={Col} md={3} className="mb-3" >
+                                        <Form.Label>{BACKGROUND}</Form.Label>
+                                        <Form.Control
+                                            type="color"
+                                            {...register("background")}
+                                        />
+                                        <ErrorText name='background' error={error} />
+                                        {errors.background && (
+                                            <Form.Text className="text-danger">
+                                                {errors.background.message}
                                             </Form.Text>
                                         )}
                                     </Form.Group>
@@ -174,7 +185,7 @@ const EditTimeline = ({ timeline, show, setShow }: EditTimelineProps) => {
                     </Modal.Body>
                     <Modal.Footer>
                         <div className="col-12 d-flex justify-content-end">
-                            <button type="submit" className="btn btn-primary me-1 mb-1">Submit</button>
+                            <button type="submit" className="btn btn-primary me-1 mb-1 btn-sm">Submit</button>
                         </div>
                     </Modal.Footer>
                 </Form>

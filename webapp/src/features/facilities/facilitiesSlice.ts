@@ -14,7 +14,7 @@ export const getFacilities = createAsyncThunk(
 
 export const updateFacilite = createAsyncThunk(
     'facilities/update',
-    async ({date,facilite}:{date:any,facilite: any}, { rejectWithValue }) => {
+    async ({date,facilite}:{date:number,facilite: any}, { rejectWithValue }) => {
         try {
             console.log(facilite)
             const res = await FServices.updateFacilite(date,facilite)
@@ -57,6 +57,21 @@ export const createFacilite = createAsyncThunk(
             return rejectWithValue(err.response.data)
         }
     })
+
+    export const deleteFacilite = createAsyncThunk(
+        'primes/delete',
+        async (faciliteId: number, { rejectWithValue }) => {
+            try {
+                const res = await FServices.deleteFacilite(faciliteId)
+                return faciliteId
+    
+            } catch (err: any) {
+                if (!err.response) {
+                    throw err
+                }
+                return rejectWithValue(err.response.data)
+            }
+        })
 
 export const createTimeline = createAsyncThunk(
     'timelines/create',
@@ -137,7 +152,8 @@ interface IQuery {
 
 
 interface FacilitiesState {
-    selectedDate?: Date,
+    selectedDate?: number,
+    currentEditFacilite?:IFacilite,
     query: IQuery,
     facilities: FaciliteResponse,
     employeeFacilities?: FaciliteResponse,
@@ -146,7 +162,11 @@ interface FacilitiesState {
     isLoading?: boolean,
     isError?: boolean,
     error?: any
-    isSuccess?: boolean
+    isSuccess?: boolean,
+    delFaciliteId?:number | null,
+    isModalDel:boolean,
+    isModalEdit:boolean,
+    cellCut:ITimeline | null
 }
 
 
@@ -159,7 +179,7 @@ function isEmpty(obj: Record<string, any>): boolean {
 
 
 const initialState: FacilitiesState = {
-    selectedDate:new Date(),
+    selectedDate:new Date().getFullYear() ,
     facilities: {
         results: [],
         count: 0,
@@ -177,7 +197,11 @@ const initialState: FacilitiesState = {
     isError: false,
     isLoading: false,
     error: null,
-    isSuccess: false
+    isSuccess: false,
+    delFaciliteId: null,
+    isModalDel:false,
+    isModalEdit:false,
+    cellCut:null
 }
 
 
@@ -186,10 +210,27 @@ export const facilitiesSlice = createSlice({
     initialState,
 
     reducers: {
-        setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: Date }>) => {
+        setCellCut: (state, { payload: { timeline } }: PayloadAction<{ timeline: ITimeline | null }>) => {
+            state.cellCut = timeline
+        },
+        setSelectedDate: (state, { payload: { date } }: PayloadAction<{ date: number }>) => {
             state.selectedDate = date
         },
+        setCurrentEditFacilite: (state, { payload: { facilite } }: PayloadAction<{ facilite: IFacilite }>) => {
+            state.currentEditFacilite = facilite
+        },
+        setDelFaciliteId: (state, { payload: { faciliteId } }: PayloadAction<{ faciliteId: number | null }>) => {
+            state.delFaciliteId = faciliteId
+        },
+        setFIsModalEdit: (state, { payload: { show } }: PayloadAction<{ show: boolean }>) => {
+            console.log('model edit',show)
+            state.isModalEdit = show
+        },
+        setFIsModalDel: (state, { payload: { show } }: PayloadAction<{ show: boolean }>) => {
+            state.isModalDel = show
+        },
         setFaciliteQuery: (state, { payload: { key, query } }: PayloadAction<{ key: String, query: string }>) => {
+            console.log(query)
             if (key === 'init') {
                 state.query = {}
             } else {
@@ -220,9 +261,14 @@ export const facilitiesSlice = createSlice({
             state.isLoading = true;
         })
         builder.addCase(updateFacilite.fulfilled, (state, action) => {            
-            console.log("action",action.payload)   
-            state.facilities.results = state.facilities?.results.filter((facilite: IFacilite) => facilite.id !== action.payload.id)
-            state.facilities?.results.push(action.payload)
+            console.log("action",action.payload)  
+            state.facilities.results = state.facilities.results.map((obj)=>{
+                if(obj.id === action.payload.id ){
+                    return action.payload
+                }else{
+                    return obj
+                }
+            }) 
         })
         builder.addCase(updateFacilite.rejected, (state, action) => {
             state.isLoading = false;
@@ -230,6 +276,9 @@ export const facilitiesSlice = createSlice({
             state.isError = true            
         })
 
+        builder.addCase(deleteFacilite.fulfilled, (state, action) => {
+            state.facilities.results = state.facilities.results.filter((facilite:IFacilite) => facilite.id !== Number(action.payload))
+        })
 
 
         builder.addCase(getEmployeeFacilities.pending, (state, action) => {
@@ -362,14 +411,24 @@ export const facilitiesSlice = createSlice({
 
 export const {
     setSelectedDate,
+    setCellCut,
+    setCurrentEditFacilite,
     setFaciliteQuery,
+    setFIsModalDel,
+    setFIsModalEdit,
+    setDelFaciliteId,
 } = facilitiesSlice.actions
 
 export default facilitiesSlice.reducer
 
 
 export const selectFaciliteCurrentDate = (state: RootState) => state.facilities.selectedDate
-export const selectQuery = (state: RootState) => state.facilities.query
+export const selectCellCut = (state: RootState) => state.facilities.cellCut
+export const selectCurrentEditFacilite = (state: RootState) => state.facilities.currentEditFacilite
+export const selectDelFaciliteId = (state: RootState) => state.facilities.delFaciliteId
+export const selectFIsModalDel = (state: RootState) => state.facilities.isModalDel
+export const selectFIsModalEdit = (state: RootState) => state.facilities.isModalEdit
+export const selectFQuery = (state: RootState) => state.facilities.query
 // export const selectAccessToken = state => state.auth.token
 
 export const selectFacilities = (state: RootState) => state.facilities.facilities

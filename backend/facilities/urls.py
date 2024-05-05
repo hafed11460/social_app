@@ -12,7 +12,8 @@ from .views import (
     EmployeefacilitiesAPIView,
     UpdateFaciliteAPIView,
     FaciliteExportExcelAPIView,
-    YearFaciliteExportExcelAPIView
+    YearFaciliteExportExcelAPIView,
+    DeleteFaciliteAPIView
 )
 
 urlpatterns = [
@@ -22,6 +23,7 @@ urlpatterns = [
     path("create/", CreateFaciliteAPIView.as_view(), name="timeline-create"),
     path("<int:pk>/", FaciliteDetailAPIView.as_view(), name="facilite-detail"),
     path("<int:pk>/update/", UpdateFaciliteAPIView.as_view(), name="facilite-update"),
+    path("<int:pk>/delete/", DeleteFaciliteAPIView.as_view(), name="facilite-delete"),
     path("timelines/create/", CreateTimelineAPIView.as_view(), name="timeline-create"),
     path(
         "timelines/<int:pk>/update/",

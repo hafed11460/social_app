@@ -30,6 +30,10 @@ class Facilite(WithTimestamp, models.Model):
 def MONTH_TYPES():
     return [(f'{r}',f'{r}') for r in range(1,13)]
 
+class CellStyle(models.Model):
+    color = models.CharField(_("Color"), max_length=10,null=True, blank=True)
+    background = models.CharField(_("background"), max_length=10,null=True, blank=True)
+    
 
 class Timeline(WithTimestamp, models.Model):
     facilite = models.ForeignKey(
@@ -45,6 +49,7 @@ class Timeline(WithTimestamp, models.Model):
     somme = models.DecimalField(_("Somme"), max_digits=12, decimal_places=2)
     is_commited = models.BooleanField(_("is commit"), default=False)
     color = models.CharField(_("Color"),null=True, blank=True, max_length=10)
+    background = models.CharField(_("Background"),null=True, blank=True, max_length=10)
     observation = models.TextField(_("Observation"), null=True, blank=True)
     
     class Meta:

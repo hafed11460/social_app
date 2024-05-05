@@ -24,7 +24,10 @@ const TableRow = ({ facilite }: TrProps) => {
             {/* <TextTd value={facilite.employee.nom +' ' +facilite.employee.prenom} /> */}
             <TextTd value={facilite.duree + ' Mois'} />
             <TextTd value={facilite.date_achat} />
-            <TextTd value={facilite.montant} style={{color:'white',backgroundColor:'green'}} />
+            <TextTd value={facilite.montant} style={{
+                color:'white',
+                backgroundColor:'greenv',
+                fontSize:"12px !important"}} />
             <TextTd value={facilite.solde} />
 
             {

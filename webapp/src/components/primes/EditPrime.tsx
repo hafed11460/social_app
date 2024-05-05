@@ -107,12 +107,8 @@ const EditPrime = ({ primeId, show, setShow }: EditPrimeProps) => {
             >
                 <Form onSubmit={handleSubmit(onSubmitData)}>
 
-
-
-
                     <Modal.Header>
-                        {/* <h4 className="card-title"> Create Prime For {employee.nom} {employee.prenom}</h4> */}
-
+                        <h4 className="card-title"> Create Prime For {prime?.employee.nom} {prime?.employee.prenom}</h4>
                     </Modal.Header>
                     <Modal.Body>
                         <Row>

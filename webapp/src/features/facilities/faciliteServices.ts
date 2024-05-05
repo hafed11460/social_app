@@ -19,6 +19,9 @@ class FaciliteDataService {
     updateFacilite(date:number,facilite:any) {       
         return http.put(`/facilities/${facilite.id}/update/?date=${date}`, facilite)
     }
+    deleteFacilite(faciliteId:number) {
+        return http.delete(`/facilities/${faciliteId}/delete/`)
+    }
 
 /************************************************************************************************ */
     createTimeline(timeline: ITimeline) {

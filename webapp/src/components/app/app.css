@@ -4,8 +4,26 @@ th {
     text-align: center;
 }
 td {
-    padding: 5px 0px !important;
+    padding: 0px 0px !important;
     min-width: 80px !important;
+    height: 30px;
+    align-items: center;
     max-width: 100px !important;
     text-align: center;
 }
+
+.border-dashed{
+    border: 2px dashed green !important;
+    border-image-repeat: round;
+}
+
+@keyframes dashed-border {
+    100% { 
+    transform: rotate(360deg);
+  }
+  }
+  
+  .dashed-border {
+    border: 2px dashed green !important;
+    /* animation: dashed-border 1s linear infinite; */
+  }

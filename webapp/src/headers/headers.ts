@@ -23,6 +23,8 @@ export const ACTION = "Action"
 
 
 export const SOMME = "Somme"
+export const COLOR = "Color"
+export const BACKGROUND = "Background"
 export const BTN_DELETE = "Supprimer"
 export const BTN_CLOSE = "Close"
 export const BTN_SUBMIT = "Submit"

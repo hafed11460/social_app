@@ -18,12 +18,14 @@ class AddCommentTimelineSerializer(serializers.ModelSerializer):
 class UpdateTimelineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Timeline
-        fields = ["id", "month", "facilite", "mois", "somme","observation", "is_commited"]
+        fields = ["id", "month", "facilite", "mois", "somme","observation", "is_commited","color","background"]
 
     def update(self, instance, validated_data):
         facilite = validated_data.get("facilite", instance.facilite)
         somme = validated_data.get("somme", instance.somme)
         observation = validated_data.get("observation", instance.observation)
+        color = validated_data.get("color", instance.color)
+        background = validated_data.get("background", instance.background)
         
         # check if the new value is not great than montant 
         if ((facilite.solde - instance.somme) + somme) > facilite.montant:
@@ -45,6 +47,8 @@ class UpdateTimelineSerializer(serializers.ModelSerializer):
         #     )
 
         instance.somme = somme
+        instance.background = background
+        instance.color = color
         instance.observation = observation
         instance.save()
 
@@ -105,5 +109,5 @@ class CreateTimelineSerializer(serializers.ModelSerializer):
 class TimelineSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Timeline
-        fields = ["id", "facilite", "month", "mois", "somme",'observation', "is_commited"]
+        fields = ["id", "facilite", "month", "mois", "somme",'observation', "is_commited","color","background"]
 

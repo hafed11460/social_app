@@ -22,7 +22,7 @@ const MDropdown = ({
                 type="button"
                 size="sm"
                 bsPrefix="toggle"
-                className="p-0 px-2 m-0 "
+                className="p-0 px-2 m-0"
             >
                 {icon}
             </Dropdown.Toggle>

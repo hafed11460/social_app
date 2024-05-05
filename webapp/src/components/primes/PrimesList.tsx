@@ -6,9 +6,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Card, Spinner } from 'react-bootstrap';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 import { IPrime } from 'types/types.primes';
-import DeleteModal from './DeleteModal';
 import EditPrime from './EditPrime';
 import { Link } from 'react-router-dom';
+import DeleteModal from 'components/common/DeleteModal';
 
 interface PimesListProps {
     procesId: number

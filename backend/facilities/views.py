@@ -192,3 +192,8 @@ class UpdateFaciliteAPIView(generics.UpdateAPIView):
         new_serializer = FaciliteSerializer(instance,context={"request": request})
         return Response(new_serializer.data, status=status.HTTP_200_OK)
         
+
+class DeleteFaciliteAPIView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FaciliteSerializer
+    queryset = Facilite.objects.all()

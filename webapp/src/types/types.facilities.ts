@@ -13,6 +13,7 @@ export interface ITimeline{
     mois:string,
     somme:number ,
     color?:string,
+    background?:string,
     observation:string,
     is_commited:boolean
 }

@@ -11,12 +11,12 @@ const TableHeader = () => {
                 {/* <TdHeader label={EMPLOYEE} width={120}/> */}
                 <TdHeader label={DUREE} />
                 <TdHeader label={DATE_ACHAT} />
-                <TdHeader label={MONTANT_ACHAT} width={100} />
+                <TdHeader label={MONTANT_ACHAT} width={50} />
                 <TdHeader label={SOLDE} />
                 {
                     Object.entries(months).map(([key, value]) => {
                         return (
-                            <TdHeader label={value} />
+                            <TdHeader key={key} label={value} />
                         )
                     })
                 }

@@ -3,7 +3,7 @@ import { RootState } from "app/store"
 import { IFFilterArgs, IFacilite, ITimeline } from "types/types.facilities"
 import FServices from "./faciliteServices"
 import { CreateFaciliteFromData } from "components/facilities/CreateFacilite"
-import { CreateCommentFromData } from "components/facilities/CreateComment"
+import { CreateCommentFromData } from "components/facilities/timeline/CreateComment"
 
 export const getFacilities = createAsyncThunk(
     'facilities/',
@@ -14,7 +14,7 @@ export const getFacilities = createAsyncThunk(
 
 export const updateFacilite = createAsyncThunk(
     'facilities/update',
-    async ({date,facilite}:{date:any,facilite: any}, { rejectWithValue }) => {
+    async ({date,facilite}:{date:number,facilite: any}, { rejectWithValue }) => {
         try {
             console.log(facilite)
             const res = await FServices.updateFacilite(date,facilite)

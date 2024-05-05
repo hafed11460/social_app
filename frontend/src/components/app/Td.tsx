@@ -8,6 +8,7 @@ interface TextTdProps{
     style?: CSSProperties | undefined;
 }
 export const TextTd = ({value,style}:TextTdProps)=>{
+    console.log(style)
     return(
         <td style={style}>{value}</td>
     )

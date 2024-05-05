@@ -68,7 +68,7 @@ const CreateFacilite = () => {
             .then(() => {
                 setLoading(false)
                 setShow(false)
-                
+
             }).catch((err: any) => {
                 console.log(err)
                 setLoading(false)
@@ -96,7 +96,7 @@ const CreateFacilite = () => {
                 <Form onSubmit={handleSubmit(onSubmitData)}>
                     <Modal.Header>
                         <h4> Create new facilite</h4>
-                        {isLoding && <Spinner/>}
+                        {isLoding && <Spinner />}
                     </Modal.Header>
                     <Modal.Body
                     >
@@ -131,15 +131,7 @@ const CreateFacilite = () => {
                                     type="number"
                                     {...register("duree", { required: "This Feild Is required" })}
                                 />
-                                {/* <Form.Select
-                                    {...register("duree", { required: "This Feild Is required" })}
-                                >
-                                    <option>Mois</option>
-                                    {montCells && montCells.map((month: number) => (
-                                        <option selected={getValues('duree') == month} key={month} value={month}>{month}</option>
-                                    ))}
-                                </Form.Select> */}
-                                {/* <ErrorText name='city' error={error} /> */}
+                                <ErrorText name='duree' error={error} />
                                 {errors.duree && (
                                     <Form.Text className="text-danger">
                                         {errors.duree.message}
@@ -176,10 +168,6 @@ const CreateFacilite = () => {
                                     </Form.Text>
                                 )}
                             </Form.Group>
-
-
-
-
 
                             <Form.Group className="mb-3" >
                                 <Form.Label>{OBSERVATION}</Form.Label>
