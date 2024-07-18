@@ -20,7 +20,59 @@ const bg_exist = "#FFFFE0"
 
 type Action = 'STYLE' | "COMMENT";
 
-
+interface CellInputProps {
+    value: number,
+    isEdit: boolean,
+    timeline: ITimeline,
+    cellCut: ITimeline | null,
+    isFacCompleted: boolean,
+    onBlur: () => void,
+    onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+}
+const CellInput = ({
+    isEdit,
+    timeline,
+    cellCut,
+    isFacCompleted,
+    value,
+    onKeyUp,
+    onBlur,
+    onChange
+}: CellInputProps) => {
+    return (
+        <>
+            {
+                !isEdit ?
+                    <div style={{
+                        fontSize: '13px',
+                        minHeight: '100%',
+                        width: '100%',
+                        minWidth: '100%',
+                        height: '100%',
+                        textAlign: 'center',
+                        // justifyContent:'center',
+                        alignContent: 'center'
+                    }}
+                        className={timeline.id === cellCut?.id ? "dashed-border" : ""} >
+                        {value && value.toFixed(2)}
+                    </div>
+                    :
+                    <input
+                        disabled={isFacCompleted}
+                        onKeyUp={onKeyUp}
+                        // value={value}
+                        value={value === 0 ? '' : value}
+                        autoFocus
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        type='number'
+                        style={{ width: '100%', height: '100%', fontSize: '13px' }}
+                    />
+            }
+        </>
+    )
+}
 const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => {
     // console.log('render cell ', timeline.id)
     const dispatch = useAppDispatch()
@@ -47,14 +99,14 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
         if (cellCut) {
             setNewTLine({
                 ...newTLine,
-                somme:cellCut.somme,
+                somme: cellCut.somme,
             })
             handleUpdateTimeline({
                 ...cellCut,
-                id:newTLine.id,
-                month:newTLine.month,
-                facilite:newTLine.facilite,
-                mois:newTLine.mois,
+                id: newTLine.id,
+                month: newTLine.month,
+                facilite: newTLine.facilite,
+                mois: newTLine.mois,
             })
             setValue(Number(cellCut.somme))
             setShowMenu(false)
@@ -72,32 +124,37 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
                 setError('Can\'t remove this timeline')
             })
     }
+
     const handleActionClear = (action: Action) => {
         console.log('delete clicked')
-        const newTimeline: ITimeline | {} = {}
-        Object.assign(newTimeline, timeline);
-        if (Object.keys(newTimeline).length !== 0) {
-            switch (action) {
-                case "STYLE":
-                    if ('color' in newTimeline)
-                        newTimeline.color = ''
-                    if ('background' in newTimeline)
-                        newTimeline.background = ''
-                    break;
-                case 'COMMENT':
-                    if ('observation' in newTimeline)
-                        newTimeline.observation = ''
-                    break;
-            }
-            dispatch(updateTimeline(newTimeline))
-                .unwrap()
-                .then(() => {
-                    setError('')
-                })
-                .catch((err) => {
-                    setError('Can\'t remove this timeline')
-                })
+        let newTimeline: ITimeline = timeline;
+
+        switch (action) {
+            case "STYLE":
+                newTimeline = {
+                    ...timeline,
+                    color: '',
+                    background: ''
+                }
+                break;
+
+            case 'COMMENT':
+                newTimeline = {
+                    ...timeline,
+                    observation: ''
+                }
+
+                break;
         }
+
+        dispatch(updateTimeline(newTimeline))
+            .unwrap()
+            .then(() => {
+                setError('')
+            })
+            .catch((err) => {
+                setError('Can\'t remove this timeline')
+            })
     }
 
     useEffect(() => {
@@ -114,7 +171,7 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
         })
     }, [value])
 
-    const handleUpdateTimeline = useCallback((obj:ITimeline) => {
+    const handleUpdateTimeline = useCallback((obj: ITimeline) => {
         console.log('useCalback')
         if (obj.somme < 0) return;
         if (obj.somme === 0) {
@@ -134,7 +191,7 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
     }, [])
 
 
-    const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const onBlur = () => {
         setIsEdit(false)
         setBg(bg_exist)
         handleUpdateTimeline(newTLine)
@@ -171,7 +228,7 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
     const handleOutsideClick = (event: any) => {
         if (
             menuRef.current &&
-            !menuRef.current?.contains(event.target) 
+            !menuRef.current?.contains(event.target)
             && event.target !== cellRef.current
         ) {
             setShowMenu(false);
@@ -204,31 +261,18 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
                         </Tooltip>
                     }
                 >
-                    <div
-
-                        // className={`position-relative ${isExist ? 'cell-exist' : ''} ${error ? 'cell-error' : ''} `}
-                        onContextMenu={onContextMenu}
-                    // onDoubleClick={onDoubleClick}
-                    // onClick={onClick}
-                    // onBlur={() => setShowMenu(false)}
-                    // style={{ backgroundColor: bg }}
-                    >
-                        {!isEdit ?
-                            <div
-                                style={{ minHeight: '100%', width: '100%', minWidth: '100%', height: '100%' }}
-                            >
-                                {value}
-                            </div> :
-                            <input
-                                onKeyUp={onKeyUp}
-                                value={value}
-                                autoFocus
-                                onBlur={onBlur}
-                                onChange={onChange}
-                                type='number'
-                                style={{ width: '100%', height: '100%' }}
-                            />
-                        }
+                    <div>
+                        <CellInput
+                            value={value}
+                            timeline={timeline}
+                            cellCut={cellCut}
+                            isEdit={isEdit}
+                            isFacCompleted={isFacCompleted}
+                            onBlur={onBlur}
+                            onChange={onChange}
+                            onKeyUp={onKeyUp}
+                        />
+                      
                         <Dropdown.Menu
                             ref={menuRef}
                             show={showMenu}
@@ -251,35 +295,18 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
             onDoubleClick={onDoubleClick}
             style={cellStyle}
         >
-            {/* <CreateComment timeline={timeline} show={showModal} setShow={setShowModal} /> */}
             <EditTimeline timeline={timeline} show={showModal} setShow={setShowModal} />
-            {   isLoding? <Spinner  variant="primary" size="sm" />:
-                !isEdit ?
-                    <div style={{
-                        fontSize: '13px',
-                        minHeight: '100%',
-                        width: '100%',
-                        minWidth: '100%',
-                        height: '100%',
-                        textAlign: 'center',
-                        // justifyContent:'center',
-                        alignContent: 'center'
-                    }}
-                        className={timeline.id === cellCut?.id ? "dashed-border" : ""} >
-                        {value && value.toFixed(2)}
-                    </div>
-                    :
-                    <input
-                        disabled={isFacCompleted}
-                        onKeyUp={onKeyUp}
-                        // value={value}
-                        value={value === 0 ? '' : value}
-                        autoFocus
-                        onBlur={onBlur}
-                        onChange={onChange}
-                        type='number'
-                        style={{ width: '100%', height: '100%', fontSize: '13px' }}
-                    />
+            {isLoding ? <Spinner variant="primary" size="sm" /> :
+                <CellInput
+                    value={value}
+                    timeline={timeline}
+                    cellCut={cellCut}
+                    isEdit={isEdit}
+                    isFacCompleted={isFacCompleted}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    onKeyUp={onKeyUp}
+                />               
             }
             {error &&
                 <div className="popup-error position-absolute px-3 py-2 bg-warning  top-100 start-100 rounded">
@@ -293,7 +320,7 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
                 <>
                     <div className="position-absolute top-0 end-0 comment ">
                         <div className="position-absolute top-100 start-100 comment-content bg-white">
-                            <p>
+                            <p className="text-black">
                                 {timeline.observation}
                             </p>
                         </div>
@@ -318,19 +345,15 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
                         borderBottom: '10px solid #ccc',
                     }
                 }></div>
-                {/* <Dropdown.Item disabled={isFacCompleted}
-                    className="border-bottom" onClick={handleDelete}>
-                    <BsArrowsMove /> Move
-                </Dropdown.Item> */}
 
                 <Dropdown.Item
                     disabled={isFacCompleted}
                     className="border-bottom  py-1 px-2"
-                    onClick={() =>{
-                        dispatch(setCellCut({ timeline: timeline })) 
+                    onClick={() => {
+                        dispatch(setCellCut({ timeline: timeline }))
                         setShowMenu(false)
-                    }} 
-                    >
+                    }}
+                >
                     <small> <BsScissors /> Couper </small>
                 </Dropdown.Item>
                 {
@@ -344,15 +367,19 @@ const UpdateTd = memo(({ timeline, isExist, isFacCompleted }: UpdateTdProps) => 
                 }
                 <Dropdown.Item
                     disabled={isFacCompleted}
-                    className="border-bottom  py-1 px-2"
+                    className="pt-1 pb-0 px-2"
                     onClick={handleAddComment} >
-                    <small> <BsFillPenFill /> Edit Comment</small>
+                    <small> <BsFillPenFill /> Edit</small>
                 </Dropdown.Item>
+
+                <Dropdown.Divider></Dropdown.Divider>
+
                 <Dropdown.Item disabled={isFacCompleted}
                     className="border-bottom  py-1 px-2"
                     onClick={handleDelete}>
                     <small> <BsTrash /> Remove</small>
                 </Dropdown.Item>
+                
                 <Dropdown.Item disabled={isFacCompleted}
                     className="border-bottom  py-1 px-2"
                     onClick={() => handleActionClear('STYLE')}>

@@ -11,7 +11,7 @@ const EmployeeInfo = memo(({ matricule }: EmployeeInfoProps) => {
 
     if (!data) return null
     return (
-        <Card className='shadow-sm border border-primary rounded-0'>
+        <Card className='shadow-sm border border rounded-0'>
             <Card.Body>
                 <p><span className='fw-bold'>Matricule:</span> {data.matricule}</p>
                 <p><span className='fw-bold'>Nom:</span> {data.nom}</p>
@@ -22,7 +22,6 @@ const EmployeeInfo = memo(({ matricule }: EmployeeInfoProps) => {
                 <p><span className='fw-bold'>fin de contract:</span> {data.fin_contrat}</p>
                 <p><span className='fw-bold'>Type Contract:</span> {data.type_contrat}</p>
                 <p><span className='fw-bold'>Direction:</span> {data.direction.name}</p>
-                
             </Card.Body>
         </Card>
     )

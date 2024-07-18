@@ -20,8 +20,8 @@ class Facilite(WithTimestamp, models.Model):
     @property
     def solde(self):
         return sum([item.somme for item in self.timelines.all()])
-    class Meta:
-        unique_together = ["employee", "date_achat","is_completed"]
+    # class Meta:
+    #     unique_together = ["employee", "date_achat","is_completed"]
 
     def __str__(self):
         return f'{self.employee.nom} {self.employee.prenom}'

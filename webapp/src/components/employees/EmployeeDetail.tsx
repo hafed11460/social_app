@@ -12,7 +12,7 @@ const EmployeeDetail = () => {
     return (
         <>
             <Tab.Container id="left-tabs-example" defaultActiveKey="facilities">
-                <Nav variant="pills" className="mb-2">
+                <Nav variant="pills" className="mb-2 bg-white border">
                     <Nav.Item className='rounded-0'>
                         <Nav.Link className='rounded-0' eventKey="facilities">Facilities</Nav.Link>
                     </Nav.Item>
@@ -28,10 +28,10 @@ const EmployeeDetail = () => {
                     </Col>
                     <Col sm={9}>
 
-                        <Card className='shadow-sm border border-primary rounded-0'>
+                        <Card className='shadow-sm border border rounded-0'>
                             <Card.Body>
                                 <Tab.Content>
-                                    <Tab.Pane eventKey="facilities">
+                                    <Tab.Pane eventKey="facilities" active>
                                         <EmployeeFacilities matricule={Number(matricule)} />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="primes">

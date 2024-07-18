@@ -135,43 +135,44 @@ class CreateFaciliteAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)        
         serializer.is_valid(raise_exception=True)
         # employee = Employee.objects.get(id=serializer.validated_data.get('employee'))
-        if not Facilite.objects.filter(
-            employee=serializer.validated_data.get("employee"), is_completed=False
-        ).exists():
-            instance = serializer.save()
-            somme = instance.montant / instance.duree
+        # if not Facilite.objects.filter(
+        #     employee=serializer.validated_data.get("employee")
+        #     , is_completed=False
+        # ).exists():
+        instance = serializer.save()
+        somme = instance.montant / instance.duree
 
-            start_date_str = serializer.validated_data.get('date_achat')
+        start_date_str = serializer.validated_data.get('date_achat')
 
-            # Convert the string date to a datetime object
-            start_date = datetime.strptime(str(start_date_str), "%Y-%m-%d")
+        # Convert the string date to a datetime object
+        start_date = datetime.strptime(str(start_date_str), "%Y-%m-%d")
 
-            # Set the day of the start date to 1
-            start_date = start_date.replace(day=1)
+        # Set the day of the start date to 1
+        start_date = start_date.replace(day=1)
 
-            for i in range(instance.duree):
-                month = (start_date.month + i - 1) % 12 + 1
+        for i in range(instance.duree):
+            month = (start_date.month + i - 1) % 12 + 1
 
-                # change year ()
-                if (i !=0)  and  (month == 1):
-                    start_date = start_date.replace(year=start_date.year + 1)
-
-                
-                mois = start_date.replace(month=month)
-                
-                Timeline.objects.create(
-                        month= month,
-                        facilite=instance,
-                        mois=mois.strftime("%Y-%m-%d"),
-                        somme=somme,
-                        is_commited= False,
-                        observation=""
-                )
-                print(mois.strftime("%Y-%m-%d"))
+            # change year ()
+            if (i !=0)  and  (month == 1):
+                start_date = start_date.replace(year=start_date.year + 1)
 
             
-            new_serializer = FaciliteSerializer(instance,context={"request": request})
-            return Response(new_serializer.data, status=status.HTTP_200_OK)
+            mois = start_date.replace(month=month)
+            
+            Timeline.objects.create(
+                    month= month,
+                    facilite=instance,
+                    mois=mois.strftime("%Y-%m-%d"),
+                    somme=somme,
+                    is_commited= False,
+                    observation=""
+            )
+            print(mois.strftime("%Y-%m-%d"))
+
+        
+        new_serializer = FaciliteSerializer(instance,context={"request": request})
+        return Response(new_serializer.data, status=status.HTTP_200_OK)
 
         return Response(
             {"error": "Can not create this recorde"}, status=status.HTTP_404_NOT_FOUND

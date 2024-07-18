@@ -25,16 +25,20 @@ class EmployeeResource(resources.ModelResource):
         direction_name = row["direction"]
         print(direction_name)
         if direction_name is not None:
-            (dr, _created) = Direction.objects.get_or_create(name=direction_name, defaults={"name": direction_name})
-            row["direction"] = dr.id
+            dr, _created = Direction.objects.get_or_create(name=direction_name)
+            if _created:
+                row["direction"] = dr.id
+            else:
+                dr.save()
+                row["direction"] = dr.id
         else :
             row["direction"] = None
 
-    direction = fields.Field(
-        column_name='direction',
-        attribute='direction',
-        widget=ForeignKeyWidget(model=Direction,field="name")
-    )
+    # direction = fields.Field(
+    #     column_name='direction',
+    #     attribute='direction',
+    #     widget=ForeignKeyWidget(model=Direction,field="name")
+    # )
 
     class Meta:
         model = Employee
@@ -43,7 +47,7 @@ class EmployeeResource(resources.ModelResource):
 
 
 class DirectionAdmin(ImportExportModelAdmin,admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ['id',"name"]
     resource_class = DirectionResource
 
 

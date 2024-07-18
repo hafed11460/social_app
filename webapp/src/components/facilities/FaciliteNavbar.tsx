@@ -103,8 +103,8 @@ const FaciliteNavbar = memo(() => {
     }, [query])
 
     return (
-        <Navbar className='justify-content-between p-0  rounded mb-2 ' style={{ height: '50px', backgroundColor: "transparent" }}>
-            <Form className="border p-2 bg-white rounded" >
+        <Navbar className='justify-content-between p-0  rounded mb-2 bg-white shadow-sm ' style={{ height: '50px', backgroundColor: "transparent" }}>
+            <Form className=" p-2 bg-white rounded" >
                 <Row>
                     <Col xs="auto">
                         <CreateFacilite />
@@ -151,7 +151,7 @@ const FaciliteNavbar = memo(() => {
             </Form>
             
 
-            <div className="border p-2 bg-white rounded">
+            <div className=" p-2 bg-white rounded">
                 <ButtonGroup className='border me-1'>
                     <Button
                         size='sm'
@@ -177,7 +177,7 @@ const FaciliteNavbar = memo(() => {
                     <BsFileEarmarkSpreadsheet /> Excel
                 </Button>
             </div>
-            <div className="border p-2 bg-white rounded">
+            <div className=" p-2 bg-white rounded">
 
                 <InputGroup size="sm" className="">
                     <Form.Control

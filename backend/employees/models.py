@@ -5,6 +5,7 @@ from users.models import WithTimestamp
 CONTRAT_TYPES = (
     ("CDD", "CDD"),
     ("CDI", "CDI"),
+    ("Stage", "Stage"),
 )
 
 
@@ -26,12 +27,12 @@ class Employee(WithTimestamp, models.Model):
         null=True,
         blank=True,
     )
-    date_e = models.DateField(_("Date d'entrée"), auto_now=False, auto_now_add=False)
+    date_e = models.DateField(_("Date d'entrée"), auto_now=False, auto_now_add=False,null=True, blank=True)
     poste = models.CharField(_("Poste"), max_length=255, null=True, blank=True)
     direction = models.ForeignKey(
         Direction,
         verbose_name=_("Direction"),
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
         null=True,
         blank=True,
     )
