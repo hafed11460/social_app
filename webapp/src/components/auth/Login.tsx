@@ -19,10 +19,11 @@ const Login = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [loginUser, { data, isSuccess,error:err }] = useLoginUserMutation()
-  const [error, setError] = useState()
+  const [error, setError] = useState<string>("")
+  const [isLoading, setIsloading] = useState(false)
   const initState = {
-    email: '',
-    password: '',
+    email: 'adm@gmail.com',
+    password: '123',
     remember: false
   }
 
@@ -37,17 +38,23 @@ const Login = () => {
   })
 
   const onSubmit = (values: FormData) => {
+    setIsloading(true)
     loginUser(values)
     .unwrap()
     .then(() => {
-       console.log("login")
-        
+      console.log("login")
+      setIsloading(false)
+      
     }).catch((err: any) => {
         console.log(err)
-        // setLoading(false)
-        // setShow(false)
-        console.log(err)
-        setError(err.data['error'])
+        
+        setIsloading(false)
+        if(err.data == undefined){
+          setError("Error to connect to the server")
+
+        }else{
+          setError(err.data['error'])
+        }
     })
   };
 
@@ -106,7 +113,7 @@ const Login = () => {
                   </Form.Text>
                 )}
               </Form.Group>
-              <Button type="submit" className="btn btn-primary btn-block btn-lg shadow-lg mt-5">Login</Button>
+              <Button disabled={isLoading} type="submit" className="btn btn-primary btn-block btn-lg shadow-lg mt-5">Login</Button>
             </Form>
           </Card>
         </Col>

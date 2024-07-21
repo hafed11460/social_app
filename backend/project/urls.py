@@ -8,6 +8,7 @@ urlpatterns = [
     # path('',include('frontend.urls')),
     path('admin/', admin.site.urls),
     # path('api/',include('project.router')),
+    path('api/',include('core.urls')),
     path('api/auth/',include('users.urls')),
     path('api/employees/',include('employees.urls')),
     path('api/facilities/',include('facilities.urls')),

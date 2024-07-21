@@ -1,11 +1,23 @@
+import { useAppDispatch, useAppSelector } from "app/hooks"
 import EmployeeSelect from "components/employees/EmployeeSelect"
-import { useState } from "react"
+import { getGlobalStatistic, selectGlobalStatistic } from "features/global/globalSlice"
+import { useEffect, useState } from "react"
 
 
 
 const Dashboard = () => {
-
+    const dispatch = useAppDispatch()
     const [montCells] = useState<number[]>(Array.from({ length: 3 }, (value, index) => index + 1))
+    const [isLoding, setLoading] = useState(false)
+    const statistic = useAppSelector(selectGlobalStatistic)
+
+    useEffect(()=>{
+        dispatch(getGlobalStatistic()).then(() => {
+            setLoading(false)
+        }).catch((err) => {
+            setLoading(false)
+        })
+    },[])
     return (
         <div className="page-content container">
             {/* <EmployeeSelect/> */}
@@ -23,7 +35,7 @@ const Dashboard = () => {
                                         </div>
                                         <div className="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                             <h6 className="text-muted font-semibold">Faclilies</h6>
-                                            <h6 className="font-extrabold mb-0">250</h6>
+                                            <h6 className="font-extrabold mb-0">{statistic.facilities_count}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -40,7 +52,7 @@ const Dashboard = () => {
                                         </div>
                                         <div className="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                             <h6 className="text-muted font-semibold">Primes</h6>
-                                            <h6 className="font-extrabold mb-0">320</h6>
+                                            <h6 className="font-extrabold mb-0">{statistic.primes_count}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -57,13 +69,13 @@ const Dashboard = () => {
                                         </div>
                                         <div className="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
                                             <h6 className="text-muted font-semibold">Employees</h6>
-                                            <h6 className="font-extrabold mb-0">2555</h6>
+                                            <h6 className="font-extrabold mb-0">{statistic.employees_count}</h6>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-6 col-lg-3 col-md-6">
+                        {/* <div className="col-6 col-lg-3 col-md-6">
                             <div className="card">
                                 <div className="card-body px-4 py-4-5">
                                     <div className="row">
@@ -79,7 +91,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="row">
                         <div className="col-12">

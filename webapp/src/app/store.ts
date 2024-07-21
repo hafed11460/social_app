@@ -1,6 +1,7 @@
 import { Action, ThunkAction, configureStore } from "@reduxjs/toolkit"
 import { authApi } from "features/auth/authApi"
 import authReducer from 'features/auth/authSlice'
+import globalReducer from 'features/global/globalSlice'
 import { employeeAPI } from "features/employees/employeeAPI"
 import { facilitiesAPI } from "features/facilities/facilitiesAPI"
 import facilitiesReducer from 'features/facilities/facilitiesSlice'
@@ -11,6 +12,7 @@ import employeesReducer from 'features/employees/employeeSlice'
 export const store = configureStore({
   reducer: {
     auth:authReducer,
+    global:globalReducer,
     employees: employeesReducer, 
     facilities: facilitiesReducer, 
     primes: primesReducer, 
